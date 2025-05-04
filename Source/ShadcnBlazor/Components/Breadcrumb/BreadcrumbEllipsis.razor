@@ -1,0 +1,20 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<span id="@Id"
+      class="@ClassValue"
+      style="@Style"
+      @ref=Ref
+      @attributes=Attributes
+      role="presentation"
+      aria-hidden="true"
+      data-slot="breadcrumb-ellipsis">
+    <LucideIcon Name="@IconName.MoreHorizontal" Class="size-4" />
+    <span className="sr-only">More</span>
+</span>
+
+@code {
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("flex size-9 items-center justify-center")
+        .Build();
+}

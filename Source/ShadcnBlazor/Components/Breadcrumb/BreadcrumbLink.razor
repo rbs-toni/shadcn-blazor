@@ -1,0 +1,12 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<a id="@Id" class="@ClassValue" style="@Style" @ref=Ref @attributes=Attributes data-slot="breadcrumb-link">
+    @ChildContent
+</a>
+
+@code {
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("hover:text-foreground transition-colors")
+        .Build();
+}

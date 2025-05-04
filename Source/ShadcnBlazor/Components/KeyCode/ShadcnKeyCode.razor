@@ -1,0 +1,8 @@
+﻿@namespace ShadcnBlazor
+
+@if (ChildContent is not null)
+{
+    <span @ref="@Element" @attributes="@AdditionalAttributes">
+        @ChildContent
+    </span>
+}

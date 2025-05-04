@@ -1,0 +1,20 @@
+﻿@page "/docs/installation"
+@namespace ShadcnBlazor.Docs.Pages
+@inherits ShadcnComponentBase
+
+Memek
+
+@code{
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Installation",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}
+

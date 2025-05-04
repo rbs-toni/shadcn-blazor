@@ -1,0 +1,47 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+@inject NavProvider NavProvider
+
+<PageTitle>@_layoutContext?.PageTitle - shadcn/blazor</PageTitle>
+
+<CascadingValue Value="_layoutContext" IsFixed="true">
+    <DocsNav Items="NavProvider.NavItems" />
+    <main class="flex flex-1 flex-col">
+        @if (_layoutContext?.UseSidebar == true)
+        {
+            <ContainerWrapper>
+                <Container Class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
+                    <DocsSidebar />
+                    <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid data-outline:xl:grid-cols-[1fr_300px]" data-outline="@_layoutContext.HasSidebar">
+                        <div class="mx-auto w-full min-w-0 max-w-2xl">
+                            @ChildContent
+                            @if (_layoutContext.UseFooterLinks)
+                            {
+                                <DocsDocFooter />
+                            }
+                        </div>
+                        @if (_layoutContext.HasSidebar)
+                        {
+                            <DocsOutline />
+                        }
+                    </main>
+                </Container>
+            </ContainerWrapper>
+        }
+        else
+        {
+            @ChildContent
+        }
+    </main>
+    <DocsFooter />
+</CascadingValue>
+
+@code {
+    LayoutContext? _layoutContext;
+
+    protected override void OnInitialized()
+    {
+        _layoutContext ??= new LayoutContext(NavProvider.SidebarGroups);
+        _layoutContext.OnChange += () => InvokeAsync(StateHasChanged);
+    }
+}

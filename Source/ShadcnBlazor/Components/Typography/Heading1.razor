@@ -1,0 +1,10 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<h1 id="@Id" class="@ClassValue" style="@Style" @ref=Ref @attributes=Attributes>
+    @ChildContent
+</h1>
+@code {
+    const string DefaultClasses = "scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl";
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
+}

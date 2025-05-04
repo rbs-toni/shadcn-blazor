@@ -1,0 +1,16 @@
+﻿@page "/blocks"
+
+Blocks
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Blocks",
+            useSidebar: false,
+            useOutline: false,
+            useFooterLinks: false);
+    }
+}

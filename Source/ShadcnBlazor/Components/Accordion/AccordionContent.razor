@@ -1,0 +1,29 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<div id="@Id"
+     class="overflow-hidden text-sm grid grid-rows-[0fr] data-[state=open]:grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out"
+     style="@Style"
+     data-state="@OpenValue"
+     role="region"
+     aria-labelledby="@Labelledby"
+     @ref=Ref
+     @attributes=Attributes>
+    <div class="@ClassValue">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    AccordionItem? AccordionItem { get; set; }
+
+    bool Disabled => AccordionItem?.Disabled ?? false;
+    bool Open => AccordionItem?.Open ?? false;
+    string? OpenValue => AccordionItem?.OpenValue;
+    string? Labelledby => AccordionItem?.Labelledby;
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("pb-4 pt-0 overflow-hidden")
+        .Build();
+}

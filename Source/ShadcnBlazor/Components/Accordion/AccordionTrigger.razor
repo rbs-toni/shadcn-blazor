@@ -1,0 +1,57 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@implements IDisposable
+
+<h3 class="flex" data-state="@OpenValue">
+    <button id="@Id"
+            class="@ClassValue"
+            style="@Style"
+            @ref=Ref
+            @attributes=Attributes
+            type="button"
+            data-state="@OpenValue"
+            aria-expanded="@Open"
+            disabled="@Disabled"
+            @onclick=ToggleOpen>
+        @ChildContent
+        <LucideIcon Name="IconName.ChevronDown" Class="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
+    </button>
+</h3>
+
+@code {
+    [CascadingParameter]
+    AccordionItem? AccordionItem { get; set; }
+
+    public async Task FocusAsync()
+    {
+        await Ref.FocusAsync();
+    }
+
+    bool Disabled => AccordionItem?.IsDisabled ?? false;
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("flex flex-1 items-center justify-between py-4 text-sm font-medium transition-all hover:underline text-left [&[data-state=open]>svg]:rotate-180")
+        .Build();
+
+    bool Open => AccordionItem?.Open ?? false;
+    string? OpenValue => AccordionItem?.OpenValue;
+    void ToggleOpen()
+    {
+        AccordionItem?.ToggleOpen();
+    }
+
+    protected override void OnInitialized()
+    {
+        if (AccordionItem != null)
+        {
+            AccordionItem.OnFocusAsync += FocusAsync;
+        }
+    }
+
+    public void Dispose()
+    {
+        if (AccordionItem != null)
+        {
+            AccordionItem.OnFocusAsync -= FocusAsync;
+        }
+    }
+}

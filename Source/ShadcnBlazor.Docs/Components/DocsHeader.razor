@@ -1,0 +1,19 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+@if (Breadcrumbs?.Count > 0)
+{
+    <DocsBreadcrumb Items="Breadcrumbs" />
+}
+<div class="space-y-2">
+    <h1 class="scroll-m-20 text-3xl font-bold tracking-tight">@Title</h1>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public List<BreadcrumbItem>? Breadcrumbs { get; set; }
+}

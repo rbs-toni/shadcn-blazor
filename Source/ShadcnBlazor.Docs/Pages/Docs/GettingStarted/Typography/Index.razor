@@ -1,0 +1,31 @@
+﻿@page "/docs/typography"
+@using ShadcnBlazor.Docs.Pages.Docs.GettingStarted.Typography.Examples
+@inherits ShadcnComponentBase
+
+<DocsHeader Title="Typography" Breadcrumbs="_breadcrumbs.Items">
+    <DocsHeaderDescription>
+        Style untuk judul, paragraf, daftar, dan elemen teks lainnya.
+    </DocsHeaderDescription>
+</DocsHeader>
+
+<DocsContent>
+    <DocsPreview PreviewComponent="@_preview" CodePath="TypographyDemo.razor"></DocsPreview>
+</DocsContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new DocsBreadcrumbCollection("Typography");
+    SlotComponent _preview = new SlotComponent(typeof(TypographyDemo));
+
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Typography",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

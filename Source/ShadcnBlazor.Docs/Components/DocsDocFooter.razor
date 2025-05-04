@@ -1,0 +1,127 @@
+﻿@namespace ShadcnBlazor.Docs
+@using Microsoft.Extensions.Logging
+@inherits ShadcnComponentBase
+@inject NavigationManager NavigationManager
+@inject ILogger<DocsDocFooter> Logger
+
+@if (Prev != null || Next != null)
+{
+    <div class="flex flex-row items-center justify-between">
+        @if (Prev != null)
+        {
+            <a class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+               href="@Prev.Link">
+                <LucideIcon Name="IconName.ChevronLeft" />
+                @Prev.Text
+            </a>
+        }
+
+        @if (Next != null)
+        {
+            <a class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 ml-auto"
+               href="@Next.Link">
+                @Next.Text
+                <LucideIcon Name="IconName.ChevronRight" />
+            </a>
+        }
+    </div>
+}
+
+@code {
+    [CascadingParameter]
+    LayoutContext? LayoutContext { get; set; }
+
+    List<SidebarLink>? _sidebarLinks;
+
+    bool _sidebarLinksInitialized = false;
+
+    List<SidebarLink>? SidebarLinks
+    {
+        get
+        {
+            if (!_sidebarLinksInitialized)
+            {
+                _sidebarLinks = SidebarItems?.Count > 0 ? GetFlatSideBarLinks(SidebarItems) : new List<SidebarLink>();
+                _sidebarLinksInitialized = true;
+            }
+
+            return _sidebarLinks;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+
+        Logger.LogInformation("Component Disposed: NavigationManager LocationChanged event unsubscribed.");
+    }
+
+    void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        StateHasChanged();
+    }
+
+    private List<SidebarItem>? SidebarItems =>
+        LayoutContext?.Sidebar
+            .Where(x => x.Items?.Count > 0)
+            .SelectMany(x => x.Items!)
+            .ToList();
+
+    List<SidebarLink> GetFlatSideBarLinks(List<SidebarItem> sidebarItems)
+    {
+        var links = new List<SidebarLink>();
+
+        void RecursivelyExtractLinks(List<SidebarItem> items)
+        {
+            foreach (var item in items)
+            {
+                if (!string.IsNullOrWhiteSpace(item.Title) && !string.IsNullOrWhiteSpace(item.Href))
+                {
+                    links.Add(new SidebarLink(item.Title, item.Href));
+                }
+                if (item.Items?.Count > 0)
+                {
+                    RecursivelyExtractLinks(item.Items);
+                }
+            }
+        }
+        RecursivelyExtractLinks(sidebarItems);
+        return links;
+    }
+
+    int GetActiveId()
+    {
+        var sidebarLink = SidebarLinks?.FirstOrDefault(x => UrlComparer.ArePathsEqual(NavigationManager.Uri, x.Link));
+        return sidebarLink != null ? SidebarLinks?.IndexOf(sidebarLink) ?? default : default;
+    }
+
+    SidebarLink? Prev => GetSidebarLinkByIndex(GetActiveId() - 1);
+
+    SidebarLink? Next => GetSidebarLinkByIndex(GetActiveId() + 1);
+
+    SidebarLink? GetSidebarLinkByIndex(int index)
+    {
+        return index >= 0 && index < SidebarLinks?.Count ? SidebarLinks[index] : null;
+    }
+
+    // SidebarLink record to store link data
+    record SidebarLink
+    {
+        public SidebarLink(string text, string link, string? docFooterText = null)
+        {
+            Text = text;
+            Link = link;
+            BPFooterText = docFooterText;
+        }
+
+        public string Text { get; set; }
+        public string Link { get; set; }
+        public string? BPFooterText { get; set; }
+    }
+}

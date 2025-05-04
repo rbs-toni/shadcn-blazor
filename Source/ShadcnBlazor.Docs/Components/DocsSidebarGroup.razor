@@ -1,0 +1,22 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+<div class="flex flex-col gap-1">
+    @if (Item?.Name is not null)
+    {
+        <h4 class="rounded-md px-2 py-1 text-sm font-medium">@Item.Name</h4>
+    }
+    @if (Item?.Items is not null)
+    {
+        <div class="grid grid-flow-row auto-rows-max gap-0.5 text-sm">
+            @foreach (var item in Item.Items)
+            {
+                <DocsSidebarItem Item="@item" @key=item.Title/>
+            }
+        </div>
+    }
+</div>
+@code {
+    [Parameter]
+    public SidebarGroup? Item { get; set; }
+}

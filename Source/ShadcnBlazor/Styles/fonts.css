@@ -1,0 +1,15 @@
+﻿@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-optical-sizing: auto;
+    font-weight: 100 900;
+    src: url('./fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Inter';
+    font-style: italic;
+    font-optical-sizing: auto;
+    font-weight: 100 900;
+    src: url('./fonts/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype');
+}

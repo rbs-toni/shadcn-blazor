@@ -1,0 +1,43 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+@implements IDisposable
+
+<div class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border"
+data-state="@ActiveValue"
+data-orientation="@Orientation"
+role="tabpanel"
+aria-labelledby="@TriggerId"
+tabindex="0"
+hidden="@(!IsActive)"
+style="animation-duration:0s">
+    @ChildContent
+</div>
+@code {
+    [CascadingParameter]
+    DocsTabList? TabList { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    public bool IsActive => TabList?.ActiveTabPanel == this;
+    public string? Orientation { get; set; }
+
+    public string ActiveValue => IsActive ? "active" : "inactive";
+    public string TriggerId = $"trigger-{Identifier.NewId()}";
+    public string PanelId = $"panel-{Identifier.NewId()}";
+
+    public void ToggleActive()
+    {
+        TabList?.SetActive(this);
+    }
+
+    protected override void OnInitialized()
+    {
+        TabList?.Include(this);
+    }
+
+    public void Dispose()
+    {
+        TabList?.Exclude(this);
+    }
+}

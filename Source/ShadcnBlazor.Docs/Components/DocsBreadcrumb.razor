@@ -1,0 +1,28 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+<div class="mb-4 flex items-center space-x-1 text-sm leading-none text-muted-foreground">
+    @if (Items?.Count > 0)
+    {
+        @foreach (var (item, idx) in Items.Select((x, y) => (x, y)))
+        {
+            if (string.IsNullOrWhiteSpace(item.Href) == false)
+            {
+                <a class="truncate" href="@item.Href">@item.Title</a>
+            }
+            if (idx < Items.Count - 1)
+            {
+                <LucideIcon Name="IconName.ChevronRight" Class="h-3.5 w-3.5" />
+            }
+            if (string.IsNullOrWhiteSpace(item.Href))
+            {
+                <div class="text-foreground">@item.Title</div>
+            }
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<BreadcrumbItem>? Items { get; set; }
+}

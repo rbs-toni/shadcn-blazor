@@ -1,0 +1,20 @@
+﻿@page "/docs"
+@namespace ShadcnBlazor.Docs.Pages
+@inherits ShadcnComponentBase
+
+Introduction
+
+@code{
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Introduction",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}
+

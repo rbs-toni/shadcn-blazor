@@ -1,0 +1,10 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<p id="@Id" class="@ClassValue" style="@Style" @ref=Ref @attributes=Attributes>
+    @ChildContent
+</p>
+@code {
+    const string DefaultClasses = "leading-7 [&:not(:first-child)]:mt-6";
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
+}

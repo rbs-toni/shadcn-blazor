@@ -1,0 +1,12 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<li id="@Id" class="@ClassValue" style="@Style" @ref=Ref @attributes=Attributes data-slot="breadcrumb-item">
+    @ChildContent
+</li>
+
+@code {
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("inline-flex items-center gap-1.5")
+        .Build();
+}

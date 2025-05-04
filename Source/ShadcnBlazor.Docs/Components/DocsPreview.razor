@@ -1,0 +1,51 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+<div class="group relative my-4 flex flex-col space-y-2 [&_.preview>[data-orientation=vertical]]:sm:max-w-[70%]">
+    <div class="relative mr-auto w-full" dir="ltr" data-orientation="horizontal">
+        <DocsTabList>
+            <DocsTabPanel Title="Pratinjau">
+                <DocsPreviewHeader />
+                <DocsPreviewContent>
+                    @if (Preview != null)
+                    {
+                        @Preview
+                    }
+                    else if (PreviewComponent != null)
+                    {
+                        <DynamicComponent Type="@PreviewComponent.Type" Parameters="@PreviewComponent.Parameters" />
+                    }
+                </DocsPreviewContent>
+            </DocsTabPanel>
+            <DocsTabPanel Title="Kode">
+                @if (!string.IsNullOrWhiteSpace(CodePath) || Code != null)
+                {
+                    <DocsCode Language="CodeLanguage.CSHTML" Path="@CodePath">
+                        @Code
+                    </DocsCode>
+                }
+                else if (CodeComponent != null)
+                {
+                    <DynamicComponent Type="@CodeComponent.Type" Parameters="@CodeComponent.Parameters" />
+                }
+            </DocsTabPanel>
+        </DocsTabList>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? Preview { get; set; }
+
+    [Parameter]
+    public RenderFragment? Code { get; set; }
+
+    [Parameter]
+    public SlotComponent? PreviewComponent { get; set; }
+
+    [Parameter]
+    public SlotComponent? CodeComponent { get; set; }
+
+    [Parameter]
+    public string? CodePath { get; set; }
+}

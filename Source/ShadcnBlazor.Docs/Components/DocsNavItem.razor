@@ -1,0 +1,13 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+@if (Item != null)
+{
+    <a class="transition-colors hover:text-foreground/80 text-foreground/80" href="@Item.Href">
+        @Item.Title
+    </a>
+}
+@code {
+    [Parameter]
+    public NavItem? Item { get; set; }
+}

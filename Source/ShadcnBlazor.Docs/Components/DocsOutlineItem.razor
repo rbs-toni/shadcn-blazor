@@ -1,0 +1,33 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+@inject IScrollHelper ScrollHelper
+
+@if (Item != null)
+{
+    <li class="mt-0 pt-2">
+        <a class="inline-block no-underline transition-colors hover:text-foreground text-muted-foreground"
+           @onclick=OnClickHandlerAsync
+        @onclick:preventDefault
+           href="@Item.Href">
+            @Item.Title
+        </a>
+        @if (Item.Items?.Count > 0)
+        {
+            <DocsOutlineGroup Items="Item.Items" Depth="Depth+1" />
+        }
+    </li>
+}
+
+@code {
+    [Parameter]
+    public Header? Item { get; set; }
+
+    [Parameter]
+    public int Depth { get; set; }
+
+    async Task OnClickHandlerAsync()
+    {
+        var id = Item?.Href?.TrimStart('#');
+        await ScrollHelper.ScrollToFragmentAsync(id);
+    }
+}

@@ -1,0 +1,60 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+@if (Name != null)
+{
+    <svg xmlns="http://www.w3.org/2000/svg"
+         class="@Class"
+         width="@Size"
+         height="@Size"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="@Color"
+         stroke-width="@StrokeWidth"
+         stroke-linecap="round"
+         stroke-linejoin="round">
+        @GetContent()
+    </svg>
+}
+else
+{
+    throw new ArgumentNullException("The name of the icon is required.");
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public IconName? Name { get; set; }
+
+    [Parameter]
+    public string? Color { get; set; } = "currentColor";
+
+    [Parameter]
+    public string? StrokeWidth { get; set; } = "2";
+
+    [Parameter]
+    public string? Size { get; set; } = "24";
+
+    MarkupString? GetContent()
+    {
+        if (Name == null)
+        {
+            return default;
+        }
+        else
+        {
+            var name = Name.ToAttributeValue(false);
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return default;
+            }
+            try
+            {
+                return new MarkupString(LucideProvider.FromDisplayName(name).Content ?? "");
+            }
+            catch (Exception)
+            {
+                return default;
+            }
+        }
+    }
+}

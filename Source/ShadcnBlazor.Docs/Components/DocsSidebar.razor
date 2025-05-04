@@ -1,0 +1,40 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+@implements IDisposable
+
+<aside class="border-grid fixed top-14 z-30 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 border-r md:sticky md:block">
+    <div class="no-scrollbar h-full overflow-auto py-6 pr-4 lg:py-8">
+        <div class="flex flex-col gap-6">
+            @if (_items?.Count > 0)
+            {
+                @foreach (var item in _items)
+                {
+                    <DocsSidebarGroup Item="@item"/>
+                }
+            }
+        </div>
+    </div>
+</aside>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    List<SidebarGroup>? _items;
+
+    protected override void OnInitialized()
+    {
+        _items = LayoutContext.Sidebar;
+        LayoutContext.OnChange += HandleContextChanged;
+    }
+
+    void HandleContextChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        LayoutContext.OnChange -= HandleContextChanged;
+    }
+}

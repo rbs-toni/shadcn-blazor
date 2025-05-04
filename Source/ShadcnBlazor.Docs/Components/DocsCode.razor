@@ -1,0 +1,76 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+<div id="@Id" class=@ClassValue style="@Style" @ref=Ref @attributes=Attributes>
+    <div class="relative w-full rounded-md [&_pre]:my-0 [&_pre]:max-h-[350px] [&_pre]:overflow-auto">
+        <div class="absolute mt-4 mr-4 top-0 end-0 flex items-center gap-2">
+            <span class="text-xs">@Language</span>
+            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background shadow-sm relative z-10 h-7 w-7 text-foreground opacity-100 hover:bg-muted hover:text-foreground [&_svg]:h-3.5 [&_svg]:w-3.5" @ref=_copyRef>
+                <span class="sr-only">Copy</span>
+                <LucideIcon Name="IconName.Clipboard" />
+            </button>
+        </div>
+        <pre class="mb-4 mt-12 max-h-[650px] overflow-x-auto rounded-xl py-4" tabindex="0">
+        <code class="@GetLang() relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm" @ref=_codeRef>
+                @if (!string.IsNullOrWhiteSpace(Path) && !string.IsNullOrWhiteSpace(_codeContent))
+                {
+                    @_codeContent
+                }
+                else
+                {
+                    @ChildContent
+                }
+        </code>
+    </pre>
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// Gets or sets the programming language used for code highlighting.
+    /// The default value is <see cref="CodeLanguage.CSHTML"/>.
+    /// </summary>
+    [Parameter]
+    public CodeLanguage Language { get; set; } = CodeLanguage.CSHTML;
+
+    /// <summary>
+    /// Gets or sets the URL of an external source from which the code content will be fetched.
+    /// If provided, an HTTP client will be used to fetch the content.
+    /// </summary>
+    [Parameter]
+    public string? Path { get; set; }
+
+    /// <summary>
+    /// An event callback that is invoked when the content from the <see cref="Url"/> is loaded.
+    /// The callback provides the fetched content as a string.
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnLoad { get; set; }
+
+    string? ClassValue
+    {
+        get
+        {
+            return new CssBuilder()
+                .AddClass($"language-{Language.FastString()}")
+                .AddClass(Class)
+                .AddClass("flex flex-col space-y-4")
+                .Build();
+        }
+    }
+
+    string GetLang()
+    {
+        return Language switch
+        {
+            CodeLanguage.Text => "",
+            CodeLanguage.Bash => "language-bash",
+            CodeLanguage.CSHTML => "language-cshtml-razor",
+            CodeLanguage.CSS => "language-css",
+            CodeLanguage.JavaScript => "language-js",
+            CodeLanguage.JSON => "language-json",
+            CodeLanguage.XML => "language-xml",
+            _ => ""
+        };
+    }
+}

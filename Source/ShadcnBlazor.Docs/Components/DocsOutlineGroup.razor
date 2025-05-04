@@ -1,0 +1,54 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+@if (Items?.Count > 0)
+{
+    <ul class="@ClassValue">
+        @foreach (var item in Items)
+        {
+            <DocsOutlineItem Item="item" Depth="Depth" />
+        }
+    </ul>
+}
+
+@code {
+    [Parameter]
+    public int Depth { get; set; }
+
+    [Parameter]
+    public List<Header>? Items { get; set; }
+
+    string? GetMargin()
+    {
+        if (Depth == 1)
+        {
+            return "ml-4";
+        }
+        else if (Depth == 2)
+        {
+            return "ml-8";
+        }
+        else if (Depth == 3)
+        {
+            return "ml-12";
+        }
+        else if (Depth == 4)
+        {
+            return "ml-16";
+        }
+        else if (Depth == 5)
+        {
+            return "ml-20";
+        }
+        else if (Depth == 6)
+        {
+            return "ml-24";
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    string? ClassValue => new CssBuilder().AddClass(Class).AddClass("m-0 list-none").AddClass(GetMargin()).Build();
+}

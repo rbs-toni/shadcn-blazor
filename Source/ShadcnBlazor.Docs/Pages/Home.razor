@@ -1,0 +1,16 @@
+﻿@page "/"
+
+<DocsHomeHero />
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Home",
+            useSidebar: false,
+            useOutline: false,
+            useFooterLinks: false);
+    }
+}

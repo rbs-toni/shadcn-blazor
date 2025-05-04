@@ -1,0 +1,27 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<button id="@Id"
+        class="@Class"
+        style="@Style"
+        aria-control="@Collapsible?.ContentId"
+        @ref=Ref @attributes=Attributes
+        aria-expanded="@Collapsible?.Open"
+        data-state="@OpenValue"
+        data-disabled="@Collapsible?.Disabled"
+        disabled="@Collapsible?.Disabled"
+        @onclick=ToggleOpen>
+    @ChildContent
+</button>
+
+@code {
+    [CascadingParameter]
+    Collapsible? Collapsible { get; set; }
+
+    string OpenValue => Collapsible?.Open == true ? "open" : "closed";
+
+    void ToggleOpen()
+    {
+        Collapsible?.ToggleOpen();
+    }
+}

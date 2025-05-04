@@ -1,0 +1,16 @@
+﻿@page "/themes"
+
+Themes
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Themes",
+            useSidebar: false,
+            useOutline: false,
+            useFooterLinks: false);
+    }
+}

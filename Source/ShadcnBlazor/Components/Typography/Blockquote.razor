@@ -1,0 +1,10 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<blockquote id="@Id" class="@ClassValue" style="@Style" @ref=Ref @attributes=Attributes>
+    @ChildContent
+</blockquote>
+@code {
+    const string DefaultClasses = "mt-6 border-l-2 pl-6 italic";
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
+}

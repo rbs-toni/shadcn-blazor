@@ -1,0 +1,16 @@
+﻿@page "/colors"
+
+Colors
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Colors",
+            useSidebar: false,
+            useOutline: false,
+            useFooterLinks: false);
+    }
+}

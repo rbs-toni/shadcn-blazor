@@ -1,0 +1,17 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<div class="@Class" id="@Id" style="@StyleValue" @ref=Ref @attributes=Attributes data-state="@OpenValue" data-disabled="@Disabled" hidden="@(!Open)">
+    @ChildContent
+</div>
+
+@code {
+    [CascadingParameter]
+    Collapsible? Collapsible { get; set; }
+
+    string? StyleValue => new StyleBuilder(Style).AddStyle("--blazor-collapsible-content-width", $"{Width}px", Width.HasValue)
+        .AddStyle("--blazor-collapsible-content-height", $"{Height}px", Width.HasValue)
+        .Build();
+
+    string OpenValue => Open ? "open" : "closed";
+}

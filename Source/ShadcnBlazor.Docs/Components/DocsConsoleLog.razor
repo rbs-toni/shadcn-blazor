@@ -1,0 +1,33 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+<Accordion>
+    <AccordionItem>
+        <AccordionTrigger>
+            Console log
+        </AccordionTrigger>
+        <AccordionContent>
+            @((MarkupString)ConsoleContent.Replace(Environment.NewLine, "<br/>"))
+        </AccordionContent>
+    </AccordionItem>
+</Accordion>
+
+@code
+{
+    private bool _expanded = true;
+    protected override void OnInitialized()
+    {
+        DemoLogger.OnLogHandler += OnLineReceived;
+
+        base.OnInitialized();
+    }
+
+    private async void OnLineReceived(string text)
+    {
+        ConsoleContent = $"{ConsoleContent}{Environment.NewLine}[{DateTime.Now:HH:mm:ss}] - {text}";
+        await InvokeAsync(() => StateHasChanged());
+    }
+
+    [Parameter]
+    public string ConsoleContent { get; set; } = "";
+}

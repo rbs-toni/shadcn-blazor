@@ -1,0 +1,56 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+@inject NavigationManager NavigationManager
+@implements IDisposable
+
+<a id="@Id"
+href="@Item?.Href"
+class="@ClassValue"
+style="@Style"
+rel="@Item?.Rel?.ToAttributeValue(false)"
+target="@Item?.Target?.ToAttributeValue(false)"
+@ref=Ref
+@attributes=Attributes>
+    @if (Item?.Icon != null)
+    {
+        <LucideIcon Name="@Item.Icon" Class="size-4" />
+    }
+    @Item?.Title
+</a>
+
+@code {
+    [Parameter]
+    public SidebarItem? Item { get; set; }
+
+    const string ActiveClasses = "bg-accent text-accent-foreground";
+    const string DefaultClasses = "group relative flex gap-2 h-8 w-full items-center rounded-lg px-2 after:absolute after:inset-x-0 after:inset-y-[-2px] after:rounded-lg hover:bg-accent hover:text-accent-foreground font-normal text-foreground";
+
+    bool _isActive;
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses)
+        .AddClass(ActiveClasses, _isActive)
+        .Build();
+
+    protected override void OnInitialized()
+    {
+        UpdateActiveState();
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        UpdateActiveState();
+        StateHasChanged();
+    }
+
+    void UpdateActiveState()
+    {
+        _isActive = NavigationUtils.IsActiveLink(NavigationManager, Item?.Href, Item?.Match ?? Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix, Item?.Matches);
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

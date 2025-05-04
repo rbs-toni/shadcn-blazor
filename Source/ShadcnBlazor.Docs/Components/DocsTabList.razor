@@ -1,0 +1,70 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+<CascadingValue Value="this">
+    <div class="relative mr-auto w-full">
+        <div class="flex items-center justify-between pb-3">
+            <div class="inline-flex h-9 items-center text-muted-foreground w-full justify-start rounded-none border-b bg-transparent p-0"
+                 role="tablist"
+                 aria-orientation="horizontal"
+                 tabindex="0"
+                 data-orientation="horizontal"
+                 style="outline: none">
+                @if (_panels?.Count > 0)
+                {
+                    foreach (var item in _panels)
+                    {
+                        <button type="button"
+                                role="tab"
+                                aria-selected="@item.IsActive"
+                                aria-controls="@item.PanelId"
+                                data-state="@item.ActiveValue"
+                                id="@item.TriggerId"
+                                class="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                                tabindex="-1"
+                                @onclick="@item.ToggleActive"
+                                data-orientation="horizontal">
+                            @item.Title
+                        </button>
+                    }
+                }
+            </div>
+        </div>
+        @ChildContent
+    </div>
+</CascadingValue>
+@code {
+    public List<DocsTabPanel>? _panels;
+    public DocsTabPanel? ActiveTabPanel;
+
+    public void Include(DocsTabPanel panel)
+    {
+        if (_panels == null)
+        {
+            _panels = new List<DocsTabPanel>();
+        }
+        _panels.Add(panel);
+        if (ActiveTabPanel == null)
+        {
+            ActiveTabPanel = panel;
+        }
+        StateHasChanged();
+    }
+
+    public void Exclude(DocsTabPanel panel)
+    {
+        if (_panels != null)
+        {
+            _panels.Remove(panel);
+        }
+    }
+
+    public void SetActive(DocsTabPanel panel)
+    {
+        if (ActiveTabPanel != panel)
+        {
+            ActiveTabPanel = panel;
+            StateHasChanged();
+        }
+    }
+}

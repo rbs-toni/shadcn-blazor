@@ -1,0 +1,167 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<CascadingValue Value="this" IsFixed="true">
+    <ShadcnKeyCode Anchor="@Id" Only="[KeyCode.Home, KeyCode.End, KeyCode.Up, KeyCode.Down]" OnKeyDown="OnKeyDownHandlerAsync" PreventDefault="true" />
+    <div id="@Id"
+         class="@ClassValue"
+         style="@Style"
+         @ref=Ref
+         @attributes=Attributes>
+        @ChildContent
+    </div>
+</CascadingValue>
+
+@code {
+    /// <summary>
+    /// Mengizinkan beberapa item accordion terbuka secara bersamaan jika diatur ke <c>true</c>.
+    /// Jika <c>false</c>, hanya satu item yang bisa terbuka dalam satu waktu.
+    /// </summary>
+    [Parameter]
+    public bool Multiple { get; set; }
+
+    /// <summary>
+    /// Menonaktifkan interaksi dengan komponen accordion jika diatur ke <c>true</c>.
+    /// Semua item menjadi tidak dapat diklik atau dibuka.
+    /// </summary>
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    /// <summary>
+    /// Mengizinkan semua item accordion untuk ditutup jika diatur ke <c>true</c>.
+    /// Jika <c>false</c>, setidaknya satu item harus tetap terbuka.
+    /// </summary>
+    [Parameter]
+    public bool Collapsible { get; set; }
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("w-full")
+        .Build();
+
+    List<AccordionItem> _items { get; set; } = new();
+    HashSet<AccordionItem> _activeItems { get; set; } = new();
+    AccordionItem? _lastActivated;
+    public AccordionItem? LastActivated => _lastActivated;
+    public void RegisterItem(AccordionItem item)
+    {
+        if (item != null && !_items.Contains(item))
+            _items.Add(item);
+        if (Collapsible == false && _items.Any())
+        {
+            // Set the first item as active if no items are currently active
+            if (!_activeItems.Any())
+            {
+                _activeItems.Add(_items.First());
+                _lastActivated = _items.First();
+            }
+        }
+    }
+
+    public void UnregisterItem(AccordionItem item)
+    {
+        if (item != null && _items.Contains(item))
+        {
+            _items.Remove(item);
+            _activeItems.Remove(item);
+            if (_lastActivated == item)
+            {
+                _lastActivated = null;
+            }
+        }
+    }
+
+    public bool IsItemActive(AccordionItem item)
+    {
+        return _activeItems.Contains(item);
+    }
+
+    public void ToggleItem(AccordionItem item)
+    {
+        if (Disabled)
+            return;
+
+        bool isActive = _activeItems.Contains(item);
+
+        if (Multiple)
+        {
+            // Multiple items allowed
+            if (isActive && Collapsible)
+                _activeItems.Remove(item);
+            else if (!isActive)
+                _activeItems.Add(item);
+        }
+        else
+        {
+            // Single item mode
+            if (isActive)
+            {
+                if (Collapsible)
+                {
+                    _activeItems.Clear();
+                    _lastActivated = item; // Track when closing
+                }
+                // If not collapsible, do nothing (must keep one item open)
+            }
+            else
+            {
+                // Close all others and open this one
+                _activeItems.Clear();
+                _activeItems.Add(item);
+                _lastActivated = item;
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    async Task OnKeyDownHandlerAsync(ShadcnKeyCodeEventArgs args)
+    {
+        if (args.TargetId != Id || _items.Count == 0)
+        {
+            return;
+        }
+
+        AccordionItem? targetItem = null;
+
+        switch (args.Key)
+        {
+            case KeyCode.Up:
+                targetItem = PreviousAccordionItem();
+                break;
+
+            case KeyCode.Down:
+                targetItem = NextAccordionItem();
+                break;
+
+            case KeyCode.Home:
+                targetItem = _items[0];
+                break;
+
+            case KeyCode.End:
+                targetItem = _items[^1];
+                break;
+        }
+
+        if (targetItem != null)
+        {
+            await targetItem.FocusAsync();
+            _lastActivated = targetItem;
+        }
+    }
+
+    AccordionItem PreviousAccordionItem()
+    {
+        if (_lastActivated == null) return _items[0];
+
+        var currentIndex = _items.IndexOf(_lastActivated);
+        return currentIndex <= 0 ? _items[^1] : _items[currentIndex - 1];
+    }
+
+    AccordionItem NextAccordionItem()
+    {
+        if (_lastActivated == null) return _items[0];
+
+        var currentIndex = _items.IndexOf(_lastActivated);
+        return currentIndex >= _items.Count - 1 ? _items[0] : _items[currentIndex + 1];
+    }
+}

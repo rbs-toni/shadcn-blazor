@@ -1,0 +1,26 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<li id="@Id"
+    class="@ClassValue"
+    style="@Style"
+    @ref=Ref
+    @attributes=Attributes
+    role="presentation"
+    aria-hidden="true"
+    data-slot="breadcrumb-separator">
+    @if (ChildContent == null)
+    {
+        <LucideIcon Name="IconName.ChevronRight" />
+    }
+    else
+    {
+        @ChildContent
+    }
+</li>
+
+@code {
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("[&>svg]:size-3.5")
+        .Build();
+}

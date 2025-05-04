@@ -1,0 +1,10 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<small id="@Id" class="@ClassValue" style="@Style" @ref=Ref @attributes=Attributes>
+    @ChildContent
+</small>
+@code {
+    const string DefaultClasses = "text-sm font-medium leading-none";
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
+}

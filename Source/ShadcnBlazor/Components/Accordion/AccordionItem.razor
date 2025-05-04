@@ -1,0 +1,63 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@implements IDisposable
+
+<CascadingValue Value="this" IsFixed="true">
+    <div id="@Id"
+         class="@ClassValue"
+         style="@Style"
+         @ref="Ref"
+         @attributes="Attributes"
+         data-state="@OpenValue">
+        @ChildContent
+    </div>
+</CascadingValue>
+
+@code {
+    [CascadingParameter]
+    Accordion? Accordion { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    public string ContentId { get; } = "accordion-content-" + Identifier.NewId();
+    public string Labelledby { get; } = "accordion-trigger-" + Identifier.NewId();
+
+    public bool IsDisabled => Accordion?.Disabled == true && Disabled;
+
+    public bool Open => Accordion?.IsItemActive(this) ?? false;
+
+    public string OpenValue => Open ? "open" : "closed";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("border-b")
+        .Build();
+
+    protected override void OnInitialized()
+    {
+        Accordion?.RegisterItem(this);
+    }
+
+    public void ToggleOpen()
+    {
+        if (!IsDisabled)
+        {
+            Accordion?.ToggleItem(this);
+        }
+    }
+
+    public async Task FocusAsync()
+    {
+        if (OnFocusAsync != null)
+        {
+            await OnFocusAsync();
+        }
+    }
+
+    public event Func<Task>? OnFocusAsync;
+
+    public void Dispose()
+    {
+        Accordion?.UnregisterItem(this);
+    }
+}

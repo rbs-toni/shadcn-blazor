@@ -1,0 +1,50 @@
+﻿@page "/docs/components/accordion"
+@page "/docs/components"
+@namespace ShadcnBlazor.Docs.Pages
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsHeader Title="Accordion" Breadcrumbs="_breadcrumbs.Items">
+    <DocsHeaderDescription>
+        @Localizer["Komponen antarmuka berbentuk daftar vertikal, di mana setiap judul berfungsi seperti tombol toggle untuk menampilkan atau menyembunyikan konten terkait."]
+    </DocsHeaderDescription>
+</DocsHeader>
+
+<DocsContent>
+    <div class="group relative my-4 flex flex-col space-y-2 [&_.preview>[data-orientation=vertical]]:sm:max-w-[70%]">
+        <DocsTabList>
+            <DocsTabPanel Title="Pratinjau">
+                <DocsPreviewHeader />
+                <DocsPreviewContent>
+                    <ShadcnBlazor.Docs.Pages.Examples.AccordionDefault />
+                </DocsPreviewContent>
+            </DocsTabPanel>
+            <DocsTabPanel Title="Kode">
+                <DocsCode Language="CodeLanguage.CSHTML" Url="AccordionDefault.razor" />
+            </DocsTabPanel>
+        </DocsTabList>
+    </div>
+    <DocsSection Title="Contoh">
+        Has Outline: @(LayoutContext.HasOutline)
+    </DocsSection>
+    <DocsSection Title="Accessibility">
+        Has Outline: @(LayoutContext.HasOutline)
+    </DocsSection>
+</DocsContent>
+
+@code {
+    bool _open = true;
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Accordion");
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Accordion",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}
+

@@ -1,0 +1,35 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+@if (Level == 2)
+{
+    <h2 class="font-heading mt-16 scroll-m-20 border-b pb-4 text-xl font-semibold tracking-tight first:mt-0"
+        id="@Title">
+        <a class="font-medium underline underline-offset-4 subheading-anchor"
+           aria-label="Link to section"
+           href="#@Title">
+            <span class="icon icon-link"></span>
+        </a>
+        @Title
+    </h2>
+}
+else if (Level == 3)
+{
+    <h3 class="font-heading mt-8 scroll-m-20 text-lg font-semibold tracking-tight" id="@Title">
+        <a class="font-medium underline underline-offset-4 subheading-anchor"
+           aria-label="Link to section"
+           href="#@Title">
+            <span class="icon icon-link"></span>
+        </a>@Title
+    </h3>
+}
+
+@ChildContent
+
+@code {
+    [Parameter]
+    public int Level { get; set; } = 2;
+
+    [Parameter]
+    public string? Title { get; set; }
+}
