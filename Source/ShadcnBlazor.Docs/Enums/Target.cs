@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 
 namespace ShadcnBlazor.Docs.Enums;
-
 /// <summary>
 /// Specifies where to open the linked document (corresponds to HTML anchor target attribute)
 /// </summary>

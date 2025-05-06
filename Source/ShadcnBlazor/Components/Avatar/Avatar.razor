@@ -1,0 +1,31 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<CascadingValue Value="_avatarContext" IsFixed="true">
+    <span id="@Id" class="@(TwMerge.Merge(ClassValue))" style="@Style" @ref=Ref @attributes=Attributes>
+        @ChildContent
+    </span>
+</CascadingValue>
+
+@code {
+    const string DefaultClasses = "inline-flex items-center justify-center font-normal text-foreground select-none shrink-0 bg-secondary overflow-hidden";
+
+    AvatarContext _avatarContext = new()
+        {
+            ImageLoadingStatus = ImageLoadingStatus.Loading
+        };
+
+    [Parameter]
+    public AvatarSize Size { get; set; } = AvatarSize.Small;
+
+    [Parameter]
+    public AvatarShape Shape { get; set; } = AvatarShape.Circle;
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses)
+        .AddClass(Size.ToAttributeValue(false))
+        .AddClass(Shape.ToAttributeValue(false))
+        .Build();
+}

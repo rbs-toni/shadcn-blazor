@@ -1,0 +1,24 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+@if (Show)
+{
+    <span id="@Id" class="@Class" style="@Style" @ref="Ref" @attributes="Attributes">
+        @ChildContent
+    </span>
+}
+
+@code {
+    [CascadingParameter]
+    AvatarContext? AvatarContext { get; set; }
+
+    bool Show => AvatarContext?.ImageLoadingStatus != ImageLoadingStatus.Loaded;
+
+    protected override void OnInitialized()
+    {
+        if (AvatarContext != null)
+        {
+            AvatarContext.PropertyChanged += (_, _) => InvokeAsync(StateHasChanged);
+        }
+    }
+}

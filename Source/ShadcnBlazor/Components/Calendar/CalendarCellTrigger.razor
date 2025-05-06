@@ -1,0 +1,73 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<div id="@Id"
+     class="@(TwMerge.Merge(ClassValue))"
+     style="@Style"
+     role="button"
+     aria-label="@AriaLabel"
+     aria-disabled="@IsDisabled"
+     data-selected="@IsSelected"
+     data-value="@Date.ToShortDateString()"
+     data-disabled="@IsDisabled"
+     data-unavailable="@IsUnavailable"
+     data-today="@IsToday"
+     data-outside-view="@IsOutsideView"
+     data-outside-visible-view="@IsOutsideVisibleView"
+     @attributes=Attributes>
+    @ChildContent
+</div>
+
+@code {
+    [CascadingParameter]
+    Calendar? Calendar { get; set; }
+
+    [Parameter]
+    public DateTime Date { get; set; }
+
+    [Parameter]
+    public string? AriaLabel { get; set; }
+
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    [Parameter]
+    public bool IsUnavailable { get; set; }
+
+    [Parameter]
+    public bool IsToday { get; set; }
+
+    [Parameter]
+    public bool IsOutsideView { get; set; }
+
+    [Parameter]
+    public bool IsOutsideVisibleView { get; set; }
+
+    const string DefaultClasses = "h-9 w-9 p-0 font-normal";
+    const string DefaultTodayClasses = "[&[data-today]:not([data-selected])]:bg-accent [&[data-today]:not([data-selected])]:text-accent-foreground";
+    const string DefaultSelectedClasses = "data-[selected]:bg-primary data-[selected]:text-primary-foreground data-[selected]:opacity-100 data-[selected]:hover:bg-primary data-[selected]:hover:text-primary-foreground data-[selected]:focus:bg-primary data-[selected]:focus:text-primary-foreground";
+    const string DefaultDisabledClasses = "data-[disabled]:text-muted-foreground data-[disabled]:opacity-50";
+    const string DefaultUnavailableClasses = "data-[unavailable]:text-destructive-foreground data-[unavailable]:line-through";
+    const string DefaultOutsideClasses = "data-[outside-view]:text-muted-foreground data-[outside-view]:opacity-50 [&[data-outside-view][data-selected]]:bg-accent/50 [&[data-outside-view][data-selected]]:text-muted-foreground [&[data-outside-view][data-selected]]:opacity-30";
+
+    const string NewYorkClasses = "h-8 w-8 p-0 font-normal";
+    const string NewYorkTodayClasses = "[&[data-today]:not([data-selected])]:bg-accent [&[data-today]:not([data-selected])]:text-accent-foreground";
+    const string NewYorkSelectedClasses = "data-[selected]:bg-primary data-[selected]:text-primary-foreground data-[selected]:opacity-100 data-[selected]:hover:bg-primary data-[selected]:hover:text-primary-foreground data-[selected]:focus:bg-primary data-[selected]:focus:text-primary-foreground";
+    const string NewYorkDisabledClasses = "data-[disabled]:text-muted-foreground data-[disabled]:opacity-50";
+    const string NewYorkUnavailableClasses = "data-[unavailable]:text-destructive-foreground data-[unavailable]:line-through";
+    const string NewYorkOutsideClasses = "data-[outside-view]:text-muted-foreground data-[outside-view]:opacity-50 [&[data-outside-view][data-selected]]:bg-accent/50 [&[data-outside-view][data-selected]]:text-muted-foreground [&[data-outside-view][data-selected]]:opacity-30";
+
+    string? ClassValue => new CssBuilder(Class)
+    .AddClass(ButtonVariants.GetClass(StyleType, ButtonVariant.Ghost))
+    .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+    .AddClass(DefaultTodayClasses, NewYorkTodayClasses, IsDefaultStyle)
+    .AddClass(DefaultSelectedClasses, NewYorkSelectedClasses, IsDefaultStyle)
+    .AddClass(DefaultDisabledClasses, NewYorkDisabledClasses, IsDefaultStyle)
+    .AddClass(DefaultOutsideClasses, NewYorkOutsideClasses, IsDefaultStyle)
+    .Build();
+}

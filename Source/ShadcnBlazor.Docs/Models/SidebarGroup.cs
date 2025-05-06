@@ -9,7 +9,8 @@ public class SidebarGroup
     /// <summary>
     /// Gets or sets the display name of the sidebar group.
     /// </summary>
-    public string? Name { get; set; }
+    public string? Title { get; set; }
+    public string? Label { get; set; }
     public int Order { get; set; }
     /// <summary>
     /// Gets or sets the collection of sidebar items within this group.

@@ -1,6 +1,6 @@
 ﻿@namespace ShadcnBlazor.Docs.Pages.Examples
 
-<Accordion Collapsible Class="w-full">
+<Accordion Collapsible Class="w-full" data-orientation="vertical">
     <AccordionItem>
         <AccordionTrigger>Is it accessible?</AccordionTrigger>
         <AccordionContent>

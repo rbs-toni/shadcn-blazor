@@ -9,7 +9,7 @@
             {
                 @foreach (var item in _items)
                 {
-                    <DocsSidebarGroup Item="@item"/>
+                    <DocsSidebarGroup Item="@item" @key="@item.Title" />
                 }
             }
         </div>

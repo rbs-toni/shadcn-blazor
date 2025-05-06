@@ -1,0 +1,54 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<CascadingValue Value="this" IsFixed="true">
+    <div id="@Id"
+         class="@Class"
+         style="@Style"
+         dir="@Direction?.ToStringFast()"
+         data-orientation="@Orientation.ToString().ToLower()"
+         @ref=Ref
+         @attributes=Attributes>
+        @ChildContent
+    </div>
+</CascadingValue>
+
+@code {
+    string _value;
+    [Parameter]
+    public string? Value
+    {
+        get => _value; set
+        {
+            if (value == _value)
+            {
+                return;
+            }
+            _value = value;
+            ValueChanged.InvokeAsync(_value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public Orientation Orientation { get; set; }
+
+    [Parameter]
+    public Direction? Direction { get; set; }
+
+    [Parameter]
+    public ActivationMode ActivationMode { get; set; }
+
+    public event Action? OnChanged;
+
+    public void ChangeValue(string? value)
+    {
+        Value = value;
+        if (OnChanged != null)
+        {
+            OnChanged();
+        }
+    }
+}

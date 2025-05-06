@@ -1,0 +1,12 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<div id="@Id" class="@ClassValue" style="@Style" @ref=Ref @attributes=Attributes>
+    @ChildContent
+</div>
+
+@code {
+    const string DefaultClasses = "text-sm [&_p]:leading-relaxed";
+
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
+}

@@ -1,0 +1,26 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<Button Id="@Id"
+        Class="@(TwMerge.Merge(ClassValue))"
+        Variant="ButtonVariant.Outline"
+        Style="@Style"
+        ForwardRef="ForwardRef"
+        disabled="@Disabled"
+        @attributes=Attributes>
+    <LucideIcon Name="IconName.ChevronLeft" Class="size-4" />
+</Button>
+
+@code {
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    const string DefaultClasses = "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100";
+    const string NewYorkClasses = "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+        .Build();
+}

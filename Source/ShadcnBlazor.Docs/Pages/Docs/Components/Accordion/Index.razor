@@ -1,36 +1,36 @@
 ﻿@page "/docs/components/accordion"
 @page "/docs/components"
-@namespace ShadcnBlazor.Docs.Pages
+@using ShadcnBlazor.Docs.Pages.Examples
 @inherits ShadcnComponentBase
 @inject IStringLocalizer<Index> Localizer
 
-<DocsHeader Title="Accordion" Breadcrumbs="_breadcrumbs.Items">
-    <DocsHeaderDescription>
-        @Localizer["Komponen antarmuka berbentuk daftar vertikal, di mana setiap judul berfungsi seperti tombol toggle untuk menampilkan atau menyembunyikan konten terkait."]
-    </DocsHeaderDescription>
-</DocsHeader>
+<DocsPageHeader Title="Accordion" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["A vertically stacked set of interactive headings that each reveal a section of content."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
 
-<DocsContent>
-    <div class="group relative my-4 flex flex-col space-y-2 [&_.preview>[data-orientation=vertical]]:sm:max-w-[70%]">
-        <DocsTabList>
-            <DocsTabPanel Title="Pratinjau">
-                <DocsPreviewHeader />
-                <DocsPreviewContent>
-                    <ShadcnBlazor.Docs.Pages.Examples.AccordionDefault />
-                </DocsPreviewContent>
-            </DocsTabPanel>
-            <DocsTabPanel Title="Kode">
-                <DocsCode Language="CodeLanguage.CSHTML" Url="AccordionDefault.razor" />
-            </DocsTabPanel>
-        </DocsTabList>
-    </div>
-    <DocsSection Title="Contoh">
-        Has Outline: @(LayoutContext.HasOutline)
-    </DocsSection>
-    <DocsSection Title="Accessibility">
-        Has Outline: @(LayoutContext.HasOutline)
-    </DocsSection>
-</DocsContent>
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_accordionDefault"
+                 CodePath="AccordionDefault.razor" />
+
+    <DocsPageSection Title="Examples">
+        <DocsPageSection Title="Expanded by default" Level="3">
+            <DocsPreview PreviewComponent="@_accordionExpandedByDefaultPreview"
+                         CodePath="AccordionExpandedByDefault.razor" />
+        </DocsPageSection>        
+        <DocsPageSection Title="Multiple items open at the same time" Level="3">
+            <Paragraph>
+                To allow opening multiple items simultaneously, set the <InlineCode>Multiple</InlineCode> property to <InlineCode>true</InlineCode>.
+            </Paragraph>
+            <DocsPreview PreviewComponent="@_accordionMultiple"
+                         CodePath="AccordionMultiple.razor" />
+        </DocsPageSection>
+    </DocsPageSection>
+
+    <DocsPageSection Title="Accessibility">
+    </DocsPageSection>
+</DocsPageContent>
 
 @code {
     bool _open = true;
@@ -38,6 +38,10 @@
     LayoutContext LayoutContext { get; set; } = default!;
 
     BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Accordion");
+    SlotComponent _accordionDefault = new SlotComponent(typeof(AccordionDefault));
+    SlotComponent _accordionExpandedByDefaultPreview = new SlotComponent(typeof(AccordionExpandedByDefault));
+    SlotComponent _accordionMultiple = new SlotComponent(typeof(AccordionMultiple));
+
     protected override void OnInitialized()
     {
         LayoutContext.SetLayoutOptions(

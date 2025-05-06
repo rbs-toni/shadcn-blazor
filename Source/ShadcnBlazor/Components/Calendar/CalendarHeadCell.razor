@@ -1,0 +1,20 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<th id="@Id"
+    class="@ClassValue"
+    style="@Style"
+    aria-hidden="true"
+    @ref=Ref
+    @attributes=Attributes>
+    @ChildContent
+</th>
+
+@code {
+    const string DefaultClasses = "w-9 rounded-md text-[0.8rem] font-normal text-muted-foreground";
+    const string NewYorkClasses = "w-8 rounded-md text-[0.8rem] font-normal text-muted-foreground";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+        .Build();
+}

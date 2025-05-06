@@ -1,0 +1,32 @@
+﻿@page "/docs/components/badge"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Badge.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Badge" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Displays a badge or a component that looks like a badge."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_badgeDefault"
+                 CodePath="BadgeDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Badge");
+    SlotComponent _badgeDefault = new SlotComponent(typeof(BadgeDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Badge",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

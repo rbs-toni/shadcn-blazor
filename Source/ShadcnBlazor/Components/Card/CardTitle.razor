@@ -1,0 +1,16 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<h3 id="@Id" class="@(TwMerge.Merge(ClassValue))" style="@Style" @ref=Ref @attributes=Attributes>
+    @ChildContent
+</h3>
+
+@code {
+    const string DefaultClasses = "font-semibold leading-none tracking-tight";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses)
+        .Build();
+}

@@ -1,0 +1,15 @@
+﻿@namespace ShadcnBlazor
+
+<CascadingValue Value="this" IsFixed="true">
+    @ChildContent
+</CascadingValue>
+
+@code{
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public bool Open { get; set; }
+
+
+}

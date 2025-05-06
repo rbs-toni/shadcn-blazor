@@ -12,7 +12,9 @@
             data-state="@OpenValue"
             aria-expanded="@Open"
             disabled="@Disabled"
-            @onclick=ToggleOpen>
+            @onclick=ToggleOpen
+            @onclick:preventDefault=true
+            @onclick:stopPropagation=true>
         @ChildContent
         <LucideIcon Name="IconName.ChevronDown" Class="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
     </button>

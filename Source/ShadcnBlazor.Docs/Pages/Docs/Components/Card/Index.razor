@@ -1,0 +1,32 @@
+﻿@page "/docs/components/card"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Card.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Card" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Displays a card with header, content, and footer."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_cardDefault"
+                 CodePath="CardDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Card");
+    SlotComponent _cardDefault = new SlotComponent(typeof(CardDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Card",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

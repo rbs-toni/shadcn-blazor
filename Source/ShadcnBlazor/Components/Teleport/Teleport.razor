@@ -1,0 +1,30 @@
+﻿@namespace ShadcnBlazor
+@inject ITeleporter Teleporter
+@implements IDisposable
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    // A reference to the fragment so that we can remove it when the component is disposed.
+    private RenderFragment? _currentFragment;
+
+    protected override void OnParametersSet()
+    {
+        if (ChildContent != null)
+        {
+            // Add the current ChildContent fragment to the Teleporter service.
+            _currentFragment = ChildContent;
+            Teleporter.Teleport(_currentFragment);
+        }
+    }
+
+    // Remove the fragment when the component is disposed to clean up
+    public void Dispose()
+    {
+        if (_currentFragment != null)
+        {
+            Teleporter.Remove(_currentFragment);
+        }
+    }
+}

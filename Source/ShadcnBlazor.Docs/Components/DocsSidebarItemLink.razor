@@ -1,0 +1,77 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+@inject NavigationManager NavigationManager
+@implements IDisposable
+
+<a id="@Id"
+   href="@Item?.Href"
+   class="@ClassValue"
+   style="@Style"
+   target="@Item?.Target?.ToAttributeValue(false)"
+   rel="@Item?.Rel?.ToAttributeValue(false)"
+   disabled="@Disabled"
+   @ref=Ref
+   @attributes=Attributes>
+    @if (Item?.Icon != null)
+    {
+        <LucideIcon Name="@Item.Icon" Class="size-4" />
+    }
+    @Item?.Title
+    @if (!string.IsNullOrWhiteSpace(Item?.Label))
+    {
+        @if (Item.ProgressState == ProgressState.InProgress)
+        {
+            <span class="ml-auto rounded-md bg-yellow-200 text-yellow-900 px-1.5 py-0.5 text-xs leading-none no-underline group-hover:no-underline">
+                @Item.Label
+            </span>
+        }
+        else
+        {
+            <span class="ml-2 rounded-md bg-[#adfa1d] px-1.5 py-0.5 text-xs leading-none text-[#000000] no-underline group-hover:no-underline">
+                @Item.Label
+            </span>
+        }
+    }
+</a>
+
+@code {
+    [Parameter]
+    public SidebarItem? Item { get; set; }
+
+    const string DisableClasses = "cursor-not-allowed opacity-60";
+    const string ActiveClasses = "bg-accent font-medium text-accent-foreground";
+    const string InActiveClasses = "font-normal text-foreground";
+    const string DefaultClasses = "group relative flex h-8 w-full items-center rounded-lg px-2 after:absolute after:inset-x-0 after:inset-y-[-2px after:rounded-lg hover:bg-accent hover:text-accent-foreground";
+
+    bool _isActive;
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses)
+        .AddClass(ActiveClasses, InActiveClasses, _isActive)
+        .AddClass(DisableClasses, Disabled)
+        .Build();
+
+    protected override void OnInitialized()
+    {
+        UpdateActiveState();
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        UpdateActiveState();
+        StateHasChanged();
+    }
+
+    void UpdateActiveState()
+    {
+        _isActive = NavigationUtils.IsActiveLink(NavigationManager, Item?.Href, Item?.Match ?? Microsoft.AspNetCore.Components.Routing.NavLinkMatch.Prefix, Item?.Matches);
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    bool Disabled => Item?.Disabled == true || Item?.ProgressState == ProgressState.NotStarted;
+}

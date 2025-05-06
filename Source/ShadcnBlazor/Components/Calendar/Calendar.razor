@@ -1,0 +1,216 @@
+﻿@namespace ShadcnBlazor
+@inherits CalendarBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<CascadingValue Value="this" IsFixed="true">
+    <div id="@Id"
+         class="@(TwMerge.Merge(ClassValue))"
+         style="@Style"
+         role="application"
+         @ref=Ref
+         @attributes=Attributes>
+        @if (_pickerView == CalendarViews.Days)
+        {
+            <div>
+                @{
+                    var titles = GetTitles();
+                }
+                <CalendarHeader>
+                    <CalendarPrevButton Disabled=titles.PreviousDisabled
+                                        title="@titles.PreviousTitle"
+                                        tabindex="0"
+                                        @onclick="@OnPreviousButtonHandlerAsync"
+                                        @onkeydown="(e => KeyDown.SimulateClickAsync(e, OnPreviousButtonHandlerAsync))" />
+                    <CalendarHeading Disabled=titles.ReadOnly
+                                     Label="@titles.Label"
+                                     @onclick="@(e => TitleClickHandlerAsync(titles))"
+                                     @onkeydown="(e => KeyDown.SimulateClickAsync(e, TitleClickHandlerAsync, titles))"
+                                     role="button"
+                                     tabindex="0" />
+                    <CalendarNextButton Disabled=titles.NextDisabled
+                                        title="@titles.NextTitle"
+                                        @onclick="@OnNextButtonHandlerAsync"
+                                        role="button"
+                                        tabindex="0"
+                                        @onkeydown="(e => KeyDown.SimulateClickAsync(e, OnNextButtonHandlerAsync))" />
+                </CalendarHeader>
+            </div>
+            <div class="flex flex-col gap-y-4 mt-4 sm:flex-row sm:gap-x-4 sm:gap-y-0">
+                @switch (View)
+                {
+                    case CalendarViews.Days:
+                        <CalendarGrid>
+                            <CalendarGridHead>
+                                <CalendarGridRow>
+                                    @foreach (var weekDay in CalendarExtended.GetDayNames())
+                                    {
+                                        <CalendarHeadCell @key="weekDay.Name">
+                                            @weekDay.Abbreviated
+                                        </CalendarHeadCell>
+                                    }
+                                </CalendarGridRow>
+                            </CalendarGridHead>
+
+                            <CalendarGridBody>
+                                @{
+                                    var multipleSelection = GetMultipleSelection();
+                                }
+                                @for (int week = 0; week < 5; week++)
+                                {
+                                    var thisWeek = week;
+                                    <CalendarGridRow @key="@($"weekDate-{thisWeek}")" Class="mt-2 w-full">
+                                        @foreach (var day in CalendarExtended.GetDaysOfWeek(thisWeek))
+                                        {
+                                            var thisDay = day;
+                                            var dayProperties = GetDayProperties(thisDay);
+                                            <CalendarCell @key="@thisDay.ToString()"
+                                                          IsSelected="@dayProperties.IsSelected"
+                                                          IsDisabled="@dayProperties.IsDisabled">
+                                                <CalendarCellTrigger Date="@thisDay"
+                                                                     IsDisabled="dayProperties.IsDisabled"
+                                                                     IsUnavailable="dayProperties.IsInactive"
+                                                                     IsToday="dayProperties.IsToday"
+                                                                     IsOutsideView="dayProperties.IsInactive"
+                                                                     IsSelected="dayProperties.IsSelected"
+                                                                     @onkeydown="(e => KeyDown.SimulateClickAsync(e, OnSelectDayHandlerAsync, day, dayProperties.IsDisabled || dayProperties.IsInactive || ReadOnly))"
+                                                                     @onclick="@(e => OnSelectDayHandlerAsync(day, dayProperties.IsDisabled || dayProperties.IsInactive || ReadOnly))"
+                                                                     @onmouseover="@(e => OnSelectDayMouseOverAsync(day, dayProperties.IsDisabled || dayProperties.IsInactive || ReadOnly))">
+                                                    @if (DaysTemplate == null)
+                                                    {
+                                                        @dayProperties.DayNumber
+                                                    }
+                                                    else
+                                                    {
+                                                        @DaysTemplate(dayProperties)
+                                                    }
+                                                </CalendarCellTrigger>
+                                            </CalendarCell>
+                                        }
+                                    </CalendarGridRow>
+                                }
+                            </CalendarGridBody>
+                        </CalendarGrid>
+                        break;
+
+                    case CalendarViews.Months:
+                        <CalendarGrid>
+                            <CalendarGridBody>
+                                @{
+                                    var year = PickerMonth.GetYear(Culture);
+                                    var monthChunks = CalendarExtended.GetMonthNames()
+                                    .Select(month => new
+                                    {
+                                        Month = month,
+                                        Properties = GetMonthProperties(year, month.Index)
+                                    })
+                                    .Chunk(4);
+                                }
+                                @foreach (var row in monthChunks)
+                                {
+                                    <CalendarGridRow>
+                                        @foreach (var item in row)
+                                        {
+                                            <CalendarCell @key="@item.Month.Index"
+                                                          IsSelected="@item.Properties.IsSelected"
+                                                          IsDisabled="@item.Properties.IsDisabled">
+                                                <CalendarCellTrigger Date="@item.Properties.Month"
+                                                                     Class="min-w-[56px] min-h-[56px]"
+                                                                     IsDisabled="@item.Properties.IsDisabled"
+                                                                     IsUnavailable="@item.Properties.IsDisabled"
+                                                                     IsSelected="item.Properties.IsSelected"
+                                                                     @onkeydown="(e => KeyDown.SimulateClickAsync(e, OnSelectMonthHandlerAsync, year, item.Month.Index, item.Properties.IsReadOnly))"
+                                                                     @onclick="@(e => OnSelectMonthHandlerAsync(year, item.Month.Index, item.Properties.IsReadOnly))">
+                                                    @item.Month.Abbreviated
+                                                </CalendarCellTrigger>
+                                            </CalendarCell>
+                                        }
+                                    </CalendarGridRow>
+                                }
+                            </CalendarGridBody>
+                        </CalendarGrid>
+                        break;
+
+                    case CalendarViews.Years:
+                        <CalendarGrid>
+                            <CalendarGridBody>
+                                @{
+                                    var year = PickerMonth.GetYear(Culture);
+                                    var yearChunks = CalendarExtended.GetYearsRange()
+                                    .Select(year => new
+                                    {
+                                        Index = year.Index,
+                                        Year = year.Year,
+                                        Properties = GetYearProperties(year.Year)
+                                    })
+                                    .Chunk(4);
+                                }
+                                @foreach (var row in yearChunks)
+                                {
+                                    <CalendarGridRow>
+                                        @foreach (var item in row)
+                                        {
+                                            <CalendarCell @key="@item.Year"
+                                                          IsSelected="@item.Properties.IsSelected"
+                                                          IsDisabled="@item.Properties.IsDisabled">
+                                                <CalendarCellTrigger Date="@item.Properties.Year"
+                                                                     Class="min-w-[56px] min-h-[56px]"
+                                                                     IsDisabled="@item.Properties.IsDisabled"
+                                                                     IsUnavailable="@item.Properties.IsDisabled"
+                                                                     IsSelected="item.Properties.IsSelected"
+                                                                     @onkeydown="(e => KeyDown.SimulateClickAsync(e, OnSelectYearHandlerAsync, item.Year, item.Properties.IsReadOnly))"
+                                                                     @onclick="@(e => OnSelectYearHandlerAsync(item.Year, item.Properties.IsReadOnly))">
+                                                    @item.Year
+                                                </CalendarCellTrigger>
+                                            </CalendarCell>
+                                        }
+                                    </CalendarGridRow>
+                                }
+                            </CalendarGridBody>
+                        </CalendarGrid>
+                        break;
+                }
+            </div>
+        }
+
+        @if (_pickerView == CalendarViews.Months)
+        {
+            <Calendar View="CalendarViews.Months"
+                      Class="p-0"
+                      Value="@PickerMonth"
+                      ValueChanged="@PickerMonthSelectAsync"
+                      CheckIfSelectedValueHasChanged="false"
+                      ReadOnly="@ReadOnly"
+                      Culture="@Culture"
+                      DisabledSelectable="@DisabledSelectable"
+                      AnimatePeriodChanges="@AnimatePeriodChanges"
+                      DisabledCheckAllDaysOfMonthYear="@DisabledCheckAllDaysOfMonthYear"
+                      DisabledDateFunc="@(e => DisabledDateFunc != null ? DisabledDateFunc(e) : false)" />
+        }
+
+
+        @if (_pickerView == CalendarViews.Years)
+        {
+            <Calendar View="CalendarViews.Years"
+                      Class="p-0"
+                      Value="@PickerMonth"
+                      ValueChanged="@PickerYearSelectAsync"
+                      CheckIfSelectedValueHasChanged="false"
+                      ReadOnly="@ReadOnly"
+                      Culture="@Culture"
+                      DisabledSelectable="@DisabledSelectable"
+                      AnimatePeriodChanges="@AnimatePeriodChanges"
+                      DisabledCheckAllDaysOfMonthYear="@DisabledCheckAllDaysOfMonthYear"
+                      DisabledDateFunc="@(e => DisabledDateFunc != null ? DisabledDateFunc(e) : false)" />
+        }
+    </div>
+</CascadingValue>
+
+@code {
+    const string DefaultClasses = "p-3";
+    const string NewYorkClasses = "p-3";
+
+    protected override string? ClassValue => new CssBuilder(Class)
+           .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+           .Build();
+}

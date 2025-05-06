@@ -1,6 +1,7 @@
 ﻿// Add Stylesheets
 hljs_addStylesheet('./_content/ShadcnBlazor.Docs/js/highlightjs/stackoverflow-light.min.css', 'highlight-light', null)
 hljs_addStylesheet('./_content/ShadcnBlazor.Docs/js/highlightjs/stackoverflow-dark.min.css', 'highlight-dark', true)
+//hljs_addStylesheet('./_content/ShadcnBlazor.Docs/js/highlightjs/hljs-ln-numbers.css', 'hljs-ln-numbers', null)
 
 // Add Scripts
 const highlight = hljs_addJavaScript('./_content/ShadcnBlazor.Docs/js/highlightjs/highlight.min.js')
@@ -8,6 +9,7 @@ const highlight = hljs_addJavaScript('./_content/ShadcnBlazor.Docs/js/highlightj
 // Add custom code
 highlight.onload = () => {
   const hljsRazor = hljs_addJavaScript('./_content/ShadcnBlazor.Docs/js/highlightjs/cshtml-razor.js')
+  //const hljslineNumbers = hljs_addJavaScript('./_content/ShadcnBlazor.Docs/js/highlightjs/highlightjs-line-numbers.min.js')
 
   hljsRazor.onload = () => {
     hljs_ColorSystem()

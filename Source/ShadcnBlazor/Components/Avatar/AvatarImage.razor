@@ -1,0 +1,71 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<img id="@Id"
+     src="@Src"
+     class="@(TwMerge.Merge(ClassValue))"
+     style="@Style"
+     role="img"
+     hidden="@(!Show)"
+     referrer-policy="@ReferrerPolicy.ToAttributeValue(false)"
+     @ref="Ref"
+     @attributes="Attributes"
+     @onload="@OnLoadHandler"
+     @onerror="@OnErrorHandler" />
+
+@code {
+    [CascadingParameter]
+    AvatarContext? AvatarContext { get; set; }
+
+    const string DefaultClasses = "h-full w-full object-cover";
+
+    [Parameter]
+    public string? Src { get; set; }
+
+    [Parameter]
+    public ReferrerPolicy? ReferrerPolicy { get; set; }
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses)
+        .Build();
+
+    void OnLoadHandler(ProgressEventArgs args)
+    {
+        if (AvatarContext != null)
+        {
+            Console.WriteLine("AvatarContext != null");
+            AvatarContext.ImageLoadingStatus = ImageLoadingStatus.Loaded;
+        }
+    }
+
+    protected bool Show => AvatarContext?.ImageLoadingStatus == ImageLoadingStatus.Loaded;
+
+    void OnErrorHandler(ErrorEventArgs args)
+    {
+        if (AvatarContext != null)
+        {
+            AvatarContext.ImageLoadingStatus = ImageLoadingStatus.Error;
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (string.IsNullOrWhiteSpace(Src))
+        {
+            if (AvatarContext != null)
+            {
+                AvatarContext.ImageLoadingStatus = ImageLoadingStatus.Error;
+            }
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        if (AvatarContext != null)
+        {
+            AvatarContext.PropertyChanged += (_, _) => InvokeAsync(StateHasChanged);
+        }
+    }
+}

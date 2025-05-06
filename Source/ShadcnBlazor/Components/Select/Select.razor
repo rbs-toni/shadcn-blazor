@@ -1,0 +1,109 @@
+﻿@namespace ShadcnBlazor
+@using Microsoft.AspNetCore.Components.Rendering
+@using System.Linq.Expressions
+@inherits ShadcnInputBase<string?>
+@typeparam TItem
+
+@code
+{
+    /// <summary>
+    /// Gets or sets the open attribute.
+    /// </summary>
+    [Parameter]
+    public bool? Open { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether using the up and down arrow keys should change focus and select immediately or that selection is done only on Enter.
+    /// ⚠️ Only applicable in single select scenarios.
+    /// </summary>
+    [Parameter]
+    public virtual bool ChangeOnEnterOnly { get; set; }
+    /// <summary>
+    /// Gets or sets the height of the component or of the popup panel.
+    /// </summary>
+    [Parameter]
+    public string? Height { get; set; }
+    /// <summary>
+    /// Gets or sets the function used to determine if an option is disabled.
+    /// </summary>
+    [Parameter]
+    public virtual Func<TItem, bool>? ItemDisabled { get; set; }
+    /// <summary>
+    /// Gets or sets the content source of all items to display in this list.
+    /// Each item must be instantiated (cannot be null).
+    /// </summary>
+    [Parameter]
+    public virtual IEnumerable<TItem>? Items { get; set; }
+    /// <summary>
+    /// Gets or sets the function used to determine if an option is initially selected.
+    /// </summary>
+    [Parameter]
+    public virtual Func<TItem, bool>? ItemSelected { get; set; }
+    /// <summary>
+    /// Gets or sets the template for the <see cref="Select{TItem}.Items"/> items.
+    /// </summary>
+    [Parameter]
+    public virtual RenderFragment<TItem>? ItemTemplate { get; set; }
+    /// <summary>
+    /// Gets or sets the function used to determine which text to display for each option.
+    /// </summary>
+    [Parameter]
+    public virtual Func<TItem, string?> ItemText { get; set; }
+    /// <summary>
+    /// Gets or sets the function used to determine which value to return for the selected item.
+    /// Only for <see cref="ShadcnListbox{TItem}"/> and <see cref="ShadcnSelect{TItem}"/> components.
+    /// </summary>
+    [Parameter]
+    public virtual Func<TItem, string?> ItemValue { get; set; }
+    /// <summary>
+    /// If true, the user can select multiple elements.
+    /// ⚠️ Only available for the ShadcnSelect and ShadcnListbox components.
+    /// </summary>
+    [Parameter]
+    public virtual bool Multiple { get; set; }
+    /// <summary>
+    /// Gets or sets the selected item.
+    /// ⚠️ Only available when Multiple = false.
+    /// </summary>
+    [Parameter]
+    public virtual TItem? SelectedItem { get; set; }
+    /// <summary>
+    /// Called whenever the selection changed.
+    /// ⚠️ Only available when Multiple = false.
+    /// </summary>
+    [Parameter]
+    public virtual EventCallback<TItem?> SelectedItemChanged { get; set; }
+    /// <summary>
+    /// Gets or sets an expression that identifies the bound selected options.
+    /// ⚠️ Only available when Multiple = false.
+    /// </summary>
+    [Parameter]
+    public Expression<Func<TItem>>? SelectedItemExpression { get; set; }
+    /// <summary>
+    /// Gets or sets all selected items.
+    /// ⚠️ Only available when Multiple = true.
+    /// </summary>
+    [Parameter]
+    public virtual IEnumerable<TItem>? SelectedItems { get; set; }
+    /// <summary>
+    /// Called whenever the selection changed.
+    /// ⚠️ Only available when Multiple = true.
+    /// </summary>
+    [Parameter]
+    public virtual EventCallback<IEnumerable<TItem>?> SelectedItemsChanged { get; set; }
+    /// <summary>
+    /// Gets or sets an expression that identifies the bound selected options.
+    /// ⚠️ Only available when Multiple = true.
+    /// </summary>
+    [Parameter]
+    public Expression<Func<IEnumerable<TItem>>>? SelectedItemsExpression { get; set; }
+    /// <summary>
+    /// Gets or sets the width of the component.
+    /// </summary>
+    [Parameter]
+    public string? Width { get; set; }
+
+    private void RenderItems(RenderTreeBuilder __builder)
+    {
+    }
+}

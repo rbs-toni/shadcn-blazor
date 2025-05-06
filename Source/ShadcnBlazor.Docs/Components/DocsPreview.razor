@@ -2,11 +2,11 @@
 @inherits ShadcnComponentBase
 
 <div class="group relative my-4 flex flex-col space-y-2 [&_.preview>[data-orientation=vertical]]:sm:max-w-[70%]">
-    <div class="relative mr-auto w-full" dir="ltr" data-orientation="horizontal">
+    <div class="relative mr-auto w-full" dir="ltr" data-orientation="vertical">
         <DocsTabList>
-            <DocsTabPanel Title="Pratinjau">
-                <DocsPreviewHeader />
-                <DocsPreviewContent>
+            <DocsTabPanel Title="Preview">
+                <DocsPreviewPreviewHeader CodeId="@_codeId"/>
+                <DocsPreviewPreviewContent>
                     @if (Preview != null)
                     {
                         @Preview
@@ -15,12 +15,12 @@
                     {
                         <DynamicComponent Type="@PreviewComponent.Type" Parameters="@PreviewComponent.Parameters" />
                     }
-                </DocsPreviewContent>
+                </DocsPreviewPreviewContent>
             </DocsTabPanel>
-            <DocsTabPanel Title="Kode">
+            <DocsTabPanel Title="Code">
                 @if (!string.IsNullOrWhiteSpace(CodePath) || Code != null)
                 {
-                    <DocsCode Language="CodeLanguage.CSHTML" Path="@CodePath">
+                    <DocsCode Id="@_codeId" Path="@CodePath" Language="CodeLanguage.CSHTML">
                         @Code
                     </DocsCode>
                 }
@@ -48,4 +48,6 @@
 
     [Parameter]
     public string? CodePath { get; set; }
+
+    string _codeId = Identifier.NewId();
 }

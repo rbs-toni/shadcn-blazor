@@ -11,7 +11,7 @@ public interface IElementRect
 
 public class ElementRectService : JSModule, IElementRect
 {
-    public ElementRectService(IJSRuntime js) : base(js, "./_content/ShadcnBlazor/modules/rect.js")
+    public ElementRectService(IJSRuntime js) : base(js, "./_content/ShadcnBlazor/modules/rect.min.js")
     {
     }
     public async Task<ElementRect> GetBoundingClientRectAsync(ElementReference element)

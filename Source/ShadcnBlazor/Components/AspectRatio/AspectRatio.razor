@@ -1,0 +1,20 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<div style="@($"position: relative; width: 100%; padding-bottom: {Aspect}%")">
+    <div id="@Id" class="@Class" style="@StyleValue" @ref=Ref @attributes=Attributes>
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public double Ratio { get; set; } = 1;
+
+    double Aspect => (1 / Ratio) * 100;
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("position", "absolute")
+        .AddStyle("inset", " 0px")
+        .Build();
+}

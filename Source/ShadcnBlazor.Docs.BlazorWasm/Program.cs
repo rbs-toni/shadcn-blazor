@@ -10,6 +10,7 @@ public static class Program
         builder.RootComponents.Add<App>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
+        builder.AddTeleporter();
         builder.Services.AddShadcnBlazor();
         builder.Services.AddDocsServices();
 

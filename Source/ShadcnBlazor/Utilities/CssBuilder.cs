@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Components;
-
 namespace ShadcnBlazor;
-
 public readonly struct CssBuilder
 {
     private readonly HashSet<string> _classes;
@@ -49,6 +46,7 @@ public readonly struct CssBuilder
     /// <param name="when">Condition in which the CSS Classes are added.</param>
     /// <returns>CssBuilder</returns>
     public CssBuilder AddClass(string? value, bool when) => when ? AddClass(value) : this;
+    public CssBuilder AddClass(string? value, string? alternative, bool when) => when ? AddClass(value) : AddClass(alternative);
 
     /// <summary>
     /// Adds one or more CSS Classes to the builder with space separator, based on a condition.
@@ -77,20 +75,4 @@ public readonly struct CssBuilder
     /// </summary>
     /// <returns>string</returns>
     public override string? ToString() => Build();
-}
-
-public class ForwardRef
-{
-    private ElementReference _current = default!;
-
-    public ElementReference Current
-    {
-        get => _current;
-        set => Set(value);
-    }
-
-    public void Set(ElementReference value)
-    {
-        _current = value;
-    }
 }

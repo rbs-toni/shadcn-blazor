@@ -1,0 +1,40 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+@if (Item != null)
+{
+    <span id="@Id"
+          class="@ClassValue"
+          style="@Style"
+          disabled="@Disabled"
+          @ref=Ref
+          @attributes=Attributes>
+        @if (Item?.Icon != null)
+        {
+            <LucideIcon Name="@Item.Icon" Class="size-4" />
+        }
+        @Item?.Title
+        @if (!string.IsNullOrWhiteSpace(Item?.Label))
+        {
+            <span class="ml-auto rounded-md bg-muted px-1.5 py-0.5 text-xs leading-none text-muted-foreground no-underline group-hover:no-underline">
+                @Item.Label
+            </span>
+        }
+    </span>
+}
+
+
+@code {
+    [Parameter]
+    public SidebarItem? Item { get; set; }
+
+    const string DisableClasses = "cursor-not-allowed opacity-60";
+    const string DefaultClasses = "flex w-full cursor-not-allowed items-center rounded-md p-2 text-muted-foreground hover:underline";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses)
+        .AddClass(DisableClasses, Disabled)
+        .Build();
+
+    bool Disabled => Item?.Disabled == true || Item?.ProgressState == ProgressState.NotStarted;
+}

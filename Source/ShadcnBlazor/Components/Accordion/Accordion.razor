@@ -32,7 +32,7 @@
     /// Jika <c>false</c>, setidaknya satu item harus tetap terbuka.
     /// </summary>
     [Parameter]
-    public bool Collapsible { get; set; }
+    public bool Collapsible { get; set; } = true;
 
     string? ClassValue => new CssBuilder(Class)
         .AddClass("w-full")
@@ -84,27 +84,35 @@
 
         if (Multiple)
         {
-            // Multiple items allowed
-            if (isActive && Collapsible)
-                _activeItems.Remove(item);
-            else if (!isActive)
+            if (isActive)
+            {
+                if (Collapsible)
+                {
+                    // Prevent collapsing the last item if collapsible is false (even though logically shouldn't happen here)
+                    if (!Collapsible && _activeItems.Count == 1)
+                        return;
+
+                    _activeItems.Remove(item);
+                }
+            }
+            else
+            {
                 _activeItems.Add(item);
+            }
         }
         else
         {
-            // Single item mode
             if (isActive)
             {
                 if (Collapsible)
                 {
                     _activeItems.Clear();
-                    _lastActivated = item; // Track when closing
+                    _lastActivated = item;
                 }
-                // If not collapsible, do nothing (must keep one item open)
+                // else: do nothing (must keep one open)
             }
             else
             {
-                // Close all others and open this one
                 _activeItems.Clear();
                 _activeItems.Add(item);
                 _lastActivated = item;

@@ -1,0 +1,34 @@
+﻿@page "/docs/theming"
+@namespace ShadcnBlazor.Docs.Pages
+@inherits ShadcnComponentBase
+
+<DocsPageHeader Title="Theming" Breadcrumbs="breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        Using CSS Variables and color utilities for theming.
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <Paragraph>You can choose between using CSS variables (recommended) or utility classes for theming.</Paragraph>
+    <DocsPageSection Title="CSS Variables">
+    </DocsPageSection>
+    <DocsPageSection Title="Utility classes">
+    </DocsPageSection>
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection breadcrumbs = new DocsBreadcrumbCollection("Theming");
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Theming",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}
+

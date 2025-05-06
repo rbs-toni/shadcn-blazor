@@ -1,0 +1,17 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<div id="@Id" class="@(TwMerge.Merge(ClassValue))" style="@Style" @ref="Ref" @attributes="Attributes">
+    @ChildContent
+</div>
+
+@code{
+    const string DefaultClasses = "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2";
+
+    [Parameter]
+    public BadgeVariant Variant { get; set; } = BadgeVariant.Default;
+
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).AddClass(Variant.ToAttributeValue(false)).Build();
+}

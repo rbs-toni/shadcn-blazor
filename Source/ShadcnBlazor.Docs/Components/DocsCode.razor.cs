@@ -6,13 +6,11 @@ public partial class DocsCode : IAsyncDisposable
 {
     const string JSFile = "./_content/ShadcnBlazor.Docs/Components/DocsCode.razor.js";
     string? _codeContent;
-    ElementReference _codeRef;
-    ElementReference _copyRef;
     bool _hasCode;
+    IJSObjectReference? _jsModule;
 
     [Inject]
     HttpClient HttpClient { get; set; } = default!;
-    IJSObjectReference? JSModule { get; set; }
     [Inject]
     IJSRuntime JSRuntime { get; set; } = default!;
     [Inject]
@@ -24,9 +22,9 @@ public partial class DocsCode : IAsyncDisposable
     {
         try
         {
-            if (JSModule != null)
+            if (_jsModule != null)
             {
-                await JSModule.DisposeAsync();
+                await _jsModule.DisposeAsync();
             }
         }
         catch (Exception)
@@ -37,15 +35,14 @@ public partial class DocsCode : IAsyncDisposable
     {
         if (firstRender)
         {
-            JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", JSFile);
+            _jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", JSFile);
             if (!string.IsNullOrWhiteSpace(Path))
             {
                 await GetCodeContentsAsync();
+                await HighlightCodeAsync();
                 _hasCode = true;
                 StateHasChanged();
             }
-            await JSModule.InvokeVoidAsync("highlightElement", _codeRef);
-            await JSModule.InvokeVoidAsync("addCopyButton", _copyRef);
         }
     }
     async Task GetCodeContentsAsync()
@@ -63,6 +60,13 @@ public partial class DocsCode : IAsyncDisposable
         catch
         {
             //Do Nothing
+        }
+    }
+    async Task HighlightCodeAsync()
+    {
+        if (_jsModule != null)
+        {
+            await _jsModule.InvokeVoidAsync("highlightCode", Ref);
         }
     }
 }

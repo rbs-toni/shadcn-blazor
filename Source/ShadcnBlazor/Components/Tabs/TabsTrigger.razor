@@ -1,0 +1,59 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<button id="@TriggerId"
+        class="@(TwMerge.Merge(ClassValue))"
+        style="@Style"
+        role="tab"
+        type="button"
+        aria-selected="@(IsSelected.ToAttributeValue())"
+        aria-controls="@ContentId"
+        data-state="@(IsSelected ? "active":"inactive")"
+        disabled="@Disabled"
+        data-disabled="@Disabled"
+        data-orientation="@Tabs?.Orientation.ToStringFast()"
+        @onclick=OnClickHandler
+        @ref=Ref
+        @attributes=Attributes>
+    @ChildContent
+    @Tabs?.Value
+</button>
+
+@code {
+    const string DefaultClasses = "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow";
+
+    [CascadingParameter]
+    Tabs? Tabs { get; set; }
+
+    [Parameter, EditorRequired]
+    public string? Value { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    string TriggerId => TabsUtils.MakeTriggerId(Tabs?.Id, Value);
+    string ContentId => TabsUtils.MakeContentId(Tabs?.Id, Value);
+    bool IsSelected => Value == Tabs?.Value;
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
+
+    protected override void OnInitialized()
+    {
+        if (Tabs != null)
+        {
+            Tabs.OnChanged += () => InvokeAsync(StateHasChanged);
+        }
+    }
+
+    void OnClickHandler()
+    {
+        if (Tabs != null && !string.IsNullOrWhiteSpace(Value) && !IsSelected)
+        {
+            if (!Disabled)
+            {
+                Tabs.ChangeValue(Value);
+            }
+        }
+    }
+}

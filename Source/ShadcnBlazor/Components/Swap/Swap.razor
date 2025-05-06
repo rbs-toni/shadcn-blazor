@@ -1,0 +1,25 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<label id="@Id" class="@ClassValue" style="@Style" @ref=Ref @attributes=Attributes>
+    <input type="checkbox" />
+    <div class="swap-on">
+        @On
+    </div>
+    <div class="swap-off">
+        @Off
+    </div>
+</label>
+
+@code {
+    [Parameter]
+    public SwapEffect? Effect { get; set; }
+
+    [Parameter]
+    public RenderFragment? On { get; set; }
+
+    [Parameter]
+    public RenderFragment? Off { get; set; }
+
+    string? ClassValue => new CssBuilder("swap").AddClass(Effect?.ToStringFast()).AddClass(Class).Build();
+}

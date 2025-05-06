@@ -1,0 +1,12 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+<section id="@Id" class="@ClassValue" style="@Style" @ref=Ref @attributes=Attributes>
+    @ChildContent
+</section>
+
+@code {
+    const string DefaultClasses = "flex w-full items-center justify-start gap-2 pt-2";
+
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
+}

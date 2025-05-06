@@ -1,0 +1,50 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnJSComponentBase
+
+@if (_show)
+{
+    @ChildContent
+}
+
+@code {
+    /// <summary>
+    /// Gets or sets a value indicating whether the component is visible.
+    /// </summary>
+    [Parameter]
+    public bool Show { get; set; }
+
+    /// <summary>
+    /// Gets or sets the transition class name to be applied when the component is shown or hidden.
+    /// The class should include the following states:
+    /// <list type="bullet">
+    /// <c>{name}-enter-from</c>, <c>{name}-enter-to</c>, and <c>{name}-enter-active</c>,
+    /// </list>
+    /// <list type="bullet">
+    /// <c>{name}-leave-from</c>, <c>{name}-leave-to</c>, and <c>{name}-leave-active</c>.
+    /// </list>
+    /// If not provided, the default value is <c>v</c>.
+    /// </summary>
+    [Parameter]
+    public string? Name { get; set; }
+
+    /// <summary>
+    /// Gets or sets the ID of the target HTML element to which this transition should be applied.
+    /// This parameter is required and must be specified.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public required string Target { get; set; }
+
+    /// <summary>
+    /// An event callback that is triggered after the enter transition is complete.
+    /// This allows additional logic to be executed once the component has been shown.
+    /// </summary>
+    [Parameter]
+    public EventCallback AfterEnter { get; set; }
+
+    /// <summary>
+    /// An event callback that is triggered after the leave transition is complete.
+    /// This allows additional logic to be executed once the component has been hidden.
+    /// </summary>
+    [Parameter]
+    public EventCallback AfterLeave { get; set; }
+}

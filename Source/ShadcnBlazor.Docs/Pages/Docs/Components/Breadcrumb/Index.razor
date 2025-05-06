@@ -1,0 +1,32 @@
+﻿@page "/docs/components/breadcrumb"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Breadcrumb.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Breadcrumb" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Displays the path to the current resource using a hierarchy of links."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_breadcrumbDefault"
+                 CodePath="BreadcrumbDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Breadcrumb");
+    SlotComponent _breadcrumbDefault = new SlotComponent(typeof(BreadcrumbDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Breadcrumb",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

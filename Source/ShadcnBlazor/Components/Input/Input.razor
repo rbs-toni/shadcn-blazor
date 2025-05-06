@@ -1,0 +1,102 @@
+﻿@namespace ShadcnBlazor
+@using System.Diagnostics.CodeAnalysis
+@using Microsoft.AspNetCore.Components.Forms
+@using TailwindMerge
+@inject TwMerge TwMerge
+@inherits ShadcnInputBase<string?>
+
+<input id=@Id
+       class="@(TwMerge.Merge(ClassValue))"
+       style="@StyleValue"
+       readonly="@ReadOnly"
+       autofocus="@Autofocus"
+       placeholder="@Placeholder"
+       type="@TextFieldType.ToAttributeValue()"
+       list=@DataList
+       maxlength="@Maxlength"
+       minlength="@Minlength"
+       pattern=@Pattern
+       spellcheck="@Spellcheck"
+       value=@Value
+       current-value="@BindConverter.FormatValue(CurrentValue)"
+       disabled="@Disabled"
+       name=@Name
+       required="@Required"
+       @ref=Ref
+       @onchange="@ChangeHandlerAsync"
+       @oninput="@InputHandlerAsync"
+       @attributes="Attributes" />
+
+@code {
+    /// <summary>
+    /// Gets or sets the text filed type. See <see cref="AspNetCore.Components.TextFieldType"/>
+    /// </summary>
+    [Parameter]
+    public TextFieldType? TextFieldType { get; set; }
+
+    /// <summary>
+    /// Allows associating a <see href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist">datalist</see> to the element by <see href="https://developer.mozilla.org/en-US/docs/Web/API/Element/id">id</see>.
+    /// </summary>
+    [Parameter]
+    public string? DataList { get; set; }
+
+    /// <summary>
+    /// Gets or sets the maximum length.
+    /// </summary>
+    [Parameter]
+    public int? Maxlength { get; set; }
+
+    /// <summary>
+    /// Gets or sets the minimum length.
+    /// </summary>
+    [Parameter]
+    public int? Minlength { get; set; }
+
+    /// <summary>
+    /// Gets or sets a regular expression that the value must match to pass validation.
+    /// </summary>
+    [Parameter]
+    public string? Pattern { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether spellcheck should be used.
+    /// </summary>
+    [Parameter]
+    public bool? Spellcheck { get; set; }
+
+    /// <summary>
+    /// Specifies whether a form or an input field should have autocomplete "on" or "off" or another value.
+    /// An Id value must be set to use this property.
+    /// </summary>
+    [Parameter]
+    public string? AutoComplete { get; set; }
+
+    /// <summary>
+    /// Gets or sets the type of data that can be entered by the user when editing the element or its content. This allows a browser to display an appropriate virtual keyboard. Not supported by Safari.
+    /// </summary>
+    [Parameter]
+    public InputMode? InputMode { get; set; }
+
+    protected override bool TryParseValueFromString(string? value, out string? result, [NotNullWhen(false)] out string? validationErrorMessage)
+    {
+        result = value;
+        validationErrorMessage = null;
+        return true;
+    }
+
+    const string DefaultClasses = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-foreground file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+
+    const string NewYorkClasses = "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
+
+    protected override string? ClassValue
+    {
+        get
+        {
+            var fieldClass = (FieldBound && !Embedded) ? EditContext?.FieldCssClass(FieldIdentifier) : null;
+
+            return new CssBuilder(Class)
+                .AddClass(DefaultClasses, NewYorkClasses, StyleType == StyleType.Default)
+                .AddClass(fieldClass).Build();
+        }
+    }
+}

@@ -1,0 +1,4 @@
+﻿<Calendar @bind-Value="_selectedDay" Class="rounded-md border" />
+@code {
+    DateTime? _selectedDay = null;
+}

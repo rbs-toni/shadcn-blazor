@@ -1,0 +1,33 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<td id="@Id"
+    class="@(TwMerge.Merge(ClassValue))"
+    style="@Style"
+    role="gridcell"
+    aria-selected="@IsSelected"
+    aria-disabled="@IsDisabled"
+    data-disabled="@IsDisabled"
+    @ref=Ref
+    @attributes=Attributes>
+    @ChildContent
+</td>
+
+@code {
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    const string DefaultClasses = "relative h-9 w-9 p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([data-selected])]:rounded-md [&:has([data-selected])]:bg-accent [&:has([data-selected][data-outside-view])]:bg-accent/50";
+
+    const string NewYorkClasses = "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([data-selected])]:rounded-md [&:has([data-selected])]:bg-accent [&:has([data-selected][data-outside-view])]:bg-accent/50";
+
+    string? ClassValue => new CssBuilder(Class)
+    .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+    .Build();
+
+}

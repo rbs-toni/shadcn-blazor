@@ -1,0 +1,17 @@
+﻿@namespace ShadcnBlazor
+@using TailwindMerge
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+
+<div id="@Id" class="@TwMerge.Merge(ClassValue)" style="@Style" role="alert" @ref=Ref @attributes=Attributes>
+    @ChildContent
+</div>
+
+@code {
+    const string DefaultClasses = "relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7";
+
+    [Parameter]
+    public AlertVariant Variant { get; set; }
+
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).AddClass(Variant.ToTailwindClass()).Build();
+}

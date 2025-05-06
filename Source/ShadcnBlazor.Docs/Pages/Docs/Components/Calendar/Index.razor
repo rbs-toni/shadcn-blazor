@@ -1,0 +1,32 @@
+﻿@page "/docs/components/calendar"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Calendar.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Calendar" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["A date field component that allows users to enter and edit date."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_calendarDefault"
+                 CodePath="CalendarDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Calendar");
+    SlotComponent _calendarDefault = new SlotComponent(typeof(CalendarDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Calendar",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

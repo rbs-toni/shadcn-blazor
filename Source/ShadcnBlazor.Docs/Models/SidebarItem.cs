@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Components.Routing;
-
-namespace ShadcnBlazor.Docs;
-
+﻿namespace ShadcnBlazor.Docs;
 /// <summary>
-/// Represents an individual navigation item in the sidebar.
+/// Represents an individual navigation item in the documentation sidebar.
 /// </summary>
-public class SidebarItem : Linkable
+public class SidebarItem : Linkable, IProgressable
 {
     /// <summary>
     /// Gets or sets the icon associated with this sidebar item.
@@ -13,16 +10,21 @@ public class SidebarItem : Linkable
     public IconName? Icon { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether this item is currently active/selected.
-    /// </summary>
-    public NavLinkMatch Match { get; set; }
-
-    public int Order { get; set; }
-
-    public List<string>? Matches { get; set; }
-
-    /// <summary>
-    /// Gets or sets the nested collection of sidebar items (for hierarchical navigation).
+    /// Gets or sets the nested collection of sidebar items for hierarchical navigation.
     /// </summary>
     public List<SidebarItem>? Items { get; set; }
+    public ProgressState ProgressState { get; set; } = ProgressState.NotStarted;
+
+    public bool IsValidLink => !string.IsNullOrWhiteSpace(Href);
+
+    public string? Label => GetProgressStateLabel();
+
+    string? GetProgressStateLabel()
+    {
+        return ProgressState switch
+        {
+            ProgressState.InProgress => "WIP",
+            _ => default,
+        };
+    }
 }

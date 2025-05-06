@@ -1,0 +1,32 @@
+﻿@page "/docs/components/aspect-ratio"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.AspectRatio.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Aspect Ratio" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Displays content within a desired ratio."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_aspectRatioDefault"
+                 CodePath="AspectRatioDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Aspect Ratio");
+    SlotComponent _aspectRatioDefault = new SlotComponent(typeof(AspectRatioDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "AspectRatio",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

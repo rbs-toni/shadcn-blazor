@@ -2,18 +2,53 @@
 @namespace ShadcnBlazor.Docs.Pages
 @inherits ShadcnComponentBase
 
-Memek
+<DocsPageHeader Title="Installation" Breadcrumbs="breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        How to install dependencies and structure your app.
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
 
-@code{
+<DocsPageContent>
+    <DocsSteps>
+        <DocsStep Title="Add Tailwind CSS">
+            <Paragraph>Components are styled using Tailwind CSS. You need to install Tailwind CSS in your project.</Paragraph>
+            <Paragraph>
+                <a class="font-medium underline underline-offset-4" href="https://tailwindcss.com/docs/installation" target="_blank">
+                    Follow the Tailwind CSS installation instructions to get started.
+                </a>
+            </Paragraph>
+        </DocsStep>
+        <DocsStep Title="Configure styles">
+            <Paragraph>
+                Add the following to your styles/globals.css file. You can learn more about using CSS variables for theming in the <a class="font-medium underline underline-offset-4" href="/docs/theming">theming section</a>.
+            </Paragraph>
+        </DocsStep>
+        <DocsStep Title="Copy this project from GitHub">
+            <Paragraph>
+                The easiest way to get started is by cloning the official <code>shadcn-blazor</code> repository:
+            </Paragraph>
+            <CodeBlock Language="bash">
+                git clone https://github.com/rbs-toni/shadcn-blazor.git
+            </CodeBlock>
+            <Paragraph>
+                This repository includes a pre-configured project with Tailwind CSS, component examples, and integration helpers.
+            </Paragraph>
+        </DocsStep>
+    </DocsSteps>
+</DocsPageContent>
+
+@code {
     [CascadingParameter]
     LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection breadcrumbs = new DocsBreadcrumbCollection("Installation");
 
     protected override void OnInitialized()
     {
         LayoutContext.SetLayoutOptions(
             pageTitle: "Installation",
             useSidebar: true,
-            useOutline: true,
+            useOutline: false,
             useFooterLinks: true);
     }
 }

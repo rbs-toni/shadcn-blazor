@@ -1,0 +1,32 @@
+﻿@page "/docs/components/avatar"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Avatar.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Avatar" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["An image element with a fallback for representing the user."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_avatarDefault"
+                 CodePath="AvatarDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Avatar");
+    SlotComponent _avatarDefault = new SlotComponent(typeof(AvatarDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Avatar",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

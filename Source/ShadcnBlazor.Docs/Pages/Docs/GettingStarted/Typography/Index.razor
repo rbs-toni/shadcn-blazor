@@ -2,15 +2,96 @@
 @using ShadcnBlazor.Docs.Pages.Docs.GettingStarted.Typography.Examples
 @inherits ShadcnComponentBase
 
-<DocsHeader Title="Typography" Breadcrumbs="_breadcrumbs.Items">
-    <DocsHeaderDescription>
-        Style untuk judul, paragraf, daftar, dan elemen teks lainnya.
-    </DocsHeaderDescription>
-</DocsHeader>
+<DocsPageHeader Title="Typography" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        Styles for headings, paragraphs, lists...etc
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
 
-<DocsContent>
-    <DocsPreview PreviewComponent="@_preview" CodePath="TypographyDemo.razor"></DocsPreview>
-</DocsContent>
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_preview"
+                 CodePath="TypographyDemo.razor">
+    </DocsPreview>
+
+    <DocsPageSection Title="h1">
+        <DocsPreview PreviewComponent="@_h1Preview"
+                     CodePath="TypographyHeading1.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+    <DocsPageSection Title="h2">
+        <DocsPreview PreviewComponent="@_h2Preview"
+                     CodePath="TypographyHeading2.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+    <DocsPageSection Title="h3">
+        <DocsPreview PreviewComponent="@_h3Preview"
+                     CodePath="TypographyHeading3.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+    <DocsPageSection Title="h4">
+        <DocsPreview PreviewComponent="@_h4Preview"
+                     CodePath="TypographyHeading4.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+    <DocsPageSection Title="p">
+        <DocsPreview PreviewComponent="@_pPreview"
+                     CodePath="TypographyParagraph.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+    <DocsPageSection Title="blockquote">
+        <DocsPreview PreviewComponent="@_blockquotePreview"
+                     CodePath="TypographyBlockquote.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+    <DocsPageSection Title="table">
+        <DocsPreview PreviewComponent="@_tablePreview"
+                     CodePath="TypographyTable.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+    <DocsPageSection Title="list">
+        <DocsPreview PreviewComponent="@_listPreview"
+                     CodePath="TypographyList.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+    <DocsPageSection Title="Inline code">
+        <DocsPreview PreviewComponent="@_inlineCodePreview"
+                     CodePath="TypographyInlineCode.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+    <DocsPageSection Title="Lead">
+        <DocsPreview PreviewComponent="@_leadPreview"
+                     CodePath="TypographyLead.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+    <DocsPageSection Title="Large">
+        <DocsPreview PreviewComponent="@_largePreview"
+                     CodePath="TypographyLarge.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+    <DocsPageSection Title="Small">
+        <DocsPreview PreviewComponent="@_smallPreview"
+                     CodePath="TypographySmall.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+    <DocsPageSection Title="Muted">
+        <DocsPreview PreviewComponent="@_mutedPreview"
+                     CodePath="TypographyMuted.razor">
+        </DocsPreview>
+    </DocsPageSection>
+
+</DocsPageContent>
 
 @code {
     [CascadingParameter]
@@ -18,6 +99,19 @@
 
     BreadcrumbCollection _breadcrumbs = new DocsBreadcrumbCollection("Typography");
     SlotComponent _preview = new SlotComponent(typeof(TypographyDemo));
+    SlotComponent _h1Preview = new SlotComponent(typeof(TypographyHeading1));
+    SlotComponent _h2Preview = new SlotComponent(typeof(TypographyHeading2));
+    SlotComponent _h3Preview = new SlotComponent(typeof(TypographyHeading3));
+    SlotComponent _h4Preview = new SlotComponent(typeof(TypographyHeading4));
+    SlotComponent _pPreview = new SlotComponent(typeof(TypographyParagraph));
+    SlotComponent _blockquotePreview = new SlotComponent(typeof(TypographyBlockquote));
+    SlotComponent _tablePreview = new SlotComponent(typeof(TypographyTable));
+    SlotComponent _listPreview = new SlotComponent(typeof(TypographyList));
+    SlotComponent _inlineCodePreview = new SlotComponent(typeof(TypographyInlineCode));
+    SlotComponent _leadPreview = new SlotComponent(typeof(TypographyLead));
+    SlotComponent _largePreview = new SlotComponent(typeof(TypographyLarge));
+    SlotComponent _smallPreview = new SlotComponent(typeof(TypographySmall));
+    SlotComponent _mutedPreview = new SlotComponent(typeof(TypographyMuted));
 
 
     protected override void OnInitialized()

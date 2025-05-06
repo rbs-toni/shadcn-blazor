@@ -1,0 +1,28 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<div id="@Id"
+     class="@(TwMerge.Merge(ClassValue))"
+     style="@Style"
+     data-disabled="@Disabled"
+     @ref=Ref
+     @attributes=Attributes>
+    @Label
+</div>
+
+@code {
+    const string DefaultClasses = "text-sm font-medium";
+    const string NewYorkClasses = "text-sm font-medium";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+        .Build();
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+}

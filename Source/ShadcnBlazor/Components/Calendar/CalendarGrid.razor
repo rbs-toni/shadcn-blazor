@@ -1,0 +1,33 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<table id="@Id"
+       class="@(TwMerge.Merge(ClassValue))"
+       style="@Style"
+       tabindex="-1"
+       role="grid"
+       aria-readonly="@ReadOnly"
+       aria-disabled="@Disabled"
+       data-readonly="@ReadOnly"
+       ata-disabled="@Disabled"
+       @ref=Ref
+       @attributes=Attributes>
+    @ChildContent
+</table>
+
+@code {
+    const string DefaultClasses = "w-full border-collapse space-y-1";
+    const string NewYorkClasses = "w-full border-collapse space-y-1";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+        .Build();
+
+    [CascadingParameter]
+    Calendar? Calendar { get; set; }
+
+    bool ReadOnly => Calendar?.ReadOnly == true;
+    bool Disabled => Calendar?.Disabled == true;
+}

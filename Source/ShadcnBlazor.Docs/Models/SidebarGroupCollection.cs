@@ -16,11 +16,11 @@ public class SidebarGroupCollection : IEnumerable<SidebarGroup>
     /// <exception cref="ArgumentException">Thrown if the name is null, empty, or already exists.</exception>
     public void Add(SidebarGroup sidebar)
     {
-        if (string.IsNullOrWhiteSpace(sidebar.Name))
+        if (string.IsNullOrWhiteSpace(sidebar.Title))
             throw new ArgumentException("Sidebar name must be non-null and non-empty");
 
-        if (!_names.Add(sidebar.Name))
-            throw new ArgumentException($"Sidebar with name '{sidebar.Name}' already exists");
+        if (!_names.Add(sidebar.Title))
+            throw new ArgumentException($"Sidebar with name '{sidebar.Title}' already exists");
 
         _items.Add(sidebar);
     }

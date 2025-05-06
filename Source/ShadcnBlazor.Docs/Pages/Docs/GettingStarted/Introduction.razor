@@ -2,18 +2,56 @@
 @namespace ShadcnBlazor.Docs.Pages
 @inherits ShadcnComponentBase
 
-Introduction
+<DocsPageHeader Title="Introduction" Breadcrumbs="breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        Re-usable components built with Blazor, and Tailwind CSS.
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <Paragraph>
+        An unofficial, side project port of shadcn/ui. I am not affiliated with shadcn. This project was born out of fun and a desire to explore how far we can push component architecture in Blazor.
+    </Paragraph>
+
+    <Paragraph>
+        This is <strong>NOT</strong> a traditional component library. It's a curated collection of re-usable components you can <strong>copy and paste</strong> into your own codebase.
+    </Paragraph>
+
+    <Paragraph><strong>What do you mean by "not a component library"?</strong></Paragraph>
+
+    <Paragraph>
+        It means you do not install this project via NuGet or any package manager. There are no DLLs, no hidden logic, and no forced dependencies.
+    </Paragraph>
+
+    <Paragraph>
+        Instead, you explore the components you like, copy the source code into your project, and fully own the implementation. This gives you complete freedom to modify, extend, and integrate without worrying about versioning, bloat, or compatibility issues.
+    </Paragraph>
+
+    <Paragraph>
+        The philosophy here is transparency and control. You see all the code. You make it yours.
+    </Paragraph>
+
+    <Paragraph>
+        This approach also encourages learning. Because every component is written with simplicity and clarity in mind, it's a great way to understand how to build well-structured, accessible UI in Blazor.
+    </Paragraph>
+
+    <Paragraph>
+        Use what you need. Customize what you copy. There are no black boxes—only patterns you can build on.
+    </Paragraph>
+</DocsPageContent>
 
 @code{
     [CascadingParameter]
     LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection breadcrumbs = new DocsBreadcrumbCollection("Introduction");
 
     protected override void OnInitialized()
     {
         LayoutContext.SetLayoutOptions(
             pageTitle: "Introduction",
             useSidebar: true,
-            useOutline: true,
+            useOutline: false,
             useFooterLinks: true);
     }
 }

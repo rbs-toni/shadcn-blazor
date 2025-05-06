@@ -1,0 +1,66 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnJSComponentBase
+
+<div id="@Id" class="@Class" style="@StyleNames" @ref=Ref @attributes=Attributes>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required string Anchor { get; set; }
+
+    [Parameter]
+    public FloatingPlacement Placement
+    {
+        get => _placement; set
+        {
+            if (_placement == value)
+            {
+                return;
+            }
+            _placement = value;
+            if (JSAvailable && !string.IsNullOrWhiteSpace(_referenceId))
+            {
+                InvokeAsync(ChangeOptionsAsync);
+            }
+        }
+    }
+
+    [Parameter]
+    public FloatingStrategy Strategy
+    {
+        get => _strategy; set
+        {
+            if (_strategy == value)
+            {
+                return;
+            }
+            _strategy = value;
+            if (JSAvailable && !string.IsNullOrWhiteSpace(_referenceId))
+            {
+                InvokeAsync(ChangeOptionsAsync);
+            }
+        }
+    }
+
+    [Parameter]
+    public FloatingOffset? Offset
+    {
+        get => _offset; set
+        {
+            if (_offset==value)
+            {
+                return;
+            }
+            _offset = value;
+            if (JSAvailable && !string.IsNullOrWhiteSpace(_referenceId))
+            {
+                InvokeAsync(ChangeOptionsAsync);
+            }
+        }
+    }
+
+    [Parameter]
+    public bool Inline { get; set; }
+}

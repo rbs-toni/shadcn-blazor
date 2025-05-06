@@ -1,0 +1,19 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+<a id="@Id" href="/docs/tailwind-v4" class="@ClassValue" style="@Style" @ref=Ref @attributes=Attributes>
+    <div>
+        <TailwindLogo Class="h-4 w-4 fill-current" />
+    </div>
+    <span class="sm:hidden underline-offset-4 group-hover:underline">Get Started with Tailwind v4</span>
+    <span class="hidden sm:inline underline-offset-4 group-hover:underline">
+        Get Started with Tailwind v4
+    </span>
+    <LucideIcon Name="IconName.ArrowRight" Class="ml-1 h-4 w-4" />
+</a>
+
+@code {
+    const string DefaultClasses = "group mb-2 inline-flex items-center gap-2 px-0.5 text-sm font-medium";
+
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
+}

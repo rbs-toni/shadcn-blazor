@@ -3,13 +3,13 @@
 @implements IDisposable
 
 <div class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative rounded-md border"
-data-state="@ActiveValue"
-data-orientation="@Orientation"
-role="tabpanel"
-aria-labelledby="@TriggerId"
-tabindex="0"
-hidden="@(!IsActive)"
-style="animation-duration:0s">
+     data-state="@ActiveValue"
+     data-orientation="@Orientation"
+     role="tabpanel"
+     aria-labelledby="@TriggerId"
+     tabindex="0"
+     hidden="@(!IsActive)"
+     style="animation-duration:0s">
     @ChildContent
 </div>
 @code {

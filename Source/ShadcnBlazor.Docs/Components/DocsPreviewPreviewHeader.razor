@@ -1,0 +1,13 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+<div class="flex items-center justify-between p-4">
+    <div class="flex items-center gap-2 ml-auto">
+        <DocsClipboardButton CodeTarget="@CodeId" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? CodeId { get; set; }
+}

@@ -1,0 +1,17 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<tr id="@Id"
+    class="@ClassValue"
+    style="@Style"
+    aria-hidden="true"
+    @ref=Ref
+    @attributes=Attributes>
+    @ChildContent
+</tr>
+
+@code {
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("flex")
+        .Build();
+}

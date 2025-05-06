@@ -2,7 +2,6 @@
 using System.Linq;
 
 namespace ShadcnBlazor.Docs;
-
 public static class DemoLogger
 {
     public static event OnLogHandler? OnLogHandler;

@@ -282,7 +282,7 @@ public abstract partial class ShadcnInputBase<TValue> : ShadcnComponentBase, IDi
         {
             var fieldClass = (FieldBound && !Embedded) ? EditContext?.FieldCssClass(FieldIdentifier) : null;
 
-            var cssClass = CombineClassNames(Attributes, fieldClass);
+            var cssClass = CombineClassValue(Attributes, fieldClass);
 
             if (!string.IsNullOrEmpty(cssClass) || !string.IsNullOrEmpty(Class))
             {
@@ -472,7 +472,7 @@ public abstract partial class ShadcnInputBase<TValue> : ShadcnComponentBase, IDi
         Dispose(disposing: true);
     }
 
-    public static string? CombineClassNames(IReadOnlyDictionary<string, object>? additionalAttributes, string? classNames)
+    public static string? CombineClassValue(IReadOnlyDictionary<string, object>? additionalAttributes, string? classNames)
     {
         if (additionalAttributes is null || !additionalAttributes.TryGetValue("class", out var @class))
         {

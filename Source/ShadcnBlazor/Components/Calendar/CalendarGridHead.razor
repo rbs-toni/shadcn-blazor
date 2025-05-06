@@ -1,0 +1,21 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+@if (Show)
+{
+    <thead id="@Id"
+           class="@Class"
+           style="@Style"
+           aria-hidden="true"
+           @ref=Ref
+           @attributes=Attributes>
+        @ChildContent
+    </thead>
+}
+
+@code {
+    [CascadingParameter]
+    Calendar? Calendar { get; set; }
+
+    bool Show => Calendar?.View == CalendarViews.Days;
+}

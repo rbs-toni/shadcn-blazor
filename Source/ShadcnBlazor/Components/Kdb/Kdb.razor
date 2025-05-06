@@ -1,0 +1,24 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<kdb id="@Id"
+     class="@(TwMerge.Merge(ClassValue))"
+     style="@Style"
+     @ref=Ref
+     @attributes=Attributes>
+    @ChildContent
+</kdb>
+
+@code {
+    [Parameter]
+    public KdbVariant Variant { get; set; } = KdbVariant.Sm;
+
+    const string DefaultClasses = "inline-flex items-center pointer-events-none h-5 select-none gap-1 rounded border border-border bg-muted font-sans font-medium";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses)
+        .AddClass(Variant.ToAttributeValue(false))
+        .Build();
+}

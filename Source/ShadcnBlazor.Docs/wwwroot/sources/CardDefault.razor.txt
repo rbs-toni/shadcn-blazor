@@ -1,0 +1,15 @@
+﻿<Card Class="w-[350px]">
+    <CardHeader>
+      <CardTitle>Create project</CardTitle>
+      <CardDescription>Deploy your new project in one-click.</CardDescription>
+    </CardHeader>
+    <CardContent>
+        Card content
+    </CardContent>
+    <CardFooter Class="flex justify-between px-6 pb-6">
+      <Button Variant="ButtonVariant.Outline">
+        Cancel
+      </Button>
+      <Button>Deploy</Button>
+    </CardFooter>
+  </Card>

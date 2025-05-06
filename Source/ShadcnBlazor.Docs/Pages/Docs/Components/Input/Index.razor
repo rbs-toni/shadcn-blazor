@@ -1,0 +1,32 @@
+﻿@page "/docs/components/input"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Input.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Input" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Displays a form input field or a component that looks like an input field."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_inputDefault"
+                 CodePath="InputDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Input");
+    SlotComponent _inputDefault = new SlotComponent(typeof(InputDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Input",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

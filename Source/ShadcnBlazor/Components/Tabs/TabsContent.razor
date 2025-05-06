@@ -1,0 +1,41 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<div id="@ContentId"
+     class="@(TwMerge.Merge(ClassValue))"
+     style="@Style"
+     role="tabpanel"
+     data-state="@(IsSelected ? "active" : "inactive")"
+     data-orientation="@Tabs?.Orientation.ToStringFast()"
+     aria-labelledby="@TriggerId"
+     hidden="@(!IsSelected)"
+     tabindex="0"
+     @ref=Ref
+     @attributes=Attributes>
+    @ChildContent
+</div>
+
+@code {
+    const string DefaultClasses = "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
+
+    [CascadingParameter]
+    Tabs? Tabs { get; set; }
+
+    [Parameter, EditorRequired]
+    public string? Value { get; set; }
+
+    string TriggerId => TabsUtils.MakeTriggerId(Tabs?.Id, Value);
+    string ContentId => TabsUtils.MakeContentId(Tabs?.Id, Value);
+    bool IsSelected => Value == Tabs?.Value;
+
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
+    protected override void OnInitialized()
+    {
+        if (Tabs != null)
+        {
+            Tabs.OnChanged += () => InvokeAsync(StateHasChanged);
+        }
+    }
+}

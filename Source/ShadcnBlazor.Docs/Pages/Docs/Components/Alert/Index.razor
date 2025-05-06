@@ -1,0 +1,45 @@
+﻿@page "/docs/components/alert"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Alert.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Alert" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Displays a callout for user attention."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_alertDefault"
+                 CodePath="AlertDefault.razor" />
+
+    <DocsPageSection Title="Examples">
+        <DocsPageSection Title="Default " Level="3">
+            <DocsPreview PreviewComponent="@_alertDefault"
+                         CodePath="AlertDefault.razor" />
+        </DocsPageSection>
+        <DocsPageSection Title="Destructive" Level="3">
+            <DocsPreview PreviewComponent="@_alertDestructive"
+                         CodePath="AlertDestructive.razor" />
+        </DocsPageSection>
+    </DocsPageSection>
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Alert");
+    SlotComponent _alertDefault = new SlotComponent(typeof(AlertDefault));
+    SlotComponent _alertDestructive = new SlotComponent(typeof(AlertDestructive));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Alert",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}
+

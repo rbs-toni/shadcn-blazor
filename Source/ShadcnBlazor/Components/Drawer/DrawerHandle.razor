@@ -1,0 +1,18 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnJSComponentBase
+
+<div ref="handleRef"
+     data-vaul-drawer-visible="@(_isOpen.ToAttributeValue())"
+     data-vaul-handle=""
+     aria-hidden="true">
+    <span data-vaul-handle-hitarea="" aria-hidden="true">
+        @ChildContent
+    </span>
+</div>
+
+@code {
+    [Parameter]
+    public bool PreventCycle { get; set; }
+
+    bool _isOpen;
+}

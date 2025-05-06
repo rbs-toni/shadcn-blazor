@@ -1,0 +1,11 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@typeparam TItem
+
+<div role="option">
+</div>
+
+@code {
+    [CascadingParameter]
+    InternalSelectContext<TItem> SelectContext { get; set; }
+}

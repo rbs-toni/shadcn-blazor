@@ -1,0 +1,17 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+<button class="@ClassValue" id="@Id" style="@Style" @ref=Ref @attributes=Attributes data-state="copy">
+    <span class="sr-only">Copy</span>
+    <LucideIcon Name="IconName.Clipboard" Class="hidden group-data-[state=copy]:block" />
+    <LucideIcon Name="IconName.Check" Class="hidden group-data-[state=copied]:block" />
+</button>
+
+@code {
+    const string DefaultClasses = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background shadow-sm relative z-10 h-7 w-7 text-foreground opacity-100 hover:bg-muted hover:text-foreground [&_svg]:h-3.5 [&_svg]:w-3.5";
+
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).AddClass("group").Build();
+
+    [Parameter, EditorRequired]
+    public string? CodeTarget { get; set; }
+}

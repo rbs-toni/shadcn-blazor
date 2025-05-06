@@ -47,6 +47,10 @@
       <LastGenOutput>Index.razor.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\Docs\GettingStarted\Theming\Examples\" />
+  </ItemGroup>
 	
 	  <Target Name="CopySources" BeforeTargets="BeforeBuild">
     <ItemGroup>

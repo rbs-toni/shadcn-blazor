@@ -1,0 +1,22 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+<Heading3 Id="@KebabId">
+    @Title
+    <a class="font-medium underline underline-offset-4 subheading-anchor" aria-label="Link to section" href="#@KebabId">
+        <span class="icon icon-link"></span>
+    </a>
+</Heading3>
+
+@ChildContent
+
+@code {
+    const string DefaultClasses = "[&>h3]:step steps mb-12 ml-4 border-l pl-8 [counter-reset:step]";
+
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
+
+    [Parameter, EditorRequired]
+    public string? Title { get; set; }
+
+    string? KebabId => Title?.ToKebabCase();
+}
