@@ -1,0 +1,32 @@
+﻿@page "/docs/components/checkbox"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Checkbox.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Checkbox" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["A control that allows the user to toggle between checked and not checked."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_checkboxDefault"
+                 CodePath="CheckboxDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Checkbox");
+    SlotComponent _checkboxDefault = new SlotComponent(typeof(CheckboxDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Checkbox",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

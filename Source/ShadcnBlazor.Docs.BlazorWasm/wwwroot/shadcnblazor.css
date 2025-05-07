@@ -782,6 +782,13 @@
       margin-inline-end: calc(calc(var(--spacing) * 1) * calc(1 - var(--tw-space-x-reverse)));
     }
   }
+  .space-x-2 {
+    :where(& > :not(:last-child)) {
+      --tw-space-x-reverse: 0;
+      margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));
+      margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
+    }
+  }
   .gap-y-1\.5 {
     row-gap: calc(var(--spacing) * 1.5);
   }
@@ -876,6 +883,9 @@
   }
   .border-input {
     border-color: var(--input);
+  }
+  .border-primary {
+    border-color: var(--primary);
   }
   .border-transparent {
     border-color: transparent;
@@ -1773,6 +1783,16 @@
     &[data-state="active"] {
       --tw-shadow: 0 0 #0000;
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    }
+  }
+  .data-\[state\=checked\]\:bg-primary {
+    &[data-state="checked"] {
+      background-color: var(--primary);
+    }
+  }
+  .data-\[state\=checked\]\:text-primary-foreground {
+    &[data-state="checked"] {
+      color: var(--primary-foreground);
     }
   }
   .data-\[state\=closed\]\:animate-out {

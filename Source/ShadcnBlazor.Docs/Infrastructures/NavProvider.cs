@@ -127,7 +127,13 @@ public class NavProvider
                             ProgressState = ProgressState.InProgress
                         },
                         new() { Title = "Chart", Order = 12, Href = "/docs/components/chart" },
-                        new() { Title = "Checkbox", Order = 13, Href = "/docs/components/checkbox" },
+                        new()
+                        {
+                            Title = "Checkbox",
+                            Order = 13,
+                            Href = "/docs/components/checkbox",
+                            ProgressState = ProgressState.InProgress
+                        },
                         new() { Title = "Collapsible", Order = 14, Href = "/docs/components/collapsible" },
                         new() { Title = "Combobox", Order = 15, Href = "/docs/components/combobox" },
                         new() { Title = "Command", Order = 16, Href = "/docs/components/command" },

@@ -1,0 +1,41 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnInputBase<bool>
+@inject TwMerge TwMerge
+
+<button id="@Id"
+        class="@(TwMerge.Merge(CombinedClassValue))"
+        style="@Style"
+        role="checkbox"
+        type="button"
+        name="@Name"
+        value="@(bool.TrueString)"
+        aria-checked="@(_intermediate ? "mixed" : _checkState==true ? "checked" :"checked")"
+        aria-label="@AriaLabel"
+        aria-required="@Required"
+        data-state="@GetStateValueAsString"
+        data-disabled="@Disabled"
+        disabled="@Disabled"
+        @onkeydown:preventDefault=true
+        @onclick="OnClickHandlerAsync"
+        @ref=Ref
+        @attributes=Attributes>
+    <CheckboxIndicator Class="flex h-full w-full items-center justify-center text-current"
+                       Visible="_checkState==true"
+                       StateValue="@GetStateValueAsString"
+                       Disabled="Disabled">
+        <LucideIcon Name="IconName.Check" Class="h-4 w-4" />
+    </CheckboxIndicator>
+</button>
+
+@code {
+    const string DefaultClasses = "peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground";
+
+    const string NewYorkClasses = "peer h-4 w-4 shrink-0 rounded-sm border border-primary shadow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground";
+
+    string? CombinedClassValue => new CssBuilder(Class)
+        .AddClass(ClassValue)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+        .Build();
+
+    string? GetStateValueAsString => _intermediate ? "indeterminate" : _checkState == true ? "checked" : "unchecked";
+}

@@ -45,7 +45,7 @@ public class CarouselOptions
     /// <summary>
     /// Enables momentum scrolling.
     /// </summary>
-    public bool DragFree { get; set; } = false;
+    public bool DragFree { get; set; }
 
     /// <summary>
     /// Drag threshold in pixels (only for mouse events).
@@ -65,17 +65,17 @@ public class CarouselOptions
     /// <summary>
     /// Enables infinite looping. Embla will apply translateX or translateY to the slides that need to change position in order to create the loop effect.
     /// </summary>
-    public bool Loop { get; set; } = false;
+    public bool Loop { get; set; }
 
     /// <summary>
     /// Allow the carousel to skip scroll snaps if it's dragged vigorously. Note that this option will be ignored if the dragFree option is set to true.
     /// </summary>
-    public bool SkipSnaps { get; set; } = false;
+    public bool SkipSnaps { get; set; }
 
     /// <summary>
     /// Enables using custom slide elements. By default, Embla will choose all direct child elements of its container. Provide either a valid CSS selector string or a nodeList/array containing HTML elements.
     /// </summary>
-    public string? Slides { get; set; } = null; // string | HTMLElement[] | NodeList | null
+    public string? Slides { get; set; }  // string | HTMLElement[] | NodeList | null
 
     /// <summary>
     /// Group slides together. Drag interactions, dot navigation, and previous/next buttons are mapped to group slides into the given number, which has to be an integer. Set it to auto if you want Embla to group slides automatically.
@@ -85,7 +85,7 @@ public class CarouselOptions
     /// <summary>
     /// Set the initial scroll snap to the given number. First snap index starts at 0. Please note that this is not necessarily equal to the number of slides when used together with the slidesToScroll option.
     /// </summary>
-    public int StartIndex { get; set; } = 0;
+    public int StartIndex { get; set; }
 
     /// <summary>
     /// Enables for scrolling the carousel with mouse and touch interactions. Set this to false to disable drag events or pass a custom callback to add your own drag logic.
