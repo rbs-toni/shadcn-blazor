@@ -4,7 +4,9 @@
   shadcn-blazor
  </h1>
 </p>
+
 [![.NET](https://github.com/rbs-toni/shadcn-blazor/actions/workflows/dotnet.yml/badge.svg)](https://github.com/rbs-toni/shadcn-blazor/actions/workflows/dotnet.yml)
+
 **shadcn-blazor** is an side-project — a Blazor port of port of [shadcn/ui](https://ui.shadcn.com/), made just for fun.
 
 > **Note**  
