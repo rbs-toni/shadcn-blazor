@@ -1,0 +1,37 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<CascadingValue Value="this" IsFixed="true">
+    <div id="@Id"
+         class="@ClassValue"
+         role="region"
+         aria-roledescription="carousel"
+         tabindex="0"
+         @onkeydown=OnKeyDownHandler
+         @onkeydown:preventDefault=true>
+        @ChildContent
+    </div>
+</CascadingValue>
+@code {
+    [Parameter]
+    public Orientation Orientation { get; set; }
+
+    [Parameter]
+    public CarouselOptions CarouselOptions { get; set; } = new();
+
+    string PrevKey => Orientation == Orientation.Vertical ? "ArrowUp" : "ArrowLeft";
+    string NextKey => Orientation == Orientation.Vertical ? "ArrowDown" : "ArrowRight";
+
+    async Task OnKeyDownHandler(KeyboardEventArgs args)
+    {
+        if (args.Key == PrevKey)
+        {
+            await ScrollPrevAsync();
+        }
+        if (args.Key == NextKey)
+        {
+            await ScrollNextAsync();
+        }
+    }
+    string? ClassValue => new CssBuilder(Class).AddClass("relative").Build();
+}

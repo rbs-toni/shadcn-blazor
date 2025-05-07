@@ -4,10 +4,6 @@ namespace ShadcnBlazor.Docs;
 
 public class NavProvider
 {
-    public List<NavItem> NavItems { get; init; }
-
-    public List<SidebarGroup> SidebarGroups { get; init; }
-
     public NavProvider()
     {
         // Initialize the Sidebar collection and ensure items are ordered
@@ -123,7 +119,13 @@ public class NavProvider
                             Href = "/docs/components/card",
                             ProgressState = ProgressState.InProgress
                         },
-                        new() { Title = "Carousel", Order = 11, Href = "/docs/components/carousel" },
+                        new()
+                        {
+                            Title = "Carousel",
+                            Order = 11,
+                            Href = "/docs/components/carousel",
+                            ProgressState = ProgressState.InProgress
+                        },
                         new() { Title = "Chart", Order = 12, Href = "/docs/components/chart" },
                         new() { Title = "Checkbox", Order = 13, Href = "/docs/components/checkbox" },
                         new() { Title = "Collapsible", Order = 14, Href = "/docs/components/collapsible" },
@@ -191,4 +193,8 @@ public class NavProvider
             new() { Title = "Colors", Href = "/colors" }
         };
     }
+
+    public List<NavItem> NavItems { get; init; }
+
+    public List<SidebarGroup> SidebarGroups { get; init; }
 }

@@ -1,0 +1,32 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<div @ref=Ref class="overflow-hidden">
+    <div id="@Id" class="@ClassValue" style="@Style" role="group" @attributes=Attributes>
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    Carousel? Carousel { get; set; }
+
+    Orientation? Orientation => Carousel?.Orientation;
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("flex")
+        .AddClass("-ml-4", Orientation == ShadcnBlazor.Orientation.Horizontal)
+        .AddClass("-mt-4 flex-col", Orientation == ShadcnBlazor.Orientation.Vertical)
+        .Build();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (Carousel != null)
+            {
+                await Carousel.InitAsync(Ref);
+            }
+        }
+    }
+}

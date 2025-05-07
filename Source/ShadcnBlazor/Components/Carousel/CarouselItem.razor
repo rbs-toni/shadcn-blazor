@@ -1,0 +1,27 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<div id="@Id"
+     class="@ClassValue"
+     style="@Style"
+     role="group"
+     aria-roledescription="slide"
+     @ref=Ref
+     @attributes=Attributes>
+    @ChildContent
+</div>
+
+@code {
+    [CascadingParameter]
+    Carousel? Carousel { get; set; }
+
+    const string BaseClasses = "min-w-0 shrink-0 grow-0 basis-full";
+
+    Orientation? Orientation => Carousel?.Orientation;
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(BaseClasses)
+        .AddClass("pl-4", Orientation == ShadcnBlazor.Orientation.Horizontal)
+        .AddClass("pt-4", Orientation == ShadcnBlazor.Orientation.Vertical)
+        .Build();
+}

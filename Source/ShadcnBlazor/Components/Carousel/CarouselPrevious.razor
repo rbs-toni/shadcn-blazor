@@ -1,0 +1,43 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<Button Id="@Id"
+        Class="@ClassValue"
+        Style="@Style"
+        Variant="ButtonVariant.Outline"
+        disabled="@(!CanScrollPrev)"
+        @attributes=Attributes
+        @onclick="OnClickHandler">
+    @if (ChildContent == null)
+    {
+        <LucideIcon Name="IconName.ArrowLeft" Class="h-4 w-4 text-current" />
+    }
+    <span class="sr-only">Previous Slide</span>
+</Button>
+
+@code {
+    [CascadingParameter]
+    Carousel? Carousel { get; set; }
+
+    const string BaseClasses = "touch-manipulation absolute h-8 w-8 rounded-full p-0";
+
+    Orientation? Orientation => Carousel?.Orientation;
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(BaseClasses)
+        .AddClass("-left-12 top-1/2 -translate-y-1/2", Orientation == ShadcnBlazor.Orientation.Horizontal)
+        .AddClass("-top-12 left-1/2 -translate-x-1/2 rotate-90", Orientation == ShadcnBlazor.Orientation.Vertical)
+        .Build();
+    bool CanScrollPrev => Carousel?.CanScrollPrev ?? false;
+    protected override void OnInitialized()
+    {
+        if (Carousel != null)
+        {
+            Carousel.OnStateChanged += () => InvokeAsync(StateHasChanged);
+        }
+    }
+    async Task OnClickHandler()
+    {
+        await Carousel?.ScrollPrevAsync();
+    }
+}

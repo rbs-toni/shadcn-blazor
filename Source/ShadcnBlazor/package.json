@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@floating-ui/dom": "^1.7.0",
+    "embla-carousel": "^8.6.0",
     "esbuild": "^0.25.3",
     "lodash-es": "^4.17.21"
   }

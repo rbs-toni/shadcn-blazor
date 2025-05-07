@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
 namespace ShadcnBlazor;
@@ -45,12 +46,20 @@ public abstract class ShadcnJSComponentBase : ShadcnComponentBase, IAsyncDisposa
     /// </summary>
     protected async ValueTask<TValue?> InvokeAsync<TValue>(string identifier, params object?[]? args)
     {
-        if (!JSAvailable || _jsModule is null)
+        try
         {
-            return default;
-        }
+            if (!JSAvailable || _jsModule is null)
+            {
+                return default;
+            }
 
-        return await _jsModule.InvokeAsync<TValue>(identifier, args);
+            return await _jsModule.InvokeAsync<TValue>(identifier, args);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex.Message, ex);
+            throw;
+        }
     }
     /// <summary>
     /// Invokes a JS function that returns no result.
@@ -80,8 +89,9 @@ public abstract class ShadcnJSComponentBase : ShadcnComponentBase, IAsyncDisposa
                 await OnAfterImportAsync();
             }
         }
-        catch
+        catch(Exception ex)
         {
+            Console.WriteLine($"{ex.Message}");
             JSAvailable = false;
         }
     }

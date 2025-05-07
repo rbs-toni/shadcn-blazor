@@ -1,0 +1,32 @@
+﻿@page "/docs/components/carousel"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Carousel.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Carousel" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["A carousel with motion and swipe built using Embla."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_carouselDefault"
+                 CodePath="CarouselDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Carousel");
+    SlotComponent _carouselDefault = new SlotComponent(typeof(CarouselDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Carousel",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

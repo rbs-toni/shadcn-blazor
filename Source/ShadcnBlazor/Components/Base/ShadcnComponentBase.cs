@@ -1,8 +1,14 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 
 namespace ShadcnBlazor;
 public abstract class ShadcnComponentBase : ComponentBase
 {
+    [Inject]
+    ILoggerFactory LoggerFactory { get; set; } = default!;
+    ILogger? _logger;
+    protected ILogger Logger => _logger ??= LoggerFactory.CreateLogger(GetType());
+
     ElementReference _ref;
 
     /// <summary>

@@ -36,9 +36,6 @@ public static class NavigationUtils
                 .Select(m => m.TrimStart('/'))
                 .ToList();
 
-            foreach (var m in normalizedMatches)
-                Console.WriteLine($"    - {m}");
-
             if (normalizedMatches.Contains(normalizedPath, StringComparer.OrdinalIgnoreCase))
             {
                 return true;
