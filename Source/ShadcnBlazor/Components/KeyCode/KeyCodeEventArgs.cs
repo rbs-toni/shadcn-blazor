@@ -1,9 +1,9 @@
 namespace ShadcnBlazor;
-public class ShadcnKeyCodeEventArgs
+public class KeyCodeEventArgs
 {
-    internal static ShadcnKeyCodeEventArgs Instance(string name, int keyCode, string value, bool ctrlKey, bool shiftKey, bool altKey, bool metaKey, int location, string targetId, bool repeat)
+    internal static KeyCodeEventArgs Instance(string name, int keyCode, string value, bool ctrlKey, bool shiftKey, bool altKey, bool metaKey, int location, string targetId, bool repeat)
     {
-        return new ShadcnKeyCodeEventArgs
+        return new KeyCodeEventArgs
         {
             Name = name,
             Location = Enum.IsDefined(typeof(KeyLocation), location) ? (KeyLocation)location : KeyLocation.Unknown,

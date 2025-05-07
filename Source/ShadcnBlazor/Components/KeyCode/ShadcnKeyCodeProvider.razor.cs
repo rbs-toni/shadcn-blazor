@@ -19,14 +19,14 @@ public partial class ShadcnKeyCodeProvider : IDisposable
     {
         KeyCodeService.Clear();
     }
-    void KeyDownHandler(ShadcnKeyCodeEventArgs args)
+    void KeyDownHandler(KeyCodeEventArgs args)
     {
         foreach (var listener in KeyCodeService.Listeners)
         {
             listener.OnKeyDownAsync(args);
         }
     }
-    void KeyUpHandler(ShadcnKeyCodeEventArgs args)
+    void KeyUpHandler(KeyCodeEventArgs args)
     {
         foreach (var listener in KeyCodeService.Listeners)
         {

@@ -43,8 +43,8 @@ public class KeyCodeService : IKeyCodeService
         }
     }
 
-    /// <inheritdoc cref="IKeyCodeService.RegisterListener(Func{ShadcnKeyCodeEventArgs, Task})" />
-    public Guid RegisterListener(Func<ShadcnKeyCodeEventArgs, Task> handler)
+    /// <inheritdoc cref="IKeyCodeService.RegisterListener(Func{KeyCodeEventArgs, Task})" />
+    public Guid RegisterListener(Func<KeyCodeEventArgs, Task> handler)
     {
         ServiceLock.EnterWriteLock();
         try
@@ -60,8 +60,8 @@ public class KeyCodeService : IKeyCodeService
         }
     }
 
-    /// <inheritdoc cref="IKeyCodeService.RegisterListener(Func{ShadcnKeyCodeEventArgs, Task}, Func{ShadcnKeyCodeEventArgs, Task})" />
-    public Guid RegisterListener(Func<ShadcnKeyCodeEventArgs, Task> keyDownHandler, Func<ShadcnKeyCodeEventArgs, Task> keyUpHandler)
+    /// <inheritdoc cref="IKeyCodeService.RegisterListener(Func{KeyCodeEventArgs, Task}, Func{KeyCodeEventArgs, Task})" />
+    public Guid RegisterListener(Func<KeyCodeEventArgs, Task> keyDownHandler, Func<KeyCodeEventArgs, Task> keyUpHandler)
     {
         ServiceLock.EnterWriteLock();
         try
@@ -88,8 +88,8 @@ public class KeyCodeService : IKeyCodeService
         }
     }
 
-    /// <inheritdoc cref="IKeyCodeService.UnregisterListener(Func{ShadcnKeyCodeEventArgs, Task})" />
-    public void UnregisterListener(Func<ShadcnKeyCodeEventArgs, Task> handler)
+    /// <inheritdoc cref="IKeyCodeService.UnregisterListener(Func{KeyCodeEventArgs, Task})" />
+    public void UnregisterListener(Func<KeyCodeEventArgs, Task> handler)
     {
         var item = ListenerList.FirstOrDefault(i => (i.Item2 as KeyCodeListener)?.HandlerKeyDown == handler);
 
@@ -99,8 +99,8 @@ public class KeyCodeService : IKeyCodeService
         }
     }
 
-    /// <inheritdoc cref="IKeyCodeService.UnregisterListener(Func{ShadcnKeyCodeEventArgs, Task}, Func{ShadcnKeyCodeEventArgs, Task})" />
-    public void UnregisterListener(Func<ShadcnKeyCodeEventArgs, Task> keyDownHandler, Func<ShadcnKeyCodeEventArgs, Task> keyUpHandler)
+    /// <inheritdoc cref="IKeyCodeService.UnregisterListener(Func{KeyCodeEventArgs, Task}, Func{KeyCodeEventArgs, Task})" />
+    public void UnregisterListener(Func<KeyCodeEventArgs, Task> keyDownHandler, Func<KeyCodeEventArgs, Task> keyUpHandler)
     {
         var item = ListenerList.FirstOrDefault(i => (i.Item2 as KeyCodeListener)?.HandlerKeyDown == keyDownHandler);
 
@@ -129,17 +129,17 @@ public class KeyCodeService : IKeyCodeService
     /// </summary>
     private class KeyCodeListener : IKeyCodeListener
     {
-        public KeyCodeListener(Func<ShadcnKeyCodeEventArgs, Task> handlerKeyDown, Func<ShadcnKeyCodeEventArgs, Task>? handlerKeyUp)
+        public KeyCodeListener(Func<KeyCodeEventArgs, Task> handlerKeyDown, Func<KeyCodeEventArgs, Task>? handlerKeyUp)
         {
             HandlerKeyDown = handlerKeyDown;
             HandlerKeyUp = handlerKeyUp;
         }
 
-        public Func<ShadcnKeyCodeEventArgs, Task> HandlerKeyDown { get; }
+        public Func<KeyCodeEventArgs, Task> HandlerKeyDown { get; }
 
-        public Func<ShadcnKeyCodeEventArgs, Task>? HandlerKeyUp { get; }
+        public Func<KeyCodeEventArgs, Task>? HandlerKeyUp { get; }
 
-        public Task OnKeyDownAsync(ShadcnKeyCodeEventArgs args)
+        public Task OnKeyDownAsync(KeyCodeEventArgs args)
         {
             if (HandlerKeyDown != null)
             {
@@ -149,7 +149,7 @@ public class KeyCodeService : IKeyCodeService
             return Task.CompletedTask;
         }
 
-        public Task OnKeyUpAsync(ShadcnKeyCodeEventArgs args)
+        public Task OnKeyUpAsync(KeyCodeEventArgs args)
         {
             if (HandlerKeyUp != null)
             {

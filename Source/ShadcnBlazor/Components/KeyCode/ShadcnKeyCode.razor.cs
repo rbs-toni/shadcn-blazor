@@ -53,12 +53,12 @@ public partial class ShadcnKeyCode : IAsyncDisposable
     /// Event triggered when a KeyDown event is raised.
     /// </summary>
     [Parameter]
-    public EventCallback<ShadcnKeyCodeEventArgs> OnKeyDown { get; set; }
+    public EventCallback<KeyCodeEventArgs> OnKeyDown { get; set; }
     /// <summary>
     /// Event triggered when a KeyUp event is raised.
     /// </summary>
     [Parameter]
-    public EventCallback<ShadcnKeyCodeEventArgs> OnKeyUp { get; set; }
+    public EventCallback<KeyCodeEventArgs> OnKeyUp { get; set; }
     /// <summary>
     /// Gets or sets the list of <see cref="KeyCode"/> to accept, and only this list, when evaluating the key code.
     /// </summary>
@@ -125,7 +125,7 @@ public partial class ShadcnKeyCode : IAsyncDisposable
     {
         if (OnKeyDown.HasDelegate)
         {
-            await OnKeyDown.InvokeAsync(ShadcnKeyCodeEventArgs.Instance("keydown", keyCode, value, ctrlKey, shiftKey, altKey, metaKey, location, targetId, repeat));
+            await OnKeyDown.InvokeAsync(KeyCodeEventArgs.Instance("keydown", keyCode, value, ctrlKey, shiftKey, altKey, metaKey, location, targetId, repeat));
         }
     }
     /// <summary>
@@ -146,7 +146,7 @@ public partial class ShadcnKeyCode : IAsyncDisposable
     {
         if (OnKeyUp.HasDelegate)
         {
-            await OnKeyUp.InvokeAsync(ShadcnKeyCodeEventArgs.Instance("keyup", keyCode, value, ctrlKey, shiftKey, altKey, metaKey, location, targetId, repeat));
+            await OnKeyUp.InvokeAsync(KeyCodeEventArgs.Instance("keyup", keyCode, value, ctrlKey, shiftKey, altKey, metaKey, location, targetId, repeat));
         }
     }
     /// <summary />

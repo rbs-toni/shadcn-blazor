@@ -26,7 +26,7 @@ public interface IKeyCodeService
     /// </summary>
     /// <param name="handler"></param>
     /// <returns></returns>
-    Guid RegisterListener(Func<ShadcnKeyCodeEventArgs, Task> handler);
+    Guid RegisterListener(Func<KeyCodeEventArgs, Task> handler);
 
     /// <summary>
     /// Register the <paramref name="handlerKeyDown"/> and <paramref name="handlerKeyUp"/> methods as a listener, and returns a unique identifier.
@@ -34,7 +34,7 @@ public interface IKeyCodeService
     /// <param name="handlerKeyDown"></param>
     /// <param name="handlerKeyUp"></param>
     /// <returns></returns>
-    Guid RegisterListener(Func<ShadcnKeyCodeEventArgs, Task> handlerKeyDown, Func<ShadcnKeyCodeEventArgs, Task> handlerKeyUp);
+    Guid RegisterListener(Func<KeyCodeEventArgs, Task> handlerKeyDown, Func<KeyCodeEventArgs, Task> handlerKeyUp);
 
     /// <summary>
     /// Unregister the listener component or page.
@@ -46,14 +46,14 @@ public interface IKeyCodeService
     /// Unregister the listener method.
     /// </summary>
     /// <param name="handler"></param>
-    void UnregisterListener(Func<ShadcnKeyCodeEventArgs, Task> handler);
+    void UnregisterListener(Func<KeyCodeEventArgs, Task> handler);
 
     /// <summary>
     /// Unregister the listener method.
     /// </summary>
     /// <param name="handlerKeyDown"></param>
     /// <param name="handlerKeyUp"></param>
-    void UnregisterListener(Func<ShadcnKeyCodeEventArgs, Task> handlerKeyDown, Func<ShadcnKeyCodeEventArgs, Task> handlerKeyUp);
+    void UnregisterListener(Func<KeyCodeEventArgs, Task> handlerKeyDown, Func<KeyCodeEventArgs, Task> handlerKeyUp);
 
     /// <summary>
     /// Unregister all listeners.

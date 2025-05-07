@@ -10,12 +10,12 @@ public interface IKeyCodeListener
     /// </summary>
     /// <param name="args"></param>
     /// <returns></returns>
-    Task OnKeyDownAsync(ShadcnKeyCodeEventArgs args);
+    Task OnKeyDownAsync(KeyCodeEventArgs args);
 
     /// <summary>
     /// Method called when a key is unpressed.
     /// </summary>
     /// <param name="args"></param>
     /// <returns></returns>
-    Task OnKeyUpAsync(ShadcnKeyCodeEventArgs args);
+    Task OnKeyUpAsync(KeyCodeEventArgs args);
 }

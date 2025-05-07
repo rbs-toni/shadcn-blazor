@@ -1,0 +1,153 @@
+﻿@namespace ShadcnBlazor
+@using Microsoft.AspNetCore.Components.Forms
+@inherits ShadcnComponentBase
+
+@code {
+    /// <summary>
+    /// Gets the step index.
+    /// </summary>
+    public int Index { get; private set; } = 0;
+
+    /// <summary>
+    /// Gets or sets whether the step is disabled.
+    /// </summary>
+    [Parameter]
+    public bool Disabled { get; set; } = false;
+
+    /// <summary>
+    /// Render the Stepper Step content only when the Step is selected.
+    /// </summary>
+    [Parameter]
+    public bool DeferredLoading { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets the label of the step.
+    /// </summary>
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Display a number the step icon.
+    /// By default, this is the <see cref="Stepper.DisplayStepNumber"/> value.
+    /// </summary>
+    [Parameter]
+    public bool? DisplayStepNumber { get; set; }
+
+    /// <summary>
+    /// The OnChange event fires before the current step has changed.
+    /// The EventArgs contains a field of the targeted new step and a field to cancel the build-in action.
+    /// </summary>
+    [Parameter]
+    public EventCallback<StepperStepChangeEventArgs> OnChange { get; set; }
+
+    /// <summary>
+    /// Reference to the parent <see cref="Stepper"/> component.
+    /// For internal use only
+    /// </summary>
+    [CascadingParameter]
+    Stepper Stepper { get; set; } = default!;
+
+    internal StepperStepStatus Status { get; set; } = StepperStepStatus.Next;
+
+
+    protected override void OnInitialized()
+    {
+        if (Stepper == null)
+        {
+            throw new ArgumentException("The StepperStep must be included in the Stepper component.");
+        }
+
+        Index = Stepper.AddStep(this);
+        base.OnInitialized();
+    }
+
+    public void RegisterEditFormAndContext(EditForm editForm, EditContext editContext)
+    {
+        if (!_editForms.ContainsKey(editForm))
+        {
+            _editForms.Add(editForm, editContext);
+        }
+    }
+
+    public void ClearEditFormAndContext()
+    {
+        _editForms.Clear();
+    }
+
+    public bool ValidateEditContexts()
+    {
+        var isValid = true;
+        foreach (var editForm in _editForms)
+        {
+            var contextIsValid = editForm.Value.Validate();
+            if (!contextIsValid)
+            {
+                isValid = false;
+            }
+        }
+        return isValid;
+    }
+
+    internal async Task InvokeOnValidSubmitForEditFormsAsync()
+    {
+        foreach (var editForm in _editForms)
+        {
+            await editForm.Key.OnValidSubmit.InvokeAsync(editForm.Value);
+        }
+    }
+
+    internal async Task InvokeOnInValidSubmitForEditFormsAsync()
+    {
+        foreach (var editForm in _editForms)
+        {
+            await editForm.Key.OnInvalidSubmit.InvokeAsync(editForm.Value);
+        }
+    }
+
+    internal async Task InvokeOnSubmitForEditFormsAsync()
+    {
+        foreach (var editForm in _editForms)
+        {
+            await editForm.Key.OnSubmit.InvokeAsync(editForm.Value);
+        }
+    }
+
+    private async Task OnClickHandlerAsync()
+    {
+        if (!IsStepClickable)
+        {
+            return;
+        }
+
+        await Stepper.ValidateAndGoToStepAsync(Index, validateEditContexts: Index > Stepper.Value);
+    }
+    private readonly Dictionary<EditForm, EditContext> _editForms = new Dictionary<EditForm, EditContext>();
+
+    private bool IsStepClickable
+    {
+        get
+        {
+            if (Disabled)
+            {
+                return false;
+            }
+
+            if (Stepper.Value == Index)
+            {
+                return false;
+            }
+
+            if (Stepper.Linear)
+            {
+                return false;
+            }
+
+            if (Index > Stepper._maxStepVisited)
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
+}

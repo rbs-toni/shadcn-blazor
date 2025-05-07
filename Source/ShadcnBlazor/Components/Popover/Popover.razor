@@ -1,0 +1,47 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnJSComponentBase
+
+@if (Open)
+{
+    <Teleport>
+        @if (CloseKeys != null && CloseKeys.Any())
+        {
+            // Button or AnchorId element
+            if (!string.IsNullOrEmpty(AnchorId))
+            {
+                <ShadcnKeyCode Anchor="@AnchorId"
+                               Only="@CloseAndTabKeys"
+                               OnKeyDown="@CloseOnKeyAsync"
+                               PreventDefaultOnly="@(AutoFocus ? CloseAndTabKeys : CloseKeys)" />
+            }
+            // Popover content
+            if (!string.IsNullOrEmpty(Id))
+            {
+                <ShadcnKeyCode Anchor="@Id"
+                               Only="@CloseAndTabKeys"
+                               OnKeyDown="@CloseOnKeyAsync"
+                               PreventDefaultOnly="@CloseAndTabKeys" />
+            }
+        }
+        <Floating Id="@Id"
+                  Anchor="@AnchorId"
+                  @ref="_floating">
+            <div class="@ClassValue"
+                 data-state="@OpenValue"
+                 role="dialog"
+                 tabindex="-1">
+                @ChildContent
+            </div>
+        </Floating>
+    </Teleport>
+}
+
+@code {
+    const string DefaultClasses = "z-50 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--floating-ui-content-transform-origin] w-80";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses)
+        .Build();
+
+    string? OpenValue => Open ? "open" : "closed";
+}

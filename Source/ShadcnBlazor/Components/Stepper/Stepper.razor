@@ -1,0 +1,257 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<div id="@Id"
+     class="@(TwMerge.Merge(ClassValue))"
+     style="@Style"
+     role="group"
+     aria-label="progress"
+     data-linear="@Linear"
+     data-orientation="@Orientation.ToStringFast()"
+     @ref="Ref"
+     @attributes="Attributes">
+    @ChildContent
+</div>
+
+@code {
+    private readonly List<StepperItem> _steps = new();
+    private int _value = 0;
+    internal int _maxStepVisited = 0;
+
+    [Parameter]
+    public int Value
+    {
+        get
+        {
+            return _value;
+        }
+
+        set
+        {
+            if (value < 0 || _steps.Count <= 0)
+            {
+                _value = 0;
+            }
+            else if (value > _steps.Count - 1)
+            {
+                _value = _steps.Count - 1;
+            }
+            else
+            {
+                _value = value;
+            }
+
+            _maxStepVisited = Math.Max(_value, _maxStepVisited);
+
+            SetCurrentStatusToStep(_value);
+        }
+    }
+
+    /// <summary>
+    /// Triggers when the value has changed.
+    /// </summary>
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
+
+    [Parameter]
+    public Orientation Orientation { get; set; }
+
+    [Parameter]
+    public Direction Direction { get; set; }
+
+    [Parameter]
+    public bool Linear { get; set; }
+
+    protected virtual async Task OnNextHandlerAsync(MouseEventArgs e)
+    {
+        // Target step index
+        var targetIndex = Value;
+        do
+        {
+            targetIndex++;
+        }
+        while (_steps[targetIndex].Disabled && targetIndex < _steps.Count - 1);
+
+        // StepChange event
+        var stepChangeArgs = await OnStepChangeHandlerAsync(targetIndex, true);
+        var isCanceled = stepChangeArgs?.IsCancelled ?? false;
+
+        if (!isCanceled)
+        {
+            Value = targetIndex;
+            await ValueChanged.InvokeAsync(targetIndex);
+            StateHasChanged();
+        }
+    }
+
+    protected virtual async Task OnPreviousHandlerAsync(MouseEventArgs e)
+    {
+        // Target step index
+        var targetIndex = Value;
+        do
+        {
+            targetIndex--;
+        }
+        while (_steps[targetIndex].Disabled && targetIndex > 0);
+
+        // StepChange event
+        var stepChangeArgs = await OnStepChangeHandlerAsync(targetIndex, false);
+        var isCanceled = stepChangeArgs?.IsCancelled ?? false;
+
+        if (!isCanceled)
+        {
+            Value = targetIndex;
+            await ValueChanged.InvokeAsync(targetIndex);
+            StateHasChanged();
+        }
+    }
+
+    protected virtual async Task<StepperStepChangeEventArgs> OnStepChangeHandlerAsync(int targetIndex, bool validateEditContexts)
+    {
+        var stepChangeArgs = new StepperStepChangeEventArgs(targetIndex, _steps[targetIndex].Label);
+
+        if (validateEditContexts)
+        {
+            var allEditContextsAreValid = _steps[Value].ValidateEditContexts();
+            stepChangeArgs.IsCancelled = !allEditContextsAreValid;
+
+            if (!allEditContextsAreValid)
+            {
+                await _steps[Value].InvokeOnInValidSubmitForEditFormsAsync();
+            }
+            if (!stepChangeArgs.IsCancelled && allEditContextsAreValid)
+            {
+                // Invoke the 'OnValidSubmit' handlers for the Edit Forms
+                await _steps[Value].InvokeOnValidSubmitForEditFormsAsync();
+            }
+
+            await _steps[Value].InvokeOnSubmitForEditFormsAsync();
+        }
+
+        return await OnStepChangeHandlerAsync(stepChangeArgs);
+    }
+
+    protected virtual async Task<StepperStepChangeEventArgs> OnStepChangeHandlerAsync(StepperStepChangeEventArgs args)
+    {
+        if (_steps[Value].OnChange.HasDelegate)
+        {
+            await _steps[Value].OnChange.InvokeAsync(args);
+        }
+
+        if (_steps[Value].DeferredLoading && !args.IsCancelled)
+        {
+            _steps[Value].ClearEditFormAndContext();
+        }
+
+        return args;
+    }
+
+    protected virtual async Task OnFinishHandlerAsync(MouseEventArgs e)
+    {
+        // Validate any form edit contexts
+        var allEditContextsAreValid = _steps[Value].ValidateEditContexts();
+        if (!allEditContextsAreValid)
+        {
+            // Invoke the 'OnInvalidSubmit' handlers for the edit forms.
+            await _steps[Value].InvokeOnInValidSubmitForEditFormsAsync();
+            return;
+        }
+
+        // Invoke the 'OnValidSubmit' handlers for the edit forms.
+        await _steps[Value].InvokeOnValidSubmitForEditFormsAsync();
+        await _steps[Value].InvokeOnSubmitForEditFormsAsync();
+
+        _steps[Value].Status = StepperStepStatus.Previous;
+
+        if (OnFinish.HasDelegate)
+        {
+            await OnFinish.InvokeAsync();
+        }
+    }
+
+    /// <summary>
+    /// Navigate to the specified step, with or without validate the current EditContexts.
+    /// </summary>
+    /// <param name="step">Index number of the step to display</param>
+    /// <param name="validateEditContexts">Validate the EditContext. Default is false.</param>
+    /// <returns></returns>
+    public Task GoToStepAsync(int step, bool validateEditContexts = false)
+    {
+        return ValidateAndGoToStepAsync(step, validateEditContexts);
+    }
+
+    internal async Task ValidateAndGoToStepAsync(int targetIndex, bool validateEditContexts)
+    {
+        var stepChangeArgs = await OnStepChangeHandlerAsync(targetIndex, validateEditContexts);
+        var isCanceled = stepChangeArgs?.IsCancelled ?? false;
+
+        if (!isCanceled)
+        {
+            Value = targetIndex;
+            await ValueChanged.InvokeAsync(targetIndex);
+            StateHasChanged();
+        }
+    }
+
+    internal int AddStep(StepperItem step)
+    {
+        _steps.Add(step);
+        var index = _steps.Count - 1;
+
+        if (index == Value)
+        {
+            SetCurrentStatusToStep(index);
+        }
+
+        StateHasChanged();
+
+        return index;
+    }
+
+    private void SetCurrentStatusToStep(int stepIndex)
+    {
+        for (var i = 0; i < _steps.Count; i++)
+        {
+            // Step disabled
+            if (_steps[i].Disabled)
+            {
+                _steps[i].Status = StepperStepStatus.Next;
+            }
+
+            // Step enabled
+            else
+            {
+                if (i < stepIndex)
+                {
+                    _steps[i].Status = StepperStepStatus.Previous;
+                }
+                else if (i == stepIndex)
+                {
+                    _steps[i].Status = StepperStepStatus.Current;
+                }
+                else if (i > stepIndex)
+                {
+                    _steps[i].Status = StepperStepStatus.Next;
+                }
+                else
+                {
+                    _steps[i].Status = StepperStepStatus.Next;
+                }
+            }
+        }
+    }
+
+    private bool DisplayPreviousButton => Value > 0 && _steps[..Value].Any(i => !i.Disabled);
+
+    private bool DisplayNextButton => Value < _steps.Count - 1 && _steps[(Value + 1)..].Any(i => !i.Disabled);
+
+    /// <summary>
+    /// Triggers when the done button is clicked.
+    /// </summary>
+    [Parameter]
+    public EventCallback OnFinish { get; set; }
+
+    string? ClassValue => new CssBuilder(Class).AddClass("flex gap-2").Build();
+}

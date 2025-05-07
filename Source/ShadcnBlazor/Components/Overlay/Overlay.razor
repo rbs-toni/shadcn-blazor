@@ -1,0 +1,24 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+@if (Open)
+{
+    <div id="@Id"
+         class="@ClassValue"
+         style="@Style"
+         @ref=Ref
+         @attributes=Attributes
+         @onclick="@OnCloseHandlerAsync"
+         @oncontextmenu="@OnCloseHandlerAsync"
+         @oncontextmenu:preventDefault="true">
+        @ChildContent
+    </div>
+}
+
+@code {
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("fixed inset-0","absolute", FullScreen)
+        .AddClass("cursor-auto","cursor-default", Transparent)
+        .AddClass("pointer-events-none", Interactive)
+        .Build();
+}

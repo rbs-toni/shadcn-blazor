@@ -1,0 +1,25 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<button id="@Id"
+        style="@Style"
+        data-state=""
+        disabled=""
+        data-disabled=""
+        data-orientation=""
+        tabindex=""
+        aria-describedby=""
+        aria-labelledby=""
+        @ref=Ref
+        @attributes=Attributes>
+    @ChildContent
+</button>
+
+@code {
+    const string DefaultClasses = "p-2 flex flex-col items-center text-center gap-2 rounded-md";
+    const string NewYorkClasses = "";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+        .Build();
+}

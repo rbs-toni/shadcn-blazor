@@ -67,7 +67,7 @@ public readonly struct StyleBuilder
     {
         var allStyles = string.IsNullOrWhiteSpace(_userStyles)
                       ? _styles
-                      : _styles.Union(new[] { _userStyles });
+                      : _styles.Union([_userStyles]);
 
         if (!allStyles.Any())
         {

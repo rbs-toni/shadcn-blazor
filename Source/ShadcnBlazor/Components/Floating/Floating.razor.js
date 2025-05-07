@@ -1,6 +1,50 @@
-﻿import { computePosition, autoUpdate, offset } from '../../modules/floating-ui.min.js'
+﻿import { computePosition, autoUpdate, offset, flip, shift, size } from '../../modules/floating-ui.min.js'
 
 const instances = new Map()
+function getSideAndAlignFromPlacement(placement) {
+  const [side, align = 'center'] = placement.split('-')
+  return [side, align]
+}
+
+function transformOrigin(options) {
+  return {
+    name: 'transformOrigin',
+    options: options,
+    fn: function (data) {
+      const { placement, rects, middlewareData } = data
+
+      const cannotCenterArrow = middlewareData.arrow?.centerOffset !== 0
+      const isArrowHidden = cannotCenterArrow
+      const arrowWidth = isArrowHidden ? 0 : options.arrowWidth
+      const arrowHeight = isArrowHidden ? 0 : options.arrowHeight
+
+      const [placedSide, placedAlign] = getSideAndAlignFromPlacement(placement)
+      const noArrowAlign = { start: '0%', center: '50%', end: '100%' }[placedAlign]
+
+      const arrowXCenter = (middlewareData.arrow?.x || 0) + arrowWidth / 2
+      const arrowYCenter = (middlewareData.arrow?.y || 0) + arrowHeight / 2
+
+      let x = ''
+      let y = ''
+
+      if (placedSide === 'bottom') {
+        x = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`
+        y = `${-arrowHeight}px`
+      } else if (placedSide === 'top') {
+        x = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`
+        y = `${rects.floating.height + arrowHeight}px`
+      } else if (placedSide === 'right') {
+        x = `${-arrowHeight}px`
+        y = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`
+      } else if (placedSide === 'left') {
+        x = `${rects.floating.width + arrowHeight}px`
+        y = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`
+      }
+
+      return { data: { x, y } }
+    }
+  }
+}
 
 export function init(referenceId, floatingId, options = {}) {
   const referenceEl = document.getElementById(referenceId)
@@ -20,16 +64,31 @@ export function init(referenceId, floatingId, options = {}) {
     strategy: options.strategy || 'absolute',
     middleware: []
   }
-  console.log(options)
+
   if (options.offset) {
     internalOptions.middleware.push(offset(options.offset))
   }
 
+  internalOptions.middleware.push(flip())
+  internalOptions.middleware.push(shift())
+  internalOptions.middleware.push(transformOrigin())
+  internalOptions.middleware.push(size({
+    apply: ({ elements, rects, availableWidth, availableHeight }) => {
+      const { width: anchorWidth, height: anchorHeight } = rects.reference
+      const contentStyle = elements.floating.style
+      contentStyle.setProperty('--floating-ui-available-width', `${availableWidth}px`)
+      contentStyle.setProperty('--floating-ui-available-height', `${availableHeight}px`)
+      contentStyle.setProperty('--floating-ui-anchor-width', `${anchorWidth}px`)
+      contentStyle.setProperty('--floating-ui-anchor-height', `${anchorHeight}px`)
+    },
+  }))
+
   function updatePosition() {
     computePosition(referenceEl, floatingEl, internalOptions)
-      .then(({ x, y }) => {
+      .then(({ x, y, placement, strategy, middlewareData }) => {
         floatingEl.style.left = `${x}px`
         floatingEl.style.top = `${y}px`
+        floatingEl.style.setProperty('--floating-ui-transform-origin', `${middlewareData.transformOrigin?.x}, ${middlewareData.transformOrigin?.y}`)
       })
       .catch(console.error)
   }
@@ -66,7 +125,7 @@ export function changeOptions(floatingId, options) {
     .catch(console.error)
 }
 
-export function destroyFloating(floatingId) {
+export function dispose(floatingId) {
   if (instances.has(floatingId)) {
     instances.get(floatingId).cleanup()
     instances.delete(floatingId)
