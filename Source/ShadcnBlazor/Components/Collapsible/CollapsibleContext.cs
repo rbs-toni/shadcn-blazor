@@ -1,17 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ShadcnBlazor;
 class CollapsibleContext
 {
-    public string? ContentId { get; set; }
-    public bool Disabled { get; set; }
-    public bool Open { get; set; }
-    public void ToggleOpen()
+    readonly Collapsible _collapsible;
+
+    public CollapsibleContext(Collapsible collapsible)
     {
-        Open = !Open;
+        _collapsible = collapsible;
+        ContentId = Identifier.NewId();
+    }
+    public string ContentId { get; }
+    public bool Open => _collapsible.Open;
+    public bool Disabled => _collapsible.Disabled;
+    public async Task ToggleOpenAsync()
+    {
+        await _collapsible.ToggleOpenAsync();
     }
 }

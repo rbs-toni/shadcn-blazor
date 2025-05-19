@@ -1,4 +1,4 @@
-﻿export function init(id, dotnet, method) {
+﻿export function init(id, modal, dotnet, method) {
   if (!document.popoverData) {
     document.popoverData = {}
   }
@@ -8,10 +8,12 @@
   }
 
   document.popoverData[id] = {
-    clickHandler: async function (event) {
-      const isInside = !!document.getElementById(id) && isClickInsideContainer(event, document.getElementById(id))
-      if (!isInside) {
-        dotnet.invokeMethodAsync(method, event)
+    clickHandler: function (event) {
+      if (!modal) {
+        const isInside = !!document.getElementById(id) && isClickInsideContainer(event, document.getElementById(id))
+        if (!isInside) {
+          dotnet.invokeMethodAsync(method, event)
+        }
       }
     }
   }

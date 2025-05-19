@@ -1,0 +1,11 @@
+﻿@namespace ShadcnBlazor
+@inherits ScrollAreaRoot
+@inject TwMerge TwMerge
+
+<ScrollAreaRoot Class="@TwMerge.Merge("relative overflow-hidden", Class)" @attributes="Attributes">
+    <ScrollAreaViewport Class="h-full w-full rounded-[inherit]">
+        @ChildContent
+    </ScrollAreaViewport>
+    <ScrollBar />
+    <ScrollAreaCorner />
+</ScrollAreaRoot>

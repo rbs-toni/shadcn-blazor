@@ -1,0 +1,23 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+
+@if (Visible)
+{
+    <div class="sonner-loading-wrapper" data-visible="@Visible.ToAttributeValue()">
+        <div class="sonner-spinner">
+            @for (int i = 0; i < 12; i++)
+            {
+                <div class="sonner-loading-bar" @key="@($"spinner-bar-{i}")"></div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+}

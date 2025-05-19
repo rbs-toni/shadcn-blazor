@@ -4,7 +4,7 @@ namespace ShadcnBlazor;
 
 public readonly struct InlineStyleBuilder
 {
-    private readonly Dictionary<string, StyleBuilder> _styles;
+    readonly Dictionary<string, StyleBuilder> _styles;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InlineStyleBuilder"/> class.
@@ -92,7 +92,7 @@ public readonly struct InlineStyleBuilder
     /// <param name="prop"></param>
     /// <param name="value"></param>
     /// <returns>StyleBuilder</returns>
-    private InlineStyleBuilder AddRaw(string name, string prop, string? value)
+    InlineStyleBuilder AddRaw(string name, string prop, string? value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {

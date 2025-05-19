@@ -1,0 +1,38 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+
+<CascadingValue Value="_context" IsFixed="true">
+    @if (RootContext?.ScrollType == ScrollType.Hover)
+    {
+        <ScrollAreaScrollbarHover Ref="@Ref" @attributes="Attributes" Class="@Class">
+            @ChildContent
+        </ScrollAreaScrollbarHover>
+    }
+    else if (RootContext?.ScrollType == ScrollType.Scroll)
+    {
+        <ScrollAreaScrollbarScroll Ref="@Ref" @attributes="Attributes" Class="@Class">
+            @ChildContent
+        </ScrollAreaScrollbarScroll>
+    }
+    else if (RootContext?.ScrollType == ScrollType.Auto)
+    {
+        <ScrollAreaScrollbarAuto Ref="@Ref" @attributes="Attributes" Class="@Class">
+            @ChildContent
+        </ScrollAreaScrollbarAuto>
+    }
+    else if (RootContext?.ScrollType == ScrollType.Always)
+    {
+        <ScrollAreaScrollbarVisible Ref="@Ref" @attributes="Attributes" Class="@Class">
+            @ChildContent
+        </ScrollAreaScrollbarVisible>
+    }
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public Orientation Orientation { get; set; } = Orientation.Vertical;
+
+    [CascadingParameter]
+    ScrollAreaRootContext? RootContext { get; set; }
+}

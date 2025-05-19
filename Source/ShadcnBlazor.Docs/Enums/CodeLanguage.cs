@@ -22,7 +22,7 @@ public static class CodeLanguageExtensions
         {
             CodeLanguage.Bash => "bash",
             CodeLanguage.CSharp => "cs",
-            CodeLanguage.CSHTML => "cshtml",
+            CodeLanguage.CSHTML => "razor",
             CodeLanguage.CSS => "css",
             CodeLanguage.JavaScript => "js",
             CodeLanguage.JSON => "json",

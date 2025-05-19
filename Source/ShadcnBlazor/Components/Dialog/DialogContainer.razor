@@ -1,0 +1,8 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<CascadingValue Value="(IDialogInstanceInternal)this" IsFixed="true">
+    <CascadingValue Value="_context" IsFixed="true">
+        @ChildContent
+    </CascadingValue>
+</CascadingValue>

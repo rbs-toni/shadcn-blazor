@@ -12,8 +12,9 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
     protected TItem? _currentSelectedItem;
     protected string? _internalValue;
     protected List<TItem> _selectedItems = [];
-    const string JSFile = "./_content/ShadcnBlazor/Components/Select/Select.razor.js";
+    const string JS_FILE = "./_content/ShadcnBlazor/Components/Select/Select.razor.js";
     bool _hasInitializedParameters;
+    IJSObjectReference? _jsModule;
     bool _multiple;
 
     public Select()
@@ -41,7 +42,6 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
                 SelectedItemsExpression is not null;
         }
     }
-
     protected string? InternalValue
     {
         get { return GetItemValue(SelectedItem) ?? _internalValue; }
@@ -63,13 +63,9 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
             _internalValue = value;
         }
     }
-
     protected override string? StyleValue => new StyleBuilder(Style)
         .AddStyle("width", Width, when: !string.IsNullOrEmpty(Width))
         .Build();
-
-    IJSObjectReference? _jsModule { get; set; }
-
     [Inject] IJSRuntime JSRuntime { get; set; } = default!;
 
     public async ValueTask DisposeAsync()
@@ -87,7 +83,6 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
             // the client disconnected. This is not an error.
         }
     }
-
     public override async Task SetParametersAsync(ParameterView parameters)
     {
         parameters.SetParameterProperties(this);
@@ -206,7 +201,6 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
 
         await base.SetParametersAsync(ParameterView.Empty);
     }
-
     protected virtual void AddSelectedItem(TItem? item)
     {
         if (item == null)
@@ -216,12 +210,10 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
 
         _selectedItems.Add(item);
     }
-
     protected virtual bool DisabledItem(TItem item)
     {
         return Disabled;  // To allow overrides
     }
-
     protected override string? FormatValueAsString(string? value)
     {
         // We special-case bool values because BindConverter reserves bool conversion for conditional attributes.
@@ -236,7 +228,6 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
 
         return base.FormatValueAsString(value);
     }
-
     protected virtual bool? GetItemDisabled(TItem? item)
     {
         if (item != null)
@@ -248,7 +239,6 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
         }
         return null;
     }
-
     protected virtual bool GetItemSelected(TItem item)
     {
         if (Multiple)
@@ -298,7 +288,6 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
             }
         }
     }
-
     protected virtual string? GetItemText(TItem? item)
     {
         if (item != null)
@@ -310,7 +299,6 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
             return null;
         }
     }
-
     protected virtual string? GetItemValue(TItem? item)
     {
         if (item != null)
@@ -322,15 +310,13 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
             return null;
         }
     }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _jsModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import", JSFile);
+            _jsModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import", JS_FILE);
         }
     }
-
     protected override void OnInitialized()
     {
         if (_multiple != Multiple)
@@ -343,7 +329,6 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
             Id = Identifier.NewId();
         }
     }
-
     protected virtual async Task OnKeydownHandlerAsync(KeyboardEventArgs e)
     {
         if (e is null || Multiple)
@@ -370,7 +355,6 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
             //await item.OnClickHandlerAsync();
         }
     }
-
     protected override void OnParametersSet()
     {
         if (Items is null)
@@ -424,10 +408,8 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
             }
         }
     }
-
     protected EventCallback<string> OnSelectCallback(TItem? item)
     { return EventCallback.Factory.Create<string>(this, (e) => OnSelectedItemChangedHandlerAsync(item)); }
-
     protected virtual async Task OnSelectedItemChangedHandlerAsync(TItem? item)
     {
         if (Disabled || item == null)
@@ -462,7 +444,6 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
             }
         }
     }
-
     protected virtual async Task RaiseChangedEventsAsync()
     {
         if (Multiple)
@@ -487,13 +468,11 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
 
         await base.ChangeHandlerAsync(new ChangeEventArgs() { Value = InternalValue });
     }
-
     protected virtual bool RemoveAllSelectedItems()
     {
         _selectedItems = [];
         return true;
     }
-
     protected virtual bool RemoveSelectedItem(TItem? item)
     {
         if (item == null)
@@ -503,7 +482,6 @@ public partial class Select<TItem> : ShadcnInputBase<string?>, IAsyncDisposable 
 
         return _selectedItems.Remove(item);
     }
-
     protected override bool TryParseValueFromString(
         string? value,
         [MaybeNullWhen(false)] out string? result,

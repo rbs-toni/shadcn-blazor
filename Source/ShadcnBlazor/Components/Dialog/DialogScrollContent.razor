@@ -1,0 +1,27 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<DialogOverlay />
+<div id="@Id"
+     class="@ClassValue"
+     style="@Style"
+     data-state="@Dialog?.OpenValueAsString"
+     @ref="Ref"
+     @attributes="Attributes">
+    @ChildContent
+    <DialogClose Class="absolute top-4 right-4 p-0.5 transition-colors rounded-md hover:bg-secondary">
+        <LucideIcon Name="IconName.X" Class="w-4 h-4" />
+        <span class="sr-only">Close</span>
+    </DialogClose>
+</div>
+
+@code {
+    [CascadingParameter]
+    Dialog? Dialog { get; set; }
+
+    const string DefaultClasses = "relative z-50 grid w-full max-w-lg my-8 gap-4 border border-border bg-background p-6 shadow-lg duration-200 sm:rounded-lg md:w-full";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses)
+        .Build();
+}

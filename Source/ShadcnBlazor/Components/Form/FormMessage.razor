@@ -1,0 +1,32 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+@typeparam TValue
+
+<p class="@(TwMerge.Merge(ClassValue))" style="@Style" @ref="Ref" @attributes="Attributes">
+    @if (IsErrorMultiple)
+    {
+        <ul class="list-disc">
+            @foreach (var message in ErrorMessages)
+            {
+                <li>@message</li>
+            }
+        </ul>
+    }
+    else
+    {
+        @ErrorMessages
+    }
+</p>
+
+@code {
+    const string DefaultClasses = "text-sm font-medium text-destructive";
+    const string NewYorkClasses = "text-[0.8rem] font-medium text-destructive";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+        .Build();
+
+    IEnumerable<string> ErrorMessages => CurrentEditContext.GetValidationMessages(_fieldIdentifier);
+    bool IsErrorMultiple => ErrorMessages.Count() > 0;
+}

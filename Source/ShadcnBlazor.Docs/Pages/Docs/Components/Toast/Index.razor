@@ -1,0 +1,34 @@
+﻿@page "/docs/components/toast"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Toast.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="@COMPONENT" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["A succinct message that is displayed temporarily."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_toastDefault"
+                 CodePath="ToastDefault.razor" />
+</DocsPageContent>
+
+@code {
+    const string COMPONENT = "Toast";
+
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection(COMPONENT);
+    ComponentTemplate _toastDefault = new ComponentTemplate(typeof(ToastDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: COMPONENT,
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

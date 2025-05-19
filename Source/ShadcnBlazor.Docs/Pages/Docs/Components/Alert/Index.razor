@@ -11,27 +11,26 @@
 
 <DocsPageContent>
     <DocsPreview PreviewComponent="@_alertDefault"
-                 CodePath="AlertDefault.razor" />
+    CodePath="AlertDefault.razor" />
 
     <DocsPageSection Title="Examples">
-        <DocsPageSection Title="Default " Level="3">
-            <DocsPreview PreviewComponent="@_alertDefault"
-                         CodePath="AlertDefault.razor" />
-        </DocsPageSection>
-        <DocsPageSection Title="Destructive" Level="3">
-            <DocsPreview PreviewComponent="@_alertDestructive"
-                         CodePath="AlertDestructive.razor" />
-        </DocsPageSection>
+        @foreach (var item in examples)
+        {
+            <DocsPageSection Title="@item.Title" Level="3">
+                <DocsPreview PreviewComponent="@item.Template"
+                             CodePath="@item.CodePath" />
+            </DocsPageSection>
+        }
     </DocsPageSection>
 </DocsPageContent>
 
 @code {
     [CascadingParameter]
     LayoutContext LayoutContext { get; set; } = default!;
-
+    const string Component = "Alert";
     BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Alert");
-    SlotComponent _alertDefault = new SlotComponent(typeof(AlertDefault));
-    SlotComponent _alertDestructive = new SlotComponent(typeof(AlertDestructive));
+    ComponentTemplate _alertDefault = new ComponentTemplate(typeof(AlertDefault));
+    ComponentTemplate _alertDestructive = new ComponentTemplate(typeof(AlertDestructive));
 
     protected override void OnInitialized()
     {
@@ -41,5 +40,18 @@
             useOutline: true,
             useFooterLinks: true);
     }
+
+    List<ComponentExample> examples = new List<ComponentExample>()
+    {
+        new ComponentExample(Component, "Primary", new ComponentTemplate(typeof(AlertPrimary))),
+        new ComponentExample(Component, "Destructive", new ComponentTemplate(typeof(AlertDestructive))),
+        new ComponentExample(Component, "Success", new ComponentTemplate(typeof(AlertSuccess))),
+        new ComponentExample(Component, "Warning", new ComponentTemplate(typeof(AlertWarning))),
+        new ComponentExample(Component, "Info", new ComponentTemplate(typeof(AlertInfo))),
+        new ComponentExample(Component, "Soft", new ComponentTemplate(typeof(AlertSoft))),
+        new ComponentExample(Component, "Bootstrap", new ComponentTemplate(typeof(AlertBootstrap))),
+        new ComponentExample(Component, "Callout", new ComponentTemplate(typeof(AlertCallout))),
+        new ComponentExample(Component, "With actions", new ComponentTemplate(typeof(AlertWithAction))),
+    };
 }
 

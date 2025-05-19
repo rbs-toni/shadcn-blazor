@@ -1,0 +1,34 @@
+﻿@page "/docs/components/popover"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Popover.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="@Component" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Displays rich content in a portal, triggered by a button."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_popoverDefault"
+    CodePath="PopoverDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    const string Component = "Popover";
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection(Component);
+    ComponentTemplate _popoverDefault = new ComponentTemplate(typeof(PopoverDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: Component,
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

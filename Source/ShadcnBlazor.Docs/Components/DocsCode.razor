@@ -4,20 +4,24 @@
 <div class=@ClassValue style="@Style" @attributes=Attributes>
     <div class="relative w-full rounded-md [&_pre]:my-0 [&_pre]:max-h-[350px] [&_pre]:overflow-auto">
         <div class="absolute mt-4 mr-4 top-0 end-0 flex items-center gap-2">
-            <span class="text-xs">@Language</span>
+            <span class="text-xs">@Language.FastString()</span>
             <DocsClipboardButton CodeTarget="@Id" />
         </div>
-        <pre class="mb-4 mt-12 max-h-[650px] overflow-x-auto rounded-xl py-4" tabindex="0">
-        <code id="@Id" class="@GetLang() relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm" @ref=Ref>
+        <pre class="max-h-[650px] overflow-x-auto rounded-xl" tabindex="0">
+            <code id="@Id" class="@GetLang() relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm" @ref="Ref">
                 @if (!string.IsNullOrWhiteSpace(Path) && !string.IsNullOrWhiteSpace(_codeContent))
                 {
                     @_codeContent
                 }
-                else
+                else if(ChildContent!=null)
                 {
                     @ChildContent
                 }
-        </code>
+                else
+                {
+                    @Code
+                }
+            </code>
     </pre>
     </div>
 </div>
@@ -36,6 +40,9 @@
     /// </summary>
     [Parameter]
     public string? Path { get; set; }
+
+    [Parameter]
+    public string? Code { get; set; }
 
     /// <summary>
     /// An event callback that is invoked when the content from the <see cref="Url"/> is loaded.

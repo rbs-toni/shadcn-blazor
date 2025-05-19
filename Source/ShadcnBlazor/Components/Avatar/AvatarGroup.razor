@@ -1,0 +1,33 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@using TailwindMerge
+@inject TwMerge TwMerge
+
+<div id="@Id"
+     class="@(TwMerge.Merge(ClassValue))"
+     style="@Style"
+     @ref="Ref"
+     @attributes="Attributes">
+    <CascadingValue Value="_context" IsFixed="true">
+        @ChildContent
+    </CascadingValue>
+    @if (_context.Count > Max)
+    {
+        <Avatar Class="-ml-2 hover:z-10 relative ring-2 ring-background">
+            <AvatarFallback Class="bg-muted-foreground text-white">
+                @($"+{_context.Count - Max}")
+            </AvatarFallback>
+        </Avatar>
+    }
+</div>
+
+@code {
+    const string DefaultClasses = "flex items-center";
+
+    [Parameter]
+    public int Max { get; set; } = int.MaxValue;
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses)
+        .Build();
+}

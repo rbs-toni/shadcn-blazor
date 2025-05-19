@@ -1,0 +1,49 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+
+<button id="@Id"
+        type="button"
+        aria-pressed="@Value"
+        data-state="@ValueAsString"
+        data-disabled="@Disabled"
+        disabled="@Disabled"
+        class="@TwMerge.Merge(ClassValue)"
+        style="@Style"
+        @ref="Ref"
+        @attributes="Attributes"
+        @onclick="TogglePressed">
+    @ChildContent
+</button>
+
+@code {
+    [Parameter]
+    public bool Value { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> ValueChanged { get; set; }
+
+    [Parameter]
+    public ToggleVariant Variant { get; set; } = ToggleVariant.Default;
+
+    [Parameter]
+    public ToggleSize Size { get; set; } = ToggleSize.Default;
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(ToggleVariants.BuildClass(StyleType, Variant, Size))
+        .Build();
+
+    string ValueAsString => Value ? "on" : "off";
+
+    void TogglePressed()
+    {
+        if (!Disabled)
+        {
+            Value = !Value;
+            ValueChanged.InvokeAsync(Value);
+        }
+    }
+}

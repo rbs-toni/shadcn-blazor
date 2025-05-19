@@ -1,5 +1,5 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using System.Runtime.CompilerServices;
 
 namespace ShadcnBlazor;
 
@@ -52,30 +52,30 @@ public static class EventUtil
     public static Func<TValue, Task> AsNonRenderingEventHandler<TValue>(this ComponentBase component, Func<TValue, Task> callback)
         => new AsyncReceiver<TValue>(component, callback).Invoke;
 
-    private sealed class SyncReceiver(ComponentBase component, Action callback) : ReceiverBase(component)
+    sealed class SyncReceiver(ComponentBase component, Action callback) : ReceiverBase(component)
     {
         public void Invoke() => callback();
     }
 
-    private sealed class SyncReceiver<T>(ComponentBase component, Action<T> callback) : ReceiverBase(component)
+    sealed class SyncReceiver<T>(ComponentBase component, Action<T> callback) : ReceiverBase(component)
     {
         public void Invoke(T arg) => callback(arg);
     }
 
-    private sealed class AsyncReceiver(ComponentBase component, Func<Task> callback) : ReceiverBase(component)
+    sealed class AsyncReceiver(ComponentBase component, Func<Task> callback) : ReceiverBase(component)
     {
         public Task Invoke() => callback();
     }
 
-    private sealed class AsyncReceiver<T>(ComponentBase component, Func<T, Task> callback) : ReceiverBase(component)
+    sealed class AsyncReceiver<T>(ComponentBase component, Func<T, Task> callback) : ReceiverBase(component)
     {
         public Task Invoke(T arg) => callback(arg);
     }
 
-    private abstract class ReceiverBase(ComponentBase component) : IHandleEvent
+    abstract class ReceiverBase(ComponentBase component) : IHandleEvent
     {
         [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_renderHandle")]
-        private static extern ref RenderHandle RenderHandle(ComponentBase component);
+        static extern ref RenderHandle RenderHandle(ComponentBase component);
 
         public async Task HandleEventAsync(EventCallbackWorkItem item, object? arg)
         {

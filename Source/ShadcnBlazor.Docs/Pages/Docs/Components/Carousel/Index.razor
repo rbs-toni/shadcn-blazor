@@ -19,7 +19,7 @@
     LayoutContext LayoutContext { get; set; } = default!;
 
     BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Carousel");
-    SlotComponent _carouselDefault = new SlotComponent(typeof(CarouselDefault));
+    ComponentTemplate _carouselDefault = new ComponentTemplate(typeof(CarouselDefault));
 
     protected override void OnInitialized()
     {

@@ -4,10 +4,16 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace ShadcnBlazor;
-public class AvatarContext : INotifyPropertyChanged
+class AvatarContext : INotifyPropertyChanged
 {
+    public AvatarContext(Avatar avatar)
+    {
+        _avatar = avatar;
+    }
     public event PropertyChangedEventHandler? PropertyChanged;
     ImageLoadingStatus _imageLoadingStatus;
+    private readonly Avatar _avatar;
+
     public ImageLoadingStatus ImageLoadingStatus
     {
         get => _imageLoadingStatus;

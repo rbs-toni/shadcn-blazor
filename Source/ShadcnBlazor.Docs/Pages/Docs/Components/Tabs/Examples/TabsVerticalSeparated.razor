@@ -1,0 +1,71 @@
+﻿<Tabs Class="w-[400px]" @bind-Value=_value @bind-Value:after=OnValueChanged>
+    <TabsList Class="p-0 h-auto bg-background gap-1">
+        @foreach (var item in _values)
+        {
+            <TabsTrigger Value="@item" Class="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                @item
+            </TabsTrigger>
+        }
+    </TabsList>
+    @foreach (var item in _values)
+    {
+        <TabsContent Value="@item">
+            @if (item == "account")
+            {
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Account</CardTitle>
+                        <CardDescription>
+                            Make changes to your account here. Click save when you're done.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent class="space-y-2">
+                        <div class="space-y-1">
+                            <Label for="name">Name</Label>
+                            <Input id="name" Value="Pedro Duarte" />
+                        </div>
+                        <div class="space-y-1">
+                            <Label for="username">Username</Label>
+                            <Input id="username" />
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        <Button>Save changes</Button>
+                    </CardFooter>
+                </Card>
+            }
+            @if (item == "password")
+            {
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Password</CardTitle>
+                        <CardDescription>
+                            Change your password here. After saving, you'll be logged out.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent class="space-y-2">
+                        <div class="space-y-1">
+                            <Label for="current">Current password</Label>
+                            <Input id="current" type="password" />
+                        </div>
+                        <div class="space-y-1">
+                            <Label for="new">New password</Label>
+                            <Input id="new" type="password" />
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        <Button>Save password</Button>
+                    </CardFooter>
+                </Card>
+            }
+
+        </TabsContent>
+    }
+</Tabs>
+
+@code {
+    string _value = "account";
+    void OnValueChanged() => DemoLogger.WriteLine($"Current Tabs Value: {_value}");
+
+    string[] _values = ["account", "password"];
+}

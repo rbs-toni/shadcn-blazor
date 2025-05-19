@@ -3,28 +3,31 @@
 @implements IDisposable
 
 @code {
-    [Parameter]
+    /// <summary>
+    /// Gets or sets the content to be conditionally teleported
+    /// </summary>
+    [Parameter, EditorRequired]
     public RenderFragment? ChildContent { get; set; }
 
-    // A reference to the fragment so that we can remove it when the component is disposed.
-    private RenderFragment? _currentFragment;
+    /// <summary>
+    /// Callback invoked when content is teleported to the target location
+    /// </summary>
+    [Parameter]
+    public EventCallback OnTeleported { get; set; }
 
-    protected override void OnParametersSet()
-    {
-        if (ChildContent != null)
-        {
-            // Add the current ChildContent fragment to the Teleporter service.
-            _currentFragment = ChildContent;
-            Teleporter.Teleport(_currentFragment);
-        }
-    }
+    /// <summary>
+    /// Callback invoked when teleported content was removed from the target location
+    /// </summary>
+    [Parameter]
+    public EventCallback OnRemoved { get; set; }
 
-    // Remove the fragment when the component is disposed to clean up
-    public void Dispose()
-    {
-        if (_currentFragment != null)
-        {
-            Teleporter.Remove(_currentFragment);
-        }
-    }
+    /// <summary>
+    /// Determines whether the child content should be teleported
+    /// </summary>
+    /// <remarks>
+    /// When true, content will be teleported to the target location.
+    /// When false, content will not be teleported to the target location.
+    /// </remarks>
+    [Parameter]
+    public bool If { get; set; }
 }

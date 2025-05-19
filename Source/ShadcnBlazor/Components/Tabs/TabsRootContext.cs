@@ -1,32 +1,25 @@
 ﻿namespace ShadcnBlazor;
-public class TabsRootContext
+public class TabsContext
 {
-    string? _value;
+    public TabsContext(Tabs tabs)
+    {
+        _tabs = tabs;
+    }
+    private readonly Tabs _tabs;
+    public string? Value => _tabs.Value;
+    public Orientation Orientation => _tabs.Orientation;
+    public Direction Direction => _tabs.Direction;
+    public ActivationMode ActivationMode => _tabs.ActivationMode;
+    public string? BaseId => _tabs.Id;
     public event Action? ContextChanged;
-
-    public ActivationMode ActivationMode { get; set; }
-    public string? BaseId { get; set; }
-    public Direction? Direction { get; set; }
-    public Orientation Orientation { get; set; }
-    public string? Value
+    public TabsList? TabsList { get; protected set; }
+    public void ChangeValue(string value)
     {
-        get => _value;
-        private set
-        {
-            if (_value != value)
-            {
-                _value = value;
-                NotifyContextChanged();
-            }
-        }
+        _tabs.ChangeValue(value);
     }
 
-    public void ChangeModelValue(string value)
+    public void SetTabList(TabsList tabs)
     {
-        Value = value;
-    }
-    void NotifyContextChanged()
-    {
-        ContextChanged?.Invoke();
+        TabsList = tabs;
     }
 }

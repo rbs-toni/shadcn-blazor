@@ -19,7 +19,7 @@
     LayoutContext LayoutContext { get; set; } = default!;
 
     BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Card");
-    SlotComponent _cardDefault = new SlotComponent(typeof(CardDefault));
+    ComponentTemplate _cardDefault = new ComponentTemplate(typeof(CardDefault));
 
     protected override void OnInitialized()
     {

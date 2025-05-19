@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 namespace ShadcnBlazor.Docs;
 public static class ConfigureServices
 {
-    public static void AddDocsServices(this IServiceCollection services)
+    public static void AddShadcnBlazorDocs(this IServiceCollection services)
     {
         services.AddSingleton<NavProvider>();
         services.AddScoped<IScrollHelper, ScrollHelper>();

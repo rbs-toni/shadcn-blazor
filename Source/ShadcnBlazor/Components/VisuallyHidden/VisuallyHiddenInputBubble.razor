@@ -1,0 +1,19 @@
+﻿@namespace ShadcnBlazor
+@using System.Diagnostics.CodeAnalysis
+@inherits ShadcnInputBase<TValue>
+@typeparam TValue
+
+
+<VisuallyHidden As="input" @attributes="Attributes"/>
+
+@code {
+    [Parameter]
+    public required Func<string?, TValue> FromString { get; set; }
+
+    protected override bool TryParseValueFromString(string? value, [MaybeNullWhen(false)] out TValue result, [NotNullWhen(false)] out string? validationErrorMessage)
+    {
+        result = FromString(value);
+        validationErrorMessage = null;
+        return true;
+    }
+}

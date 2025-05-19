@@ -1,29 +1,35 @@
 ﻿@namespace ShadcnBlazor
 @inherits ShadcnComponentBase
+@inject TwMerge TwMerge
 
-<div id="@Id"
-     class="overflow-hidden text-sm grid grid-rows-[0fr] data-[state=open]:grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out"
-     style="@Style"
-     data-state="@OpenValue"
+<div class="grid grid-rows-[0fr] data-[state=open]:grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out"
      role="region"
-     aria-labelledby="@Labelledby"
-     @ref=Ref
-     @attributes=Attributes>
-    <div class="@ClassValue">
-        @ChildContent
-    </div>
+     aria-labelledby="@AccordionItem?.TriggerId"
+     data-state="@AccordionItem?.DataState"
+     data-disabled="@AccordionItem?.Disabled"
+     data-orientation="@Accordion?.Orientation.ToAttributeValue(false)">
+     <div class="overflow-hidden">
+        <div id="@Id"
+             class="overflow-hidden @(TwMerge.Merge(ClassValue))"
+             data-state="@AccordionItem?.DataState"
+             data-disabled="@AccordionItem?.Disabled"
+             data-orientation="@Accordion?.Orientation.ToAttributeValue(false)"
+             style="@Style"
+             @ref="Ref"
+             @attributes="Attributes">
+            @ChildContent
+        </div>
+     </div>
 </div>
 
 @code {
     [CascadingParameter]
-    AccordionItem? AccordionItem { get; set; }
+    InternalAccordionContext? Accordion { get; set; }
 
-    bool Disabled => AccordionItem?.Disabled ?? false;
-    bool Open => AccordionItem?.Open ?? false;
-    string? OpenValue => AccordionItem?.OpenValue;
-    string? Labelledby => AccordionItem?.Labelledby;
+    [CascadingParameter]
+    InternalAccordionItemContext? AccordionItem { get; set; }
 
     string? ClassValue => new CssBuilder(Class)
-        .AddClass("pb-4 pt-0 overflow-hidden")
+        .AddClass("pb-4 pt-0")
         .Build();
 }

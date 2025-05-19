@@ -1,0 +1,55 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+<div id="@Id" class="@ClassValue" style="@Style" @ref="Ref" @attributes="Attributes">
+    @if (_isLoading)
+    {
+        <div class="flex items-center justify-center h-full w-full z-10 relative">
+            <DocsSpinner />
+        </div>
+    }
+    <div class="@ClassValue2">
+        <iframe hidden="@_isLoading" src="@Url" class="@ClassValue3" @onload="@(() => _isLoading = false)" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public bool Container { get; set; }
+
+    [Parameter]
+    public string? Url { get; set; }
+
+    string? ClassValue
+    {
+        get
+        {
+            return new CssBuilder("relative rounded-lg border overflow-hidden bg-background")
+                .AddClass("aspect-[4/2.5]", !Container)
+                .AddClass(Class)
+                .Build();
+        }
+    }
+
+    string? ClassValue2
+    {
+        get
+        {
+            return new CssBuilder("absolute inset-0 hidden w-[1600px] bg-background md:block")
+                .AddClass("w-full", Container)
+                .Build();
+        }
+    }
+
+    string? ClassValue3
+    {
+        get
+        {
+            return new CssBuilder("relative z-20 w-full bg-background")
+                .AddClass("h-[--height]", "size-full", Container)
+                .Build();
+        }
+    }
+
+    bool _isLoading;
+}

@@ -19,7 +19,7 @@
     LayoutContext LayoutContext { get; set; } = default!;
 
     BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Badge");
-    SlotComponent _badgeDefault = new SlotComponent(typeof(BadgeDefault));
+    ComponentTemplate _badgeDefault = new ComponentTemplate(typeof(BadgeDefault));
 
     protected override void OnInitialized()
     {

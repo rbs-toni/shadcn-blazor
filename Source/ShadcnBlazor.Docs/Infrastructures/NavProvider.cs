@@ -134,13 +134,25 @@ public class NavProvider
                             Href = "/docs/components/checkbox",
                             ProgressState = ProgressState.InProgress
                         },
-                        new() { Title = "Collapsible", Order = 14, Href = "/docs/components/collapsible" },
+                        new()
+                        {
+                            Title = "Collapsible",
+                            Order = 14,
+                            Href = "/docs/components/collapsible",
+                            ProgressState = ProgressState.InProgress
+                        },
                         new() { Title = "Combobox", Order = 15, Href = "/docs/components/combobox" },
                         new() { Title = "Command", Order = 16, Href = "/docs/components/command" },
                         new() { Title = "Context Menu", Order = 17, Href = "/docs/components/context-menu" },
                         new() { Title = "Data Table", Order = 18, Href = "/docs/components/data-table" },
                         new() { Title = "Date Picker", Order = 19, Href = "/docs/components/date-picker" },
-                        new() { Title = "Dialog", Order = 20, Href = "/docs/components/dialog" },
+                        new()
+                        {
+                            Title = "Dialog",
+                            Order = 20,
+                            Href = "/docs/components/dialog",
+                            ProgressState = ProgressState.InProgress
+                        },
                         new() { Title = "Drawer", Order = 21, Href = "/docs/components/drawer" },
                         new() { Title = "Dropdown Menu", Order = 22, Href = "/docs/components/dropdown-menu" },
                         new() { Title = "Form", Order = 23, Href = "/docs/components/form" },
@@ -157,20 +169,61 @@ public class NavProvider
                         new() { Title = "Menubar", Order = 28, Href = "/docs/components/menubar" },
                         new() { Title = "Navigation Menu", Order = 29, Href = "/docs/components/navigation-menu" },
                         new() { Title = "Pagination", Order = 30, Href = "/docs/components/pagination" },
-                        new() { Title = "Popover", Order = 31, Href = "/docs/components/popover" },
+                        new()
+                        {
+                            Title = "Popover",
+                            Order = 31,
+                            Href = "/docs/components/popover",
+                            ProgressState = ProgressState.InProgress
+                        },
                         new() { Title = "Progress", Order = 32, Href = "/docs/components/progress" },
                         new() { Title = "Radio Group", Order = 33, Href = "/docs/components/radio-group" },
-                        new() { Title = "Resizable", Order = 34, Href = "/docs/components/resizable" },
-                        new() { Title = "Scroll Area", Order = 35, Href = "/docs/components/scroll-area" },
+                        new()
+                        {
+                            Title = "Resizable",
+                            Order = 34,
+                            Href = "/docs/components/resizable",
+                            //ProgressState = ProgressState.InProgress
+                        },
+                        new()
+                        {
+                            Title = "Scroll Area",
+                            Order = 35,
+                            Href = "/docs/components/scroll-area",
+                            ProgressState = ProgressState.InProgress
+                        },
                         new() { Title = "Select", Order = 36, Href = "/docs/components/select" },
-                        new() { Title = "Separator", Order = 37, Href = "/docs/components/separator" },
+                        new()
+                        {
+                            Title = "Separator",
+                            Order = 37,
+                            Href = "/docs/components/separator",
+                            ProgressState = ProgressState.InProgress
+                        },
                         new() { Title = "Sheet", Order = 38, Href = "/docs/components/sheet" },
                         new() { Title = "Sidebar", Order = 39, Href = "/docs/components/sidebar" },
-                        new() { Title = "Skeleton", Order = 40, Href = "/docs/components/skeleton" },
+                        new()
+                        {
+                            Title = "Skeleton",
+                            Order = 40,
+                            Href = "/docs/components/skeleton",
+                            ProgressState = ProgressState.InProgress
+                        },
                         new() { Title = "Slider", Order = 41, Href = "/docs/components/slider" },
-                        new() { Title = "Sonner", Order = 42, Href = "/docs/components/sonner" },
-                        new() { Title = "Switch", Order = 43, Href = "/docs/components/switch" },
-                        new() { Title = "Table", Order = 44, Href = "/docs/components/table" },
+                        new()
+                        {
+                            Title = "Switch",
+                            Order = 43,
+                            Href = "/docs/components/switch",
+                            ProgressState = ProgressState.InProgress
+                        },
+                        new()
+                        {
+                            Title = "Table",
+                            Order = 44,
+                            Href = "/docs/components/table",
+                            ProgressState = ProgressState.InProgress
+                        },
                         new()
                         {
                             Title = "Tabs",
@@ -178,11 +231,35 @@ public class NavProvider
                             Href = "/docs/components/tabs",
                             ProgressState = ProgressState.InProgress
                         },
-                        new() { Title = "Textarea", Order = 46, Href = "/docs/components/textarea" },
-                        new() { Title = "Toast", Order = 47, Href = "/docs/components/toast" },
-                        new() { Title = "Toggle", Order = 48, Href = "/docs/components/toggle" },
+                        new()
+                        {
+                            Title = "Textarea",
+                            Order = 46,
+                            Href = "/docs/components/textarea",
+                            ProgressState = ProgressState.InProgress
+                        },
+                        new()
+                        {
+                            Title = "Toast",
+                            Order = 47,
+                            Href = "/docs/components/toast",
+                            ProgressState = ProgressState.InProgress
+                        },
+                        new()
+                        {
+                            Title = "Toggle",
+                            Order = 48,
+                            Href = "/docs/components/toggle",
+                            ProgressState = ProgressState.InProgress
+                        },
                         new() { Title = "Toggle Group", Order = 49, Href = "/docs/components/toggle-group" },
-                        new() { Title = "Tooltip", Order = 50, Href = "/docs/components/tooltip" }
+                        new()
+                        {
+                            Title = "Tooltip",
+                            Order = 50,
+                            Href = "/docs/components/tooltip",
+                            ProgressState = ProgressState.InProgress
+                        }
                     }.OrderBy(item => item.Order)  // Sort by Order property for sidebar items
                         .ToList()  // Convert back to List after sorting
             }

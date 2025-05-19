@@ -1,0 +1,43 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<div @ref="Ref"
+     @attributes="Attributes"
+     class="@ClassValue"
+     style="@Style"
+     @onkeydown="OnRootKeyDown"
+     @onkeyup="OnRootKeyUp"
+     @onfocus="OnRootFocusAsync"
+     tabindex="-1">
+    <div class="fixed pointer-events-none"
+         tabindex="@TrapTabIndex"
+         @onfocus="OnTopFocusAsync">
+    </div>
+
+    <div @ref="_firstBumper"
+         class="fixed pointer-events-none"
+         tabindex="@TrapTabIndex"
+         @onfocus="OnBumperFocusAsync">
+    </div>
+
+    <div @ref="_fallback"
+         class="fixed pointer-events-none"
+         tabindex="-1">
+    </div>
+
+    <div class="outline-none"
+         tabindex="-1">
+        @ChildContent
+    </div>
+
+    <div @ref="_lastBumper"
+         class="fixed pointer-events-none"
+         tabindex="@TrapTabIndex"
+         @onfocus="OnBumperFocusAsync">
+    </div>
+
+    <div class="fixed pointer-events-none"
+         tabindex="@TrapTabIndex"
+         @onfocus="OnBottomFocusAsync">
+    </div>
+</div>

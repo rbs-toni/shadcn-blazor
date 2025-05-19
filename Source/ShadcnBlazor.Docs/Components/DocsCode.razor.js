@@ -5,23 +5,20 @@
   }
 
   try {
-    // Check if Highlight.js is available before calling
     if (hljs) {
-      // Check if the element has content, and wait until it does
       function tryHighlight() {
         if (el.innerText.trim() === '') {
-          setTimeout(tryHighlight, 100) // Check again after a short delay
+          setTimeout(tryHighlight, 100)
         } else {
           hljs.highlightElement(el)
         }
       }
 
-      tryHighlight() // Initial call to tryHighlight function
+      tryHighlight()
     } else {
       console.warn('Highlight.js is not loaded.')
     }
   } catch (error) {
-    // Handle any errors that occur during the highlighting process
     console.error('Error highlighting code:', error)
   }
 }

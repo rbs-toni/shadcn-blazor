@@ -19,7 +19,7 @@
     LayoutContext LayoutContext { get; set; } = default!;
 
     BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Aspect Ratio");
-    SlotComponent _aspectRatioDefault = new SlotComponent(typeof(AspectRatioDefault));
+    ComponentTemplate _aspectRatioDefault = new ComponentTemplate(typeof(AspectRatioDefault));
 
     protected override void OnInitialized()
     {

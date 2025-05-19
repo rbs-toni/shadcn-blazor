@@ -1,0 +1,7 @@
+﻿<Alert Class="bg-destructive text-destructive-foreground [&>svg]:text-destructive-foreground">
+    <LucideIcon Name="IconName.OctagonAlert" Class="size-4" />
+    <AlertTitle>Something Went Wrong</AlertTitle>
+    <AlertDescription>
+        An error occurred while processing your request.
+    </AlertDescription>
+</Alert>

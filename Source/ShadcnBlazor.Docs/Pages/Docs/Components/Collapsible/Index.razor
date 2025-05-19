@@ -1,0 +1,53 @@
+﻿@page "/docs/components/collapsible"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Collapsible.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title=@Component Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["An interactive component which expands/collapses a panel."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_collapsibleDefault"
+                 CodePath="CollapsibleDefault.razor" />
+
+    @if (Examples.Count > 0)
+    {
+        <DocsPageSection Title="Examples">
+            @foreach (var item in Examples)
+            {
+                <DocsPageSection Level="3" Title="@item.Title">
+                    <DocsPreview PreviewComponent="@item.Template"
+                                 CodePath="@item.CodePath" />
+                </DocsPageSection>
+            }
+        </DocsPageSection>
+    }
+</DocsPageContent>
+
+@code {
+    const string Component = "Collapsible";
+
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection(Component);
+    ComponentTemplate _collapsibleDefault = new ComponentTemplate(typeof(CollapsibleDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: Component,
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+
+    protected static readonly List<ComponentExample> Examples = new List<ComponentExample>()
+    {
+        new ComponentExample(Component,"Show More",  new ComponentTemplate(typeof(CollapsibleShowMore))),
+        new ComponentExample(Component,"File Tree",  new ComponentTemplate(typeof(CollapsibleFileTree))),
+    };
+}

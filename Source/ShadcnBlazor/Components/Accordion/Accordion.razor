@@ -1,175 +1,57 @@
 ﻿@namespace ShadcnBlazor
 @inherits ShadcnComponentBase
+@inject TwMerge TwMerge
 
-<CascadingValue Value="this" IsFixed="true">
-    <ShadcnKeyCode Anchor="@Id" Only="[KeyCode.Home, KeyCode.End, KeyCode.Up, KeyCode.Down]" OnKeyDown="OnKeyDownHandlerAsync" PreventDefault="true" />
-    <div id="@Id"
-         class="@ClassValue"
-         style="@Style"
-         @ref=Ref
-         @attributes=Attributes>
+<ShadcnKeyCode AnchorId="@Id"
+               Only="[KeyCode.Home, KeyCode.End, KeyCode.Up, KeyCode.Down]"
+               OnKeyDown="OnKeyDownHandlerAsync"
+               PreventDefault="true" />
+<div id="@Id"
+     class="@(TwMerge.Merge(ClassValue))"
+     style="@Style"
+     data-orientation="@Orientation.ToAttributeValue(false)"
+     @ref="Ref"
+     @attributes="Attributes">
+    <CascadingValue Value="_context" IsFixed="true">
         @ChildContent
-    </div>
-</CascadingValue>
+    </CascadingValue>
+</div>
 
 @code {
     /// <summary>
-    /// Mengizinkan beberapa item accordion terbuka secara bersamaan jika diatur ke <c>true</c>.
+    /// Determines whether a "single" or "multiple" items can be selected at a time.
     /// Jika <c>false</c>, hanya satu item yang bisa terbuka dalam satu waktu.
     /// </summary>
     [Parameter]
-    public bool Multiple { get; set; }
+    public SingleOrMultiple Type { get; set; }
 
     /// <summary>
-    /// Menonaktifkan interaksi dengan komponen accordion jika diatur ke <c>true</c>.
-    /// Semua item menjadi tidak dapat diklik atau dibuka.
+    /// When type is "single", allows closing content when clicking trigger for an open item.
+    /// When type is "multiple", this prop has no effect.
+    /// </summary>
+    [Parameter]
+    public bool Collapsible { get; set; }
+
+    /// <summary>
+    /// When `true`, prevents the user from interacting with the accordion and all its items
     /// </summary>
     [Parameter]
     public bool Disabled { get; set; }
 
     /// <summary>
-    /// Mengizinkan semua item accordion untuk ditutup jika diatur ke <c>true</c>.
-    /// Jika <c>false</c>, setidaknya satu item harus tetap terbuka.
+    /// The reading direction of the accordion when applicable. If omitted, assumes LTR (left-to-right) reading mode.
     /// </summary>
     [Parameter]
-    public bool Collapsible { get; set; } = true;
+    public Direction Direction { get; set; } = Direction.LTR;
 
-    string? ClassValue => new CssBuilder(Class)
-        .AddClass("w-full")
-        .Build();
+    /// <summary>
+    /// Event handler called when the expanded state of an item changes
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnActiveChanged { get; set; }
 
-    List<AccordionItem> _items { get; set; } = new();
-    HashSet<AccordionItem> _activeItems { get; set; } = new();
-    AccordionItem? _lastActivated;
-    public AccordionItem? LastActivated => _lastActivated;
-    public void RegisterItem(AccordionItem item)
-    {
-        if (item != null && !_items.Contains(item))
-            _items.Add(item);
-        if (Collapsible == false && _items.Any())
-        {
-            // Set the first item as active if no items are currently active
-            if (!_activeItems.Any())
-            {
-                _activeItems.Add(_items.First());
-                _lastActivated = _items.First();
-            }
-        }
-    }
-
-    public void UnregisterItem(AccordionItem item)
-    {
-        if (item != null && _items.Contains(item))
-        {
-            _items.Remove(item);
-            _activeItems.Remove(item);
-            if (_lastActivated == item)
-            {
-                _lastActivated = null;
-            }
-        }
-    }
-
-    public bool IsItemActive(AccordionItem item)
-    {
-        return _activeItems.Contains(item);
-    }
-
-    public void ToggleItem(AccordionItem item)
-    {
-        if (Disabled)
-            return;
-
-        bool isActive = _activeItems.Contains(item);
-
-        if (Multiple)
-        {
-            if (isActive)
-            {
-                if (Collapsible)
-                {
-                    // Prevent collapsing the last item if collapsible is false (even though logically shouldn't happen here)
-                    if (!Collapsible && _activeItems.Count == 1)
-                        return;
-
-                    _activeItems.Remove(item);
-                }
-            }
-            else
-            {
-                _activeItems.Add(item);
-            }
-        }
-        else
-        {
-            if (isActive)
-            {
-                if (Collapsible)
-                {
-                    _activeItems.Clear();
-                    _lastActivated = item;
-                }
-                // else: do nothing (must keep one open)
-            }
-            else
-            {
-                _activeItems.Clear();
-                _activeItems.Add(item);
-                _lastActivated = item;
-            }
-        }
-
-        StateHasChanged();
-    }
-
-    async Task OnKeyDownHandlerAsync(KeyCodeEventArgs args)
-    {
-        if (args.TargetId != Id || _items.Count == 0)
-        {
-            return;
-        }
-
-        AccordionItem? targetItem = null;
-
-        switch (args.Key)
-        {
-            case KeyCode.Up:
-                targetItem = PreviousAccordionItem();
-                break;
-
-            case KeyCode.Down:
-                targetItem = NextAccordionItem();
-                break;
-
-            case KeyCode.Home:
-                targetItem = _items[0];
-                break;
-
-            case KeyCode.End:
-                targetItem = _items[^1];
-                break;
-        }
-
-        if (targetItem != null)
-        {
-            await targetItem.FocusAsync();
-            _lastActivated = targetItem;
-        }
-    }
-
-    AccordionItem PreviousAccordionItem()
-    {
-        if (_lastActivated == null) return _items[0];
-
-        var currentIndex = _items.IndexOf(_lastActivated);
-        return currentIndex <= 0 ? _items[^1] : _items[currentIndex - 1];
-    }
-
-    AccordionItem NextAccordionItem()
-    {
-        if (_lastActivated == null) return _items[0];
-
-        var currentIndex = _items.IndexOf(_lastActivated);
-        return currentIndex >= _items.Count - 1 ? _items[0] : _items[currentIndex + 1];
-    }
+    /// <summary>
+    /// The orientation of the accordion. Not supported.
+    /// </summary>
+    public Orientation Orientation { get; } = Orientation.Vertical;
 }

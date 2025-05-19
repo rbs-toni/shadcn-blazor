@@ -1,0 +1,29 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+<div id="@Id"
+     class="@ClassValue"
+     style="@Style"
+     role="@Role"
+     data-orientation="@DataOrientation"
+     aria-orientation="@AriaOrientation"
+     @ref="Ref"
+     @attributes="Attributes">
+    @if (string.IsNullOrWhiteSpace(Label) == false)
+    {
+        <SeparatorLabel Orientation="@Orientation">@Label</SeparatorLabel>
+    }
+</div>
+
+@code {
+    const string DefaultClasses = "shrink-0 bg-border relative";
+
+    string? ClassValue => TwMerge.Merge(new CssBuilder(Class)
+        .AddClass(DefaultClasses)
+        .AddClass("w-px h-full", "h-px w-full", Orientation == Orientation.Vertical)
+        .Build());
+
+    string Role => Decorative ? "none" : "separator";
+    string? DataOrientation => Orientation.ToAttributeValue(false);
+    string? AriaOrientation => Orientation == Orientation.Vertical ? "vertical" : default;
+}

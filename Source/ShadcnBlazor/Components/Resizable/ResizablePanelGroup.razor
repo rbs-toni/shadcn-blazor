@@ -1,0 +1,41 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnLinkBaseComponent
+@inject TwMerge TwMerge
+
+<div id="@Id"
+     class="@(TwMerge.Merge(ClassValue))"
+     style="@StyleValue"
+     data-orientation="@Direction.ToStringFast()"
+     data-panel-group
+     data-panel-group-id="@_panelGroupContext.GroupId"
+     @ref="Ref"
+     @attributes="Attributes">
+    <CascadingValue Value="_panelGroupContext" IsFixed="true">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    const string DefaultClasses = "flex h-full w-full data-[panel-group-direction=vertical]:flex-col";
+
+    /// <summary>
+    /// A unique key used to persist the layout in localStorage (or a custom storage).
+    /// </summary>
+    [Parameter]
+    public string? AutoSaveId { get; set; }
+
+    /// <summary>
+    /// The orientation of the splitter group (Horizontal or Vertical).
+    /// </summary>
+    [Parameter]
+    public ResizeDirection Direction { get; set; }
+
+    /// <summary>
+    /// Number of pixels to resize by when using arrow keys. Defaults to null.
+    /// </summary>
+    [Parameter]
+    public int KeyboardResizeBy { get; set; } = 10;
+
+    [Parameter] 
+    public EventCallback<double[]> OnLayoutChanged { get; set; }
+}

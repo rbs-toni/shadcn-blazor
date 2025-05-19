@@ -1,0 +1,9 @@
+﻿@foreach (var size in Enum.GetValues<AvatarSize>())
+{
+    <div class="flex items-center space-x-2">
+        <Avatar Size="@size">
+            <AvatarImage Src="https://avatars.githubusercontent.com/u/117208821?s=96&v=4" alt="rbs-toni" />
+            <AvatarFallback>RT</AvatarFallback>
+        </Avatar>
+    </div>
+}

@@ -1,0 +1,17 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnJSComponentBase
+
+@if (_visible)
+{
+    <ScrollAreaScrollbarAuto Ref="Ref" data-state="@(_visible ? "visible":"hidden")" @attributes="Attributes" Class="@Class">
+        @ChildContent
+    </ScrollAreaScrollbarAuto>
+}
+
+@code {
+    [CascadingParameter]
+    ScrollAreaRootContext? RootContext { get; set; }
+
+    bool _visible;
+    int _timeout;
+}

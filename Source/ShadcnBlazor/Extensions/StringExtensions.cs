@@ -451,7 +451,9 @@ public static partial class StringExtensions
     public static string ToKebabCase(this string input)
     {
         if (string.IsNullOrWhiteSpace(input))
+        {
             return string.Empty;
+        }
 
         var normalized = PascalCaseBoundarySplitterReg().Replace(input, "$1-$2")
                               .Replace("_", "-")

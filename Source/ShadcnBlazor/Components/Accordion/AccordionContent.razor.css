@@ -1,0 +1,10 @@
+﻿.AccordionContent {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: 0.25s ease-out;
+    overflow: hidden;
+}
+
+    .AccordionContent[data-state='open'] {
+        grid-template-rows: 1fr;
+    }

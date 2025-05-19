@@ -1,10 +1,9 @@
 ﻿@page "/docs/components/accordion"
 @page "/docs/components"
-@using ShadcnBlazor.Docs.Pages.Examples
 @inherits ShadcnComponentBase
 @inject IStringLocalizer<Index> Localizer
 
-<DocsPageHeader Title="Accordion" Breadcrumbs="_breadcrumbs.Items">
+<DocsPageHeader Title="@Component" Breadcrumbs="_breadcrumbs.Items">
     <DocsPageHeaderDescription>
         @Localizer["A vertically stacked set of interactive headings that each reveal a section of content."]
     </DocsPageHeaderDescription>
@@ -14,38 +13,66 @@
     <DocsPreview PreviewComponent="@_accordionDefault"
                  CodePath="AccordionDefault.razor" />
 
-    <DocsPageSection Title="Examples">
-        <DocsPageSection Title="Expanded by default" Level="3">
-            <DocsPreview PreviewComponent="@_accordionExpandedByDefaultPreview"
-                         CodePath="AccordionExpandedByDefault.razor" />
-        </DocsPageSection>        
-        <DocsPageSection Title="Multiple items open at the same time" Level="3">
-            <Paragraph>
-                To allow opening multiple items simultaneously, set the <InlineCode>Multiple</InlineCode> property to <InlineCode>true</InlineCode>.
-            </Paragraph>
-            <DocsPreview PreviewComponent="@_accordionMultiple"
-                         CodePath="AccordionMultiple.razor" />
+    @if (_examples.Count > 0)
+    {
+        <DocsPageSection Title="Examples">
+            @foreach (var item in _examples)
+            {
+                <DocsPageSection Title="@item.Title" Level="3">
+                    <DocsPreview PreviewComponent="@item.Template"
+                                 CodePath="@item.CodePath" />
+                </DocsPageSection>
+            }
         </DocsPageSection>
-    </DocsPageSection>
+    }
 
-    <DocsPageSection Title="Accessibility">
-    </DocsPageSection>
+    <DocsAccessibilitySection KeyboardShortcutDescriptions="_keyboardShortcutDescriptions">
+        Adheres to the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/accordion" class="font-medium underline underline-offset-4" target="_blank" rel="noreferrer">Accordion WAI-ARIA design pattern</a>.
+    </DocsAccessibilitySection>
 </DocsPageContent>
 
 @code {
-    bool _open = true;
-    [CascadingParameter]
-    LayoutContext LayoutContext { get; set; } = default!;
+    const string Component = "Accordion";
 
-    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Accordion");
-    SlotComponent _accordionDefault = new SlotComponent(typeof(AccordionDefault));
-    SlotComponent _accordionExpandedByDefaultPreview = new SlotComponent(typeof(AccordionExpandedByDefault));
-    SlotComponent _accordionMultiple = new SlotComponent(typeof(AccordionMultiple));
+    [CascadingParameter]
+    LayoutContext? LayoutContext { get; set; }
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection(Component);
+    ComponentTemplate _accordionDefault = new ComponentTemplate(typeof(AccordionDefault));
+
+    List<ComponentExample> _examples = new List<ComponentExample>()
+    {
+        new ComponentExample(Component, "Outline", new ComponentTemplate(typeof(AccordionOutline))),
+        new ComponentExample(Component, "Box", new ComponentTemplate(typeof(AccordionBox))),
+        new ComponentExample(Component, "Contained", new ComponentTemplate(typeof(AccordionContained))),
+        new ComponentExample(Component, "Box Contained", new ComponentTemplate(typeof(AccordionBoxContained))),
+        new ComponentExample(Component, "Tabs", new ComponentTemplate(typeof(AccordionTabs))),
+        new ComponentExample(Component, "Highlight Active Item", new ComponentTemplate(typeof(AccordionHighlightActiveItem))),
+        new ComponentExample(Component, "Multiple expanded at a time", new ComponentTemplate(typeof(AccordionMultiple))),
+        new ComponentExample(Component, "Expand Icon", new ComponentTemplate(typeof(AccordionExpandIcon))),
+        new ComponentExample(Component, "Icon", new ComponentTemplate(typeof(AccordionIcon))),
+        new ComponentExample(Component, "Media Content", new ComponentTemplate(typeof(AccordionMediaContent))),
+        new ComponentExample(Component, "Disabled Item", new ComponentTemplate(typeof(AccordionDisabledItem))),
+    };
+
+    List<KeyboardShortcutDescription> _keyboardShortcutDescriptions = new()
+    {
+        new("Space", $"When focus is on an <code class=\"{GlobalCss.Code}\">AccordionTrigger</code> of a collapsed section, expands the section."),
+        new("Enter", $"When focus is on an <code class=\"{GlobalCss.Code}\">AccordionTrigger</code> of a collapsed section, expands the section."),
+        new("Tab", "Moves focus to the next focusable element."),
+        new("Shift + Tab", "Moves focus to the previous focusable element."),
+        new("ArrowDown", $"Moves focus to the next <code class=\"{GlobalCss.Code}\">AccordionTrigger</code> when orientation is vertical."),
+        new("ArrowUp", $"Moves focus to the previous <code class=\"{GlobalCss.Code}\">AccordionTrigger</code> when orientation is vertical."),
+        new("ArrowRight", $"Moves focus to the next <code class=\"{GlobalCss.Code}\">AccordionTrigger</code> when orientation is horizontal."),
+        new("ArrowLeft", $"Moves focus to the previous <code class=\"{GlobalCss.Code}\">AccordionTrigger</code> when orientation is horizontal."),
+        new("Home", $"When focus is on an <code class=\"{GlobalCss.Code}\">AccordionTrigger</code>, moves focus to the first <code class=\"{GlobalCss.Code}\">AccordionTrigger</code>."),
+        new("End", $"When focus is on an <code class=\"{GlobalCss.Code}\">AccordionTrigger</code>, moves focus to the last <code class=\"{GlobalCss.Code}\">AccordionTrigger</code>."),
+    };
 
     protected override void OnInitialized()
     {
-        LayoutContext.SetLayoutOptions(
-            pageTitle: "Accordion",
+        LayoutContext?.SetLayoutOptions(
+            pageTitle: Component,
             useSidebar: true,
             useOutline: true,
             useFooterLinks: true);

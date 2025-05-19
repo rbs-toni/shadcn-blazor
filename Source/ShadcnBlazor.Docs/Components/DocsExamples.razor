@@ -1,0 +1,19 @@
+﻿@namespace ShadcnBlazor.Docs
+
+@if (Examples?.Count > 0)
+{
+    <DocsPageSection Title="Examples">
+        @foreach (var item in Examples)
+        {
+            <DocsPageSection Title="@item.Title" Level="3">
+                <DocsPreview PreviewComponent="@item.Template"
+                             CodePath="@item.CodePath" />
+            </DocsPageSection>
+        }
+    </DocsPageSection>
+}
+
+@code{
+    [Parameter]
+    public IReadOnlyCollection<ComponentExample>? Examples { get; set; }
+}

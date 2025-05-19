@@ -1,0 +1,30 @@
+﻿@using TailwindMerge
+@inherits TestContext
+
+@code {
+    public LabelTests()
+    {
+        // Register dependencies for all tests
+        Services.AddSingleton<TwMerge>(new TwMerge());
+    }
+
+    [Fact]
+    public void Renders_With_Default_Style()
+    {
+        // Act
+        var cut = Render(@<Label />);
+
+        // Assert
+        cut.MarkupMatches(@<label class="@LabelUtils.GetClass(StyleType.Default)"></label>);
+    }
+
+    [Fact]
+    public void Renders_With_NewYork_Style()
+    {
+        // Act
+        var cut = Render(@<Label />);
+
+        // Assert
+        cut.MarkupMatches(@<label class="@LabelUtils.GetClass(StyleType.NewYork)"></label>);
+    }
+}

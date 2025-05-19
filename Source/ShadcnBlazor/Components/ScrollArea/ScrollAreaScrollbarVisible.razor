@@ -1,0 +1,25 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnJSComponentBase
+
+<CascadingValue Value="_context">
+    @if (IsShowingScrollbarX)
+    {
+        <ScrollAreaScrollbarX Ref="@Ref" @attributes="Attributes" Class="@Class">
+            @ChildContent
+        </ScrollAreaScrollbarX>
+    }
+    else
+    {
+        <ScrollAreaScrollbarY Ref="@Ref" @attributes="Attributes" Class="@Class">
+            @ChildContent
+        </ScrollAreaScrollbarY>
+    }
+</CascadingValue>
+
+@code {
+    [CascadingParameter]
+    ScrollAreaRootContext? RootContext { get; set; }
+
+    [CascadingParameter]
+    ScrollAreaScrollbarContext? ScrollbarContext { get; set; }
+}

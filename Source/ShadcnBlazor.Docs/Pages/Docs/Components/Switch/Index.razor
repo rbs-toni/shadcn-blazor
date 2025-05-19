@@ -1,0 +1,53 @@
+﻿@page "/docs/components/switch"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Switch.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="@Component" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["A control that allows the user to toggle between checked and not checked."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_switchDefault"
+    CodePath="SwitchDefault.razor" />
+
+    @if (_examples.Count > 0)
+    {
+        <DocsPageSection Title="Examples">
+            @foreach (var item in _examples)
+            {
+                <DocsPageSection Level="3" Title="@item.Title">
+                    <DocsPreview PreviewComponent="@item.Template"
+                    CodePath="@item.CodePath" />
+                </DocsPageSection>
+            }
+        </DocsPageSection>
+    }
+</DocsPageContent>
+
+@code {
+    const string Component = "Switch";
+
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection(Component);
+    ComponentTemplate _switchDefault = new ComponentTemplate(typeof(SwitchDefault));
+
+    List<ComponentExample> _examples = new List<ComponentExample>()
+    {
+        new ComponentExample(Component,"Disabled",  new ComponentTemplate(typeof(SwitchDisabled))),
+        new ComponentExample(Component,"Colors",  new ComponentTemplate(typeof(SwitchColors))),
+    };
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: Component,
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

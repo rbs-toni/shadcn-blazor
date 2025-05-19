@@ -1,156 +1,126 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ShadcnBlazor;
 public class DialogService : IDialogService
 {
-    internal event Func<IDialogReference, Task>? OnDialogInstanceAdded;
-    internal event Func<IDialogReference, DialogResult?, Task>? OnDialogCloseRequested;
+    public event Action<IDialogReference, DialogResult?>? OnDialogCloseRequested;
+    public event Func<IDialogReference, Task>? OnDialogInstanceAddedAsync;
 
-    /// <summary>
-    /// Shows the modal with the component type.
-    /// </summary>
-    public IDialogReference Show<T>() where T : IComponent 
-        => Show<T>(string.Empty, [], new DialogOptions());
+    public void Close(IDialogReference dialog)
+    {
+        Close(dialog, DialogResult.Ok<object?>(null));
+    }
+    public virtual void Close(IDialogReference dialog, DialogResult? result)
+    {
+        OnDialogCloseRequested?.Invoke(dialog, result);
+    }
+    public virtual IDialogReference CreateReference()
+    {
+        return new DialogReference(Identifier.NewId(), this);
+    }
+    public Task<IDialogReference> ShowAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TComponent>()
+        where TComponent : IComponent
+    {
+        return ShowAsync<TComponent>(DialogParameters.Default);
+    }
+    public Task<IDialogReference> ShowAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TComponent>(
+        DialogParameters parameters) where TComponent : IComponent
+    {
+        return ShowAsync(typeof(TComponent), parameters);
+    }
+    public Task<IDialogReference> ShowAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type contentComponent)
+    {
+        return ShowAsync(contentComponent, DialogParameters.Default);
+    }
+    public async Task<IDialogReference> ShowAsync(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type contentComponent,
+        DialogParameters parameters)
+    {
+        var dialogReference = await ShowCoreAsync(contentComponent, parameters);
 
-    /// <summary>
-    /// Shows a modal containing a <typeparamref name="TComponent"/> with the specified <paramref name="options"/>.
-    /// </summary>
-    /// <param name="options">Options to configure the modal.</param>
-    public IDialogReference Show<TComponent>(DialogOptions options) where TComponent : IComponent
-        => Show<TComponent>("", [], options);
+        // Do not wait forever, what if render fails because of some internal exception
+        var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        var token = cancellationTokenSource.Token;
 
-    /// <summary>
-    /// Shows a modal containing a <typeparamref name="TComponent"/> with the specified <paramref name="parameters"/>.
-    /// </summary>
-    /// <param name="parameters">Key/Value collection of parameters to pass to component being displayed.</param>
-    public IDialogReference Show<TComponent>(DialogParameters parameters) where TComponent : IComponent
-        => Show<TComponent>("", parameters, new DialogOptions());
-
-    /// <summary>
-    /// Shows a modal containing a <typeparamref name="TComponent"/> with the specified <paramref name="parameters"/>
-    /// and <paramref name="options"/>.
-    /// </summary>
-    /// <param name="parameters">Key/Value collection of parameters to pass to component being displayed.</param>
-    /// <param name="options">Options to configure the modal.</param>
-    public IDialogReference Show<TComponent>(DialogParameters parameters, DialogOptions options) where TComponent : IComponent
-        => Show<TComponent>("", parameters, options);
-
-    /// <summary>
-    /// Shows the modal with the component type using the specified title.
-    /// </summary>
-    /// <param name="title">Dialog title.</param>
-    public IDialogReference Show<T>(string title) where T : IComponent 
-        => Show<T>(title, [], new DialogOptions());
-
-    /// <summary>
-    /// Shows the modal with the component type using the specified title.
-    /// </summary>
-    /// <param name="title">Dialog title.</param>
-    /// <param name="options">Options to configure the modal.</param>
-    public IDialogReference Show<T>(string title, DialogOptions options) where T : IComponent 
-        => Show<T>(title, [], options);
-
-    /// <summary>
-    /// Shows the modal with the component type using the specified <paramref name="title"/>,
-    /// passing the specified <paramref name="parameters"/>.
-    /// </summary>
-    /// <param name="title">Dialog title.</param>
-    /// <param name="parameters">Key/Value collection of parameters to pass to component being displayed.</param>
-    public IDialogReference Show<T>(string title, DialogParameters parameters) where T : IComponent 
-        => Show<T>(title, parameters, new DialogOptions());
-
-    /// <summary>
-    /// Shows the modal with the component type using the specified <paramref name="title"/>,
-    /// passing the specified <paramref name="parameters"/> and setting a custom CSS style.
-    /// </summary>
-    /// <param name="title">Dialog title.</param>
-    /// <param name="parameters">Key/Value collection of parameters to pass to component being displayed.</param>
-    /// <param name="options">Options to configure the modal.</param>
-    public IDialogReference Show<T>(string title, DialogParameters parameters, DialogOptions options) where T : IComponent 
-        => Show(typeof(T), title, parameters, options);
-
-    /// <summary>
-    /// Shows the modal with the specific component type.
-    /// </summary>
-    /// <param name="contentComponent">Type of component to display.</param>
-    public IDialogReference Show(Type contentComponent) 
-        => Show(contentComponent, string.Empty, [], new DialogOptions());
-
-    /// <summary>
-    /// Shows the modal with the component type using the specified title.
-    /// </summary>
-    /// <param name="contentComponent">Type of component to display.</param>
-    /// <param name="title">Dialog title.</param>
-    public IDialogReference Show(Type contentComponent, string title) 
-        => Show(contentComponent, title, [], new DialogOptions());
-
-    /// <summary>
-    /// Shows the modal with the component type using the specified title.
-    /// </summary>
-    /// <param name="title">Dialog title.</param>
-    /// <param name="contentComponent">Type of component to display.</param>
-    /// <param name="options">Options to configure the modal.</param>
-    public IDialogReference Show(Type contentComponent, string title, DialogOptions options) 
-        => Show(contentComponent, title, [], options);
-
-    /// <summary>
-    /// Shows the modal with the component type using the specified <paramref name="title"/>,
-    /// passing the specified <paramref name="parameters"/>.
-    /// </summary>
-    /// <param name="title">Dialog title.</param>
-    /// <param name="contentComponent">Type of component to display.</param>
-    /// <param name="parameters">Key/Value collection of parameters to pass to component being displayed.</param>
-    public IDialogReference Show(Type contentComponent, string title, DialogParameters parameters) 
-        => Show(contentComponent, title, parameters, new DialogOptions());
-
-    /// <summary>
-    /// Shows the modal with the component type using the specified <paramref name="title"/>,
-    /// passing the specified <paramref name="parameters"/> and setting a custom CSS style.
-    /// </summary>
-    /// <param name="contentComponent">Type of component to display.</param>
-    /// <param name="title">Dialog title.</param>
-    /// <param name="parameters">Key/Value collection of parameters to pass to component being displayed.</param>
-    /// <param name="options">Options to configure the modal.</param>
-    public IDialogReference Show(Type contentComponent, string title, DialogParameters parameters, DialogOptions options)
+        await using (token.Register(() => dialogReference.RenderCompleteTaskCompletionSource.TrySetResult(false)))
+        {
+            await dialogReference.RenderCompleteTaskCompletionSource.Task;
+            return dialogReference;
+        }
+    }
+    async Task<IDialogReference> ShowCoreAsync(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type contentComponent,
+        DialogParameters parameters)
     {
         if (!typeof(IComponent).IsAssignableFrom(contentComponent))
         {
-            throw new ArgumentException($"{contentComponent.FullName} must be a Blazor Component");
+            throw new ArgumentException($"{contentComponent.FullName} must be a Blazor IComponent");
         }
 
-        IDialogReference? modalReference = null;
-        var modalInstanceId = Guid.NewGuid();
-        var modalContent = new RenderFragment(builder =>
+
+        var dialogReference = CreateReference();
+
+        var dialogContent = DialogHelperComponent.Wrap(builder =>
         {
             var i = 0;
             builder.OpenComponent(i++, contentComponent);
-            foreach (var (name, value) in parameters.Parameters)
+            foreach (var parameter in parameters)
             {
-                builder.AddAttribute(i++, name, value);
+                builder.AddAttribute(i++, parameter.Key, parameter.Value);
             }
+            builder.AddComponentReferenceCapture(i, inst => dialogReference.InjectDialog(inst));
             builder.CloseComponent();
         });
-        var modalInstance = new RenderFragment(builder =>
+
+        var dialogInstance = new RenderFragment(builder =>
         {
-            builder.OpenComponent<DialogInstance>(0);
-            builder.SetKey("modalInstanceId");
-            builder.AddAttribute(1, "Options", options);
-            builder.AddAttribute(2, "Title", title);
-            builder.AddAttribute(3, "Content", modalContent);
-            builder.AddAttribute(4, "Id", modalInstanceId);
-            builder.AddComponentReferenceCapture(5, compRef => modalReference!.DialogInstanceRef = (DialogInstance)compRef);
+            builder.OpenComponent<DialogContainer>(0);
+            builder.SetKey(dialogReference.Id);
+            builder.AddComponentParameter(3, nameof(DialogContainer.ChildContent), dialogContent);
+            builder.AddComponentParameter(4, nameof(DialogContainer.Id), dialogReference.Id);
             builder.CloseComponent();
         });
-        modalReference = new DialogReference(modalInstanceId, modalInstance, this);
 
-        OnDialogInstanceAdded?.Invoke(modalReference);
+        dialogReference.InjectRenderFragment(dialogInstance);
 
-        return modalReference;
+        if (OnDialogInstanceAddedAsync is not null)
+        {
+            await OnDialogInstanceAddedAsync(dialogReference);
+        }
+
+        return dialogReference;
     }
 
-    public void Close(IDialogReference modal) 
-        => Close(modal, DialogResult.Ok());
+    /// <summary>
+    /// This internal wrapper component prevents overwriting parameters of once
+    /// instantiated dialog instances
+    /// See: https://github.com/MudBlazor/MudBlazor/issues/10659#issuecomment-2602911059
+    /// </summary>
+    class DialogHelperComponent : IComponent
+    {
+        const string ChildContent = nameof(ChildContent);
+        RenderFragment? _renderFragment;
+        RenderHandle _renderHandle;
 
-    public void Close(IDialogReference modal, DialogResult? result) 
-        => OnDialogCloseRequested?.Invoke(modal, result);
+        public static RenderFragment Wrap(RenderFragment renderFragment)
+            => builder =>
+            {
+                builder.OpenComponent<DialogHelperComponent>(1);
+                builder.AddAttribute(2, ChildContent, renderFragment);
+                builder.CloseComponent();
+            };
+
+        void IComponent.Attach(RenderHandle renderHandle) => _renderHandle = renderHandle;
+        Task IComponent.SetParametersAsync(ParameterView parameters)
+        {
+            if (_renderFragment is null && parameters.TryGetValue<RenderFragment>(ChildContent, out var renderFragment))
+            {
+                _renderFragment = renderFragment;
+                _renderHandle.Render(_renderFragment);
+            }
+            return Task.CompletedTask;
+        }
+    }
 }

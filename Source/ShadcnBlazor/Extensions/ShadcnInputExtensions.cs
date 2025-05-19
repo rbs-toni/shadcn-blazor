@@ -1,12 +1,10 @@
+using Microsoft.AspNetCore.Components;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using Microsoft.AspNetCore.Components;
 
 namespace ShadcnBlazor;
-
-internal static class ShadcnInputExtensions
+static class ShadcnInputExtensions
 {
-
     public static bool TryParseSelectableValueFromString<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TValue>(
         this ShadcnInputBase<TValue> input, string? value,
         [MaybeNullWhen(false)] out TValue result,
@@ -48,7 +46,7 @@ internal static class ShadcnInputExtensions
         }
     }
 
-    private static bool TryConvertToBool<TValue>(string? value, out TValue result)
+    static bool TryConvertToBool<TValue>(string? value, out TValue result)
     {
         if (bool.TryParse(value, out var @bool))
         {
@@ -59,8 +57,7 @@ internal static class ShadcnInputExtensions
         result = default!;
         return false;
     }
-
-    private static bool TryConvertToNullableBool<TValue>(string? value, out TValue result)
+    static bool TryConvertToNullableBool<TValue>(string? value, out TValue result)
     {
         if (string.IsNullOrEmpty(value))
         {

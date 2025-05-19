@@ -1,0 +1,32 @@
+﻿@page "/docs/components/dialog"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Dialog.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Dialog" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["A window overlaid on either the primary window or another dialog window, rendering the content underneath inert."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_dialogDefault"
+                 CodePath="DialogDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Dialog");
+    ComponentTemplate _dialogDefault = new ComponentTemplate(typeof(DialogDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Dialog",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

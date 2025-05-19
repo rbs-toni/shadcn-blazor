@@ -1,0 +1,29 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnJSComponentBase
+@inject TwMerge TwMerge
+
+@if (HasSize)
+{
+    <div id="@Id" class="@Class.Cn(TwMerge)" style="@StyleValue" @ref="Ref" @attributes="Attributes">
+        @ChildContent
+    </div>
+}
+
+@code {
+    [CascadingParameter]
+    ScrollAreaRootContext? RootContext { get; set; }
+
+    double _width;
+    double _height;
+
+    bool HasSize => _width > 0 && _height > 0;
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("width", _width.ToPx())
+        .AddStyle("height", _height.ToPx())
+        .AddStyle("position", "absolute")
+        .AddStyle("right", "0", RootContext?.Direction == Direction.LTR)
+        .AddStyle("left", "0", RootContext?.Direction == Direction.RTL)
+        .AddStyle("bottom", "0")
+        .Build();
+}

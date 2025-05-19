@@ -1,0 +1,32 @@
+﻿@page "/docs/components/separator"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Separator.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Separator" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Visually or semantically separates content."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_separatorDefault"
+                 CodePath="SeparatorDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Separator");
+    ComponentTemplate _separatorDefault = new ComponentTemplate(typeof(SeparatorDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Separator",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

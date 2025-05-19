@@ -12,6 +12,16 @@
 <DocsPageContent>
     <DocsPreview PreviewComponent="@_tabsDefault"
                  CodePath="TabsDefault.razor" />
+
+    <DocsPageSection Title="Examples">
+        @foreach (var item in _examples)
+        {
+            <DocsPageSection Level="3" Title="@item.Title">
+                <DocsPreview PreviewComponent="@item.Template"
+                             CodePath="@item.CodePath" />
+            </DocsPageSection>
+        }
+    </DocsPageSection>
 </DocsPageContent>
 
 @code {
@@ -19,7 +29,7 @@
     LayoutContext LayoutContext { get; set; } = default!;
 
     BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Tabs");
-    SlotComponent _tabsDefault = new SlotComponent(typeof(TabsDefault));
+    ComponentTemplate _tabsDefault = new ComponentTemplate(typeof(TabsDefault));
 
     protected override void OnInitialized()
     {
@@ -29,5 +39,24 @@
             useOutline: true,
             useFooterLinks: true);
     }
-}
+    const string Component = "Tabs";
 
+    List<ComponentExample> _examples = new List<ComponentExample>()
+    {
+        new ComponentExample(Component,"Underlined",  new ComponentTemplate(typeof(TabsUnderlined))),
+        new ComponentExample(Component,"Separated",  new ComponentTemplate(typeof(TabsSeparated))),
+        new ComponentExample(Component,"Bordered",  new ComponentTemplate(typeof(TabsBordered))),
+        new ComponentExample(Component,"Box",  new ComponentTemplate(typeof(TabsBox))),
+        new ComponentExample(Component,"Bootstrap",  new ComponentTemplate(typeof(TabsBootstrap))),
+        new ComponentExample(Component,"Icon",  new ComponentTemplate(typeof(TabsIcon))),
+        new ComponentExample(Component,"Mobile Navigation",  new ComponentTemplate(typeof(TabsMobileNavigation))),
+        new ComponentExample(Component,"With badge",  new ComponentTemplate(typeof(TabsWithBadge))),
+        new ComponentExample(Component,"Sharp",  new ComponentTemplate(typeof(TabsSharp))),
+        new ComponentExample(Component,"Shadow",  new ComponentTemplate(typeof(TabsShadow))),
+        new ComponentExample(Component,"Skewed",  new ComponentTemplate(typeof(TabsSkewed))),
+        new ComponentExample(Component,"Vertical Left",  new ComponentTemplate(typeof(TabsVerticalLeft))),
+        new ComponentExample(Component,"Vertical Left Bordered",  new ComponentTemplate(typeof(TabsVerticalLeftBordered))),
+        new ComponentExample(Component,"Vertical Left Separated",  new ComponentTemplate(typeof(TabsVerticalLeftSeparated))),
+        new ComponentExample(Component,"Vertical Left Sharp",  new ComponentTemplate(typeof(TabsVerticalLeftSharp))),
+    };
+}

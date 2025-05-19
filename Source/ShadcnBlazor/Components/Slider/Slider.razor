@@ -1,0 +1,46 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnInputBase<TValue>
+@typeparam TValue
+@attribute [CascadingTypeParameter(nameof(TValue))]
+<CascadingValue Value="this" IsFixed="true">
+    <fluent-slider id="@Id"
+                   class="@ClassValue"
+                   style="@StyleValue"
+                   readonly="@ReadOnly"
+                   min="@FormatValueAsString(Min)"
+                   max="@FormatValueAsString(Max)"
+                   step="@FormatValueAsString(Step)"
+                   orientation="@Orientation.ToAttributeValue()"
+                   value="@FormatValueAsString(Value)"
+                   disabled="@Disabled"
+                   name=@Name
+                   required=@Required
+                   @onsliderchange="@ChangeHandlerAsync"
+                   @ref="Ref"
+                   @attributes="Attributes">
+        @ChildContent
+    </fluent-slider>
+</CascadingValue>
+
+@code {
+    /// <summary>
+    /// The reading direction of the combobox when applicable. If omitted, inherits globally from `ConfigProvider` or assumes LTR (left-to-right) reading mode.
+    /// </summary>
+    [Parameter]
+    public Direction Direction { get; set; }
+
+    /// <summary>
+    /// Whether the slider is visually inverted.
+    /// </summary>
+    [Parameter]
+    public bool Inverted { get; set; }
+
+    /// <summary>
+    /// The minimum permitted steps between multiple thumbs.
+    /// </summary>
+    [Parameter]
+    public int MinStepsBetweenThumbs { get; set; } = 0;
+
+    [Parameter]
+    public ThumbAlignment ThumbAlignment { get; set; } = ThumbAlignment.Contain;
+}

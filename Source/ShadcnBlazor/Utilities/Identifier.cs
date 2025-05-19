@@ -3,7 +3,7 @@ namespace ShadcnBlazor;
 /// <summary />
 public static class Identifier
 {
-    private static readonly Random _rnd = new();
+    static readonly Random _rnd = new();
 
     /// <summary>
     /// Returns a new <see cref="IdentifierContext"/> where ID are sequential: "f0000", "f0001", "f0002", ...

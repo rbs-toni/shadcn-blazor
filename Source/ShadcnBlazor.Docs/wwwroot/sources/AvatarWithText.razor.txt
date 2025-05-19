@@ -1,0 +1,12 @@
+﻿<div class="flex gap-3">
+    <Avatar>
+        <AvatarImage Src="https://avatars.githubusercontent.com/u/117208821?s=96&v=4" alt="rbs-toni" />
+        <AvatarFallback>RT</AvatarFallback>
+    </Avatar>
+    <div class="flex flex-col">
+        <span class="font-semibold tracking-tight">shadcn</span>
+        <span class="leading-none text-sm text-muted-foreground">
+            Shadcn UI
+        </span>
+    </div>
+</div>

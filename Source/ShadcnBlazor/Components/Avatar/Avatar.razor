@@ -3,19 +3,21 @@
 @using TailwindMerge
 @inject TwMerge TwMerge
 
-<CascadingValue Value="_avatarContext" IsFixed="true">
-    <span id="@Id" class="@(TwMerge.Merge(ClassValue))" style="@Style" @ref=Ref @attributes=Attributes>
-        @ChildContent
+@if (GroupContext == null || !GroupContext.IsOverflow(this))
+{
+    <span id="@Id"
+          class="@(TwMerge.Merge(ClassValue))"
+          style="@StyleValue"
+          @ref=Ref
+          @attributes=Attributes>
+        <CascadingValue Value="_context" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
     </span>
-</CascadingValue>
+}
 
 @code {
     const string DefaultClasses = "inline-flex items-center justify-center font-normal text-foreground select-none shrink-0 bg-secondary overflow-hidden";
-
-    AvatarContext _avatarContext = new()
-        {
-            ImageLoadingStatus = ImageLoadingStatus.Loading
-        };
 
     [Parameter]
     public AvatarSize Size { get; set; } = AvatarSize.Small;
@@ -23,9 +25,27 @@
     [Parameter]
     public AvatarShape Shape { get; set; } = AvatarShape.Circle;
 
+    [CascadingParameter]
+    AvatarGroupContext? GroupContext { get; set; }
+
     string? ClassValue => new CssBuilder(Class)
         .AddClass(DefaultClasses)
         .AddClass(Size.ToAttributeValue(false))
         .AddClass(Shape.ToAttributeValue(false))
         .Build();
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("z-index", CalculateZIndex().ToString())
+        .Build();
+
+    int CalculateZIndex()
+    {
+        if (GroupContext != null)
+        {
+            var idx = GroupContext.IndexOf(this);
+            var max = GroupContext.Count;
+            return max - idx;
+        }
+        return 0;
+    }
 }

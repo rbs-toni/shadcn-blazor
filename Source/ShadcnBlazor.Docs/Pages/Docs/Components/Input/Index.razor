@@ -19,7 +19,7 @@
     LayoutContext LayoutContext { get; set; } = default!;
 
     BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Input");
-    SlotComponent _inputDefault = new SlotComponent(typeof(InputDefault));
+    ComponentTemplate _inputDefault = new ComponentTemplate(typeof(InputDefault));
 
     protected override void OnInitialized()
     {

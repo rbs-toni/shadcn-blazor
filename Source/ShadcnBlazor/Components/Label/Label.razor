@@ -7,8 +7,8 @@
        class="@(TwMerge.Merge(ClassValue))"
        style="@Style"
        for="@For"
-       @ref=Ref
-       @attributes=Attributes>
+       @ref="Ref"
+       @attributes="Attributes">
     @ChildContent
 </label>
 
@@ -16,9 +16,7 @@
     [Parameter]
     public string? For { get; set; }
 
-    const string DefaultClasses = "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70";
-
     string? ClassValue => new CssBuilder(Class)
-        .AddClass(DefaultClasses)
+        .AddClass(LabelUtils.GetClass(StyleType))
         .Build();
 }

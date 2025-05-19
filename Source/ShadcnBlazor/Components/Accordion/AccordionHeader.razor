@@ -1,0 +1,22 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+
+<h3 id="@Id" 
+    class="@TwMerge.Merge(Class)" 
+    style="@Style" 
+    data-orientation="@Accordion?.Orientation.ToAttributeValue(false)" 
+    data-state="@AccordionItem?.DataState"
+    data-disabled="@AccordionItem?.Disabled"
+    @ref="Ref" 
+    @attributes="Attributes">
+    @ChildContent
+</h3>
+
+@code {
+    [CascadingParameter]
+    InternalAccordionContext? Accordion { get; set; }
+
+    [CascadingParameter]
+    InternalAccordionItemContext? AccordionItem { get; set; }
+}

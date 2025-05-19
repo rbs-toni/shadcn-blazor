@@ -1,0 +1,60 @@
+﻿@BuildFileTree(FileTree)
+
+@code {
+    readonly FileTreeItem[] FileTree = new FileTreeItem[]
+        {
+        new FileTreeItem("src", "folder", new FileTreeItem[]
+        {
+            new FileTreeItem("component", "folder", new FileTreeItem[]
+            {
+                new FileTreeItem("Button.razor", "file"),
+                new FileTreeItem("Input.razor", "file"),
+            })
+        }),
+        new FileTreeItem("public", "folder", new FileTreeItem[]
+        {
+            new FileTreeItem("favicon.ico", "file"),
+            new FileTreeItem("index.html", "file"),
+        }),
+        new FileTreeItem("package.json", "file")
+        };
+
+    record FileTreeItem(string Name, string Type, FileTreeItem[]? Children = null);
+
+    RenderFragment BuildFileTree(FileTreeItem[] fileTree) => @<div class="w-[350px] bg-accent p-4 rounded-lg">
+        <div class="w-full">
+            @foreach (var treeItem in fileTree)
+        {
+            @BuildFileTreeItem(treeItem)
+        }
+        </div>
+    </div>
+        ;
+
+    RenderFragment BuildFileTreeItem(FileTreeItem fileTreeItem) => fileTreeItem.Type switch
+    {
+        "file" => @<div class="flex items-center gap-2 pl-14 py-1">
+        <LucideIcon Name="IconName.File" Class="size-4" />
+        @fileTreeItem.Name
+    </div>,
+
+        _ => @<Collapsible Class="pl-4">
+        <CollapsibleTrigger Class="w-full group flex justify-start items-center gap-2 py-1" Variant="ButtonVariant.Ghost">
+            <LucideIcon Name="IconName.ChevronRight" Class="h-4 w-4 group-data-[state=open]:rotate-90 transition-transform" />
+            <span class="flex items-center gap-2">
+                <LucideIcon Name="IconName.Folder" Class="size-4 fill-current" />
+                @fileTreeItem.Name
+            </span>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+            @if (fileTreeItem.Children?.Length > 0)
+        {
+            @foreach (var child in fileTreeItem.Children)
+        {
+            @BuildFileTreeItem(child)
+        }
+        }
+        </CollapsibleContent>
+    </Collapsible>
+    };
+}

@@ -1,0 +1,17 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+@typeparam TValue
+
+<p class="@(TwMerge.Merge(ClassValue))" style="@Style" @ref="Ref" @attributes="Attributes">
+    @ChildContent
+</p>
+
+@code {
+    const string DefaultClasses = "text-sm text-muted-foreground";
+    const string NewYorkClasses = "text-sm text-muted-foreground";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+        .Build();
+}

@@ -1,0 +1,353 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+@inject IElementService ElementService
+
+<li @ref="Ref"
+    aria-live="@(Instance?.Important ==true ? "assertive":"polite")"
+    aria-atomic="true"
+    role="status"
+    tabindex="0"
+    data-sonner-toast="true"
+    class="@(TwMerge.Merge(ClassValue))"
+    data-rich-colors="@DataRichColors.ToAttributeValue()"
+    data-styled="@DataStyled.ToAttributeValue()"
+    data-mounted="@DataMounted.ToAttributeValue()"
+    data-promise="@DataPromise.ToAttributeValue()"
+    data-removed="@DataRemoved.ToAttributeValue()"
+    data-visible="@DataVisible.ToAttributeValue()"
+    data-y-position="@Y"
+    data-x-position="@X"
+    data-index="@Index"
+    data-front="@DataFront.ToAttributeValue()"
+    data-swiping="@DataSwiping.ToAttributeValue()"
+    data-dismissible="@DataDismissible.ToAttributeValue()"
+    data-type="@InstanceToastType.ToAttributeValue(false)"
+    data-invert="@Invert.ToAttributeValue()"
+    data-swipe-out="@_swipeOut.ToAttributeValue()"
+    data-expanded="@DataExpanded.ToAttributeValue()"
+    data-HeightIndex="@HeightIndex"
+    style="@StyleValue"
+    @onextpointerdown="OnPointerDown"
+    @onpointerup="OnPointerUp"
+    @onpointermove="OnPointerMove">
+    <ToastButtonClose Show="ShowCloseButton && Instance?.Component == null"
+                      AriaLabel="@CloseButtonAriaLabel"
+                      Disabled="ToastDisabled"
+                      Class="@Classes?.CloseButton"
+                      OnClose="HandleCloseToast">
+        @if (Icons?.Close != null)
+        {
+            @Icons.Close
+        }
+        else if (CloseIcon != null)
+        {
+            @CloseIcon
+        }
+    </ToastButtonClose>
+    @if (Instance?.Component != null)
+    {
+        @Instance.Component
+    }
+    else
+    {
+        @if (InstanceToastType != ToastType.Default || Instance?.Icon != null || Instance?.Promise != null)
+        {
+            <div data-icon class="@(Classes?.Icon + Instance?.Classes?.Icon)">
+                @if (Instance?.Icon != null)
+                {
+                    @Instance.Icon
+                }
+                else
+                {
+                    switch (InstanceToastType)
+                    {
+                        case ToastType.Loading:
+                            @LoadingIcon
+                            ;
+                            break;
+                        case ToastType.Success:
+                            @SuccessIcon
+                            ;
+                            break;
+                        case ToastType.Error:
+                            @ErrorIcon
+                            ;
+                            break;
+                        case ToastType.Warning:
+                            @WarningIcon
+                            ;
+                            break;
+                        case ToastType.Info:
+                            @InfoIcon
+                            ;
+                            break;
+                    }
+                }
+            </div>
+        }
+        <div data-content class="@(TwMerge.Merge(Classes?.Content, Instance?.Classes?.Content))">
+            <div data-title class="@(TwMerge.Merge(Classes?.Title, Instance?.Classes?.Title))">
+                @if (Instance?.Title.IsString == true)
+                {
+                    @Instance?.Title.Label
+                    ;
+                }
+                else if (Instance?.Title.IsFragment == true)
+                {
+                    @Instance?.Title.Fragment
+                    ;
+                }
+                else
+                {
+                    throw new ArgumentNullException(nameof(Instance.Title), "Title must be a string or a fragment.");
+                }
+            </div>
+            <ToastDescription Content="@Instance?.Description"
+                              Class="@(DescriptionClass+Classes?.Description+Instance?.Classes?.Description)" />
+        </div>
+        <ToastButtonCancel Action="@Instance?.Cancel" OnClick="@ButtonCancelClickHandler" />
+        <ToastButtonAction Action="@Instance?.Action" OnClick="@ButtonActionClickHandler" />
+    }
+</li>
+@code {
+    const string DefaultClasses = "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg";
+
+    const int TOAST_LIFETIME = 4000;
+    const int SWIPE_THRESHOLD = 20;
+    const int TIME_BEFORE_UNMOUNT = 200;
+
+    [CascadingParameter]
+    InternalToasterContext? ToasterContext { get; set; }
+
+    [Parameter]
+    public RenderFragment? CloseIcon { get; set; }
+
+    [Parameter]
+    public RenderFragment? SuccessIcon { get; set; }
+
+    [Parameter]
+    public RenderFragment? ErrorIcon { get; set; }
+
+    [Parameter]
+    public RenderFragment? WarningIcon { get; set; }
+
+    [Parameter]
+    public RenderFragment? InfoIcon { get; set; }
+
+    protected bool DataRichColors => Instance?.RichColors ?? DefaultRichColors ?? false;
+    protected bool DataPromise => Instance?.Promise != null;
+    protected bool DataMounted => _mounted;
+    protected bool DataRemoved => _removed;
+    protected bool DataVisible => IsVisible;
+    protected bool DataFront => IsFront;
+    protected bool DataSwiping => _swiping;
+    protected bool DataDismissible => Dismissible;
+    protected bool DataExpanded => Expanded || (ExpandByDefault && _mounted);
+
+    async Task OnPointerDown(ExtendedPointerEventArgs args)
+    {
+        if (ToastDisabled || !Dismissible)
+        {
+            return;
+        }
+        _dragStartTime = DateTime.Now;
+        _offsetBeforeRemove = Offset;
+        await SetPointerCaptureAsync(args.PointerId);
+        if (args.TagName == "BUTTON")
+        {
+            return;
+        }
+        _swiping = true;
+        _pointerStart = (args.ClientX, args.ClientY);
+    }
+    async Task OnPointerUp(PointerEventArgs args)
+    {
+        if (_swipeOut || !Dismissible)
+        {
+            return;
+        }
+        _pointerStart = null;
+        var timeTaken = DateTime.Now - _dragStartTime;
+        if (timeTaken?.Seconds != 0)
+        {
+            var velocity = _swipeAmount / timeTaken?.Seconds;
+            var absVelocity = velocity < 0 ? velocity * -1 : velocity;
+            var absTimeTaken = timeTaken?.Seconds < 0 ? timeTaken?.Seconds * -1 : timeTaken?.Seconds;
+            if (absTimeTaken >= SWIPE_THRESHOLD || absVelocity > .11)
+            {
+                _offsetBeforeRemove = Offset;
+                Instance?.OnDismiss?.InvokeAsync(Instance);
+                await DeleteToastAsync();
+                _swipeOut = true;
+                _swiped = true;
+                return;
+            }
+        }
+
+        _swipeAmount = 0;
+        _swiping = false;
+    }
+    async Task OnPointerMove(PointerEventArgs args)
+    {
+        if (_pointerStart is null || !Dismissible)
+        {
+            return;
+        }
+
+        var yPos = args.ClientY - _pointerStart.Value.y;
+        var isHighlighted = await GetSelectionAsync();
+        var swipeAmount = Y == "top" ? Math.Min(0, yPos) : Math.Max(0, yPos);
+        var absSwipeAmount = Math.Abs(swipeAmount);
+        if (absSwipeAmount > 0)
+        {
+            _swiped = true;
+        }
+        if (isHighlighted)
+        {
+            return;
+        }
+        _swipeAmount = swipeAmount;
+    }
+
+    [Parameter]
+    public ToastInstance? Instance { get; set; }
+
+    [Parameter]
+    public List<ToastInstance>? Toasts { get; set; }
+
+    [Parameter]
+    public int Index { get; set; }
+
+    [Parameter]
+    public bool Expanded { get; set; }
+
+    [Parameter]
+    public bool Invert { get; set; }
+
+    [Parameter]
+    public List<ToastHeight>? Heights { get; set; }
+
+    [Parameter]
+    public int? Gap { get; set; }
+
+    [Parameter]
+    public ToastPosition? Position { get; set; }
+
+    [Parameter]
+    public int VisibleToasts { get; set; }
+
+    [Parameter]
+    public bool ExpandByDefault { get; set; }
+
+    [Parameter]
+    public bool CloseButton { get; set; } = true;
+
+    [Parameter]
+    public bool Interacting { get; set; }
+
+    [Parameter]
+    public string? CancelButtonStyle { get; set; }
+
+    [Parameter]
+    public string? ActionButtonStyle { get; set; }
+
+    [Parameter]
+    public int? Duration { get; set; }
+
+    [Parameter]
+    public bool? Unstyled { get; set; }
+
+    [Parameter]
+    public string? DescriptionClass { get; set; }
+
+    [Parameter]
+    public RenderFragment? LoadingIcon { get; set; }
+
+    [Parameter]
+    public ToastClasses? Classes { get; set; }
+
+    [Parameter]
+    public ToastIcons? Icons { get; set; }
+
+    [Parameter]
+    public string? CloseButtonAriaLabel { get; set; }
+
+    [Parameter]
+    public bool? PauseWhenPageIsHidden { get; set; }
+
+    [Parameter]
+    public bool? DefaultRichColors { get; set; }
+
+    [Parameter]
+    public EventCallback<List<ToastHeight>> OnUpdateHeights { get; set; }
+
+    [Parameter]
+    public EventCallback<ToastInstance> OnRemoveToast { get; set; }
+
+    bool _mounted = false;
+    bool _removed = false;
+    bool _swiping = false;
+    bool _swipeOut = false;
+    bool _swiped = false;
+    double _offsetBeforeRemove = 0;
+    double _initialHeight = 0;
+    int? _remainingTime;
+    DateTime? _dragStartTime;
+    bool IsFront => Index == 0;
+    bool IsVisible => Index + 1 <= VisibleToasts;
+    ToastType? InstanceToastType => Instance?.Type;
+    bool Dismissible => Instance?.Dismissible != false ? true : false;
+    string? ToastClass => Instance?.Class;
+    string? ToastDescriptionClass => DescriptionClass;
+    string? ToastStyle => Instance?.Style;
+    int? HeightIndex
+    {
+        get
+        {
+            return Heights?.FindIndex(x => x.ToastId == Instance?.Id) ?? 0;
+        }
+    }
+    bool ShowCloseButton
+    {
+        get
+        {
+            if (Instance?.CloseButton == null)
+                return CloseButton;
+            else return CloseButton;
+        }
+    }
+
+    int ToastDuration => Instance?.Duration ?? Duration ?? TOAST_LIFETIME;
+    int _closeTimerStartTime = 0;
+    int _lastCloseTimerStartTime = 0;
+    (double x, double y)? _pointerStart;
+    string[]? Coords => Position.ToAttributeValue(false)?.Split("-");
+    string? X => Coords?[1];
+    string? Y => Coords?[0];
+    double ToastsHeightBefore => Heights?
+        .Take(HeightIndex ?? 0)
+        .Sum(x => x.Height) ?? 0d;
+    bool _isDocumentHidden;
+    bool ToastInvert => Instance?.Invert ?? Invert;
+    bool ToastDisabled => InstanceToastType == ToastType.Loading;
+    double Offset => HeightIndex * Gap + ToastsHeightBefore ?? 0;
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(Classes?.Toast)
+        .AddClass(Classes?.GetToastClassBasedOnType(InstanceToastType))
+        .AddClass(DefaultClasses)
+        .Build();
+
+    double _swipeAmount;
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("--index", Index.ToString())
+        .AddStyle("--toasts-before", Index.ToString())
+        .AddStyle("--z-index", (Toasts?.Count - Index).ToString())
+        .AddStyle("--offset", _removed ? _offsetBeforeRemove.ToPx() : Offset.ToPx())
+        .AddStyle("--initial-height", ExpandByDefault ? "auto" : _initialHeight.ToPx())
+        .AddStyle("--swipe-amount", _swipeAmount.ToPx())
+        .Build();
+
+    bool DataStyled => Instance?.Unstyled != true && (Instance?.Component == null) && Unstyled != true;
+}

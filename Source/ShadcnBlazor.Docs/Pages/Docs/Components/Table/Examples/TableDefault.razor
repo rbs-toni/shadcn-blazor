@@ -1,0 +1,58 @@
+﻿<Table>
+    <TableCaption>A list of your recent invoices.</TableCaption>
+    <TableHeader>
+        <TableRow>
+            <TableHead Class="w-[100px]">
+                Invoice
+            </TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Method</TableHead>
+            <TableHead Class="text-right">
+                Amount
+            </TableHead>
+        </TableRow>
+    </TableHeader>
+    <TableBody>
+        @foreach (var invoice in Invoices)
+        {
+            <TableRow @key="@invoice.Id">
+                <TableCell Class="font-medium">
+                    @invoice.Id
+                </TableCell>
+                <TableCell>@invoice.PaymentStatus</TableCell>
+                <TableCell> @invoice.PaymentMethod </TableCell>
+                <TableCell Class="text-right">
+                    @invoice.TotalAmount
+                </TableCell>
+            </TableRow>
+        }
+    </TableBody>
+</Table>
+
+@code {
+    public record Invoice
+    {
+        public Invoice(string id, string paymentStatus, string totalAmount, string paymentMethod)
+        {
+            Id = id;
+            PaymentStatus = paymentStatus;
+            TotalAmount = totalAmount;
+            PaymentMethod = paymentMethod;
+        }
+        public string Id { get; init; }
+        public string PaymentStatus { get; init; }
+        public string TotalAmount { get; init; }
+        public string PaymentMethod { get; init; }
+    }
+
+    List<Invoice> Invoices = new List<Invoice>()
+{
+    new Invoice("INV001", "Paid", "$250.00", "Credit Card"),
+    new Invoice("INV002", "Pending", "$150.00", "PayPal"),
+    new Invoice("INV003", "Unpaid", "$350.00", "Bank Transfer"),
+    new Invoice("INV004", "Paid", "$450.00", "Credit Card"),
+    new Invoice("INV005", "Paid", "$550.00", "PayPal"),
+    new Invoice("INV006", "Pending", "$200.00", "Bank Transfer"),
+    new Invoice("INV007", "Unpaid", "$300.00", "Credit Card")
+};
+}

@@ -1,0 +1,7 @@
+﻿<Alert Variant="AlertVariant.Default">
+    <LucideIcon Name="IconName.CircleFadingArrowUp" Class="size-4"/>
+    <AlertTitle>Update Available</AlertTitle>
+    <AlertDescription>
+        A new version of the app is now available.
+    </AlertDescription>
+</Alert>

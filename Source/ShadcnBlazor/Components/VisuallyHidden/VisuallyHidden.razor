@@ -1,0 +1,42 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<Primitive As="@As"
+           @attributes="Attributes"
+           aria-hidden="@GetAriaHidden()"
+           data-hidden="@GetDataHidden()"
+           tabindex="@TabIndex"
+           style="@StyleValue">
+    @ChildContent
+</Primitive>
+
+@code {
+    [Parameter]
+    public string? As { get; set; } = "span";
+
+    [Parameter]
+    public VisuallyFeature Feature { get; set; } = VisuallyFeature.Focusable;
+
+    string? GetAriaHidden() =>
+        Feature == VisuallyFeature.Focusable ? "true" : null;
+
+    string? GetDataHidden() =>
+        Feature == VisuallyFeature.FullyHidden ? "" : null;
+
+    int? TabIndex =>
+        Feature == VisuallyFeature.FullyHidden ? -1 : null;
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("position", "absolute")
+        .AddStyle("border", "0")
+        .AddStyle("width", "1px")
+        .AddStyle("height", "1px")
+        .AddStyle("padding", "0")
+        .AddStyle("margin", "-1px")
+        .AddStyle("overflow", "hidden")
+        .AddStyle("clip", "rect(0, 0, 0, 0)")
+        .AddStyle("clip-path", "inset(50%)")
+        .AddStyle("white-space", "nowrap")
+        .AddStyle("word-wrap", "normal")
+        .Build();
+}

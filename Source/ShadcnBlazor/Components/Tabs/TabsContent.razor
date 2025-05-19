@@ -7,10 +7,10 @@
      class="@(TwMerge.Merge(ClassValue))"
      style="@Style"
      role="tabpanel"
-     data-state="@(IsSelected ? "active" : "inactive")"
-     data-orientation="@Tabs?.Orientation.ToStringFast()"
+     data-state="@DataState"
+     data-orientation="@Orientation"
      aria-labelledby="@TriggerId"
-     hidden="@(!IsSelected)"
+     hidden="@Hidden"
      tabindex="0"
      @ref=Ref
      @attributes=Attributes>
@@ -21,21 +21,17 @@
     const string DefaultClasses = "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
     [CascadingParameter]
-    Tabs? Tabs { get; set; }
+    TabsContext? Context { get; set; }
 
     [Parameter, EditorRequired]
     public string? Value { get; set; }
 
-    string TriggerId => TabsUtils.MakeTriggerId(Tabs?.Id, Value);
-    string ContentId => TabsUtils.MakeContentId(Tabs?.Id, Value);
-    bool IsSelected => Value == Tabs?.Value;
+    string TriggerId => TabsUtils.MakeTriggerId(Context?.BaseId, Value);
+    string ContentId => TabsUtils.MakeContentId(Context?.BaseId, Value);
+    bool IsSelected => Value == Context?.Value;
+    string? Orientation => Context?.Orientation.ToAttributeValue(false);
+    bool Hidden => !IsSelected;
+    string? DataState => IsSelected ? "active" : "inactive";
 
     string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
-    protected override void OnInitialized()
-    {
-        if (Tabs != null)
-        {
-            Tabs.OnChanged += () => InvokeAsync(StateHasChanged);
-        }
-    }
 }

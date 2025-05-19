@@ -1,15 +1,8 @@
 ﻿@namespace ShadcnBlazor
 
-<CascadingValue Value="this">
-    <CascadingValue Value="_globalDialogOptions">
-        @foreach (var modal in _modals)
-        {
-            @modal.DialogInstance
-        }
-    </CascadingValue>
+<CascadingValue Value="this" IsFixed="true">
+    @foreach (var dialogReference in _dialogs.ToArray().Where(x => !x.Result.IsCompleted))
+    {
+        @dialogReference.RenderFragment
+    }
 </CascadingValue>
-
-@code {
-    [CascadingParameter] 
-    IDialogService CascadedDialogService { get; set; } = default!;
-}

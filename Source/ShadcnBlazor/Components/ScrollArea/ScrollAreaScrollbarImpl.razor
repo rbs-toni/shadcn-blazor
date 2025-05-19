@@ -1,0 +1,41 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnJSComponentBase
+
+<div id="@Id"
+     class="@Class"
+     style="@StyleValue"
+     data-scrollbarimpl
+     @ref="Ref"
+     @onextpointerdown="HandlePointerDown"
+     @onextpointermove="HandlePointerMove"
+     @onextpointerup="HandlePointerUp"
+     @attributes="Attributes">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public bool IsHorizontal { get; set; }
+
+    [Parameter]
+    public EventCallback<(double X, double Y)> OnDragScroll { get; set; }
+
+    [Parameter]
+    public EventCallback<(double X, double Y)> OnWheelScroll { get; set; }
+
+    [Parameter]
+    public EventCallback<(double X, double Y)> OnThumbPointerDown { get; set; }
+
+    [CascadingParameter]
+    ScrollAreaRootContext? RootContext { get; set; }
+
+    [CascadingParameter]
+    ScrollAreaScrollbarContext? ScrollbarContext { get; set; }
+
+    [CascadingParameter]
+    ScrollAreaScrollbarVisibleContext? ScrollbarVisibleContext { get; set; }
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("position", "absolute")
+        .Build();
+}

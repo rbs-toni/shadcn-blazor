@@ -1,0 +1,25 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+
+@if (Action != null)
+{
+    <button style="@TwMerge.Merge(Class)"
+            class="@Style"
+            data-button
+            data-cancel
+            @onclick="@OnClick">
+        @if (Action.Label != null)
+        {
+            @Action.Label
+        })
+    </button>
+}
+
+@code {
+    [Parameter]
+    public ToastAction? Action { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+}

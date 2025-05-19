@@ -1,0 +1,64 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@typeparam TValue where TValue : System.Numerics.INumber<TValue>
+
+<span id="@Id"
+      data-slider-impl
+      @ref="Ref"
+      @attributes="Attributes"
+      @onkeydown="@OnKeydown"
+      @onpointerdown="OnPointerDown"
+      @onpointerup="OnPointerUp"
+      @onpointermove="OnSlideMove">
+    @ChildContent
+</span>
+
+@code {
+    [CascadingParameter]
+    SliderContext<TValue>? SliderContext { get; set; }
+
+    [Parameter]
+    public EventCallback<PointerEventArgs> OnSlideStart { get; set; }
+
+    [Parameter]
+    public EventCallback<PointerEventArgs> OnSlideMove { get; set; }
+
+    [Parameter]
+    public EventCallback<PointerEventArgs> OnSlideEnd { get; set; }
+
+    [Parameter]
+    public EventCallback<KeyboardEventArgs> OnHomeKeyDown { get; set; }
+
+    [Parameter]
+    public EventCallback<KeyboardEventArgs> OnEndKeyDown { get; set; }
+
+    [Parameter]
+    public EventCallback<KeyboardEventArgs> OnStepKeyDown { get; set; }
+
+    void OnKeydown(KeyboardEventArgs args)
+    {
+        if (JOIN_KEYS.Contains(args.Key))
+        {
+            OnStepKeyDown.InvokeAsync(args);
+        }
+    }
+
+    void OnPointerDown(PointerEventArgs args)
+    {
+        OnSlideStart.InvokeAsync(args);
+    }
+
+    void OnPointerMove(PointerEventArgs args)
+    {
+        OnSlideMove.InvokeAsync(args);
+    }
+
+    void OnPointerUp(PointerEventArgs args)
+    {
+        OnSlideEnd.InvokeAsync(args);
+    }
+
+    const string PAGE_KEYS = "PageUp, PageDown";
+    const string ARROW_KEYS = "ArrowUp, ArrowDown, ArrowLeft, ArrowRight";
+    const string JOIN_KEYS = "PageUp, PageDown, ArrowUp, ArrowDown, ArrowLeft, ArrowRight";
+}

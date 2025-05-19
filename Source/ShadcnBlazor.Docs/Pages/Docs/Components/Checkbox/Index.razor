@@ -19,7 +19,7 @@
     LayoutContext LayoutContext { get; set; } = default!;
 
     BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Checkbox");
-    SlotComponent _checkboxDefault = new SlotComponent(typeof(CheckboxDefault));
+    ComponentTemplate _checkboxDefault = new ComponentTemplate(typeof(CheckboxDefault));
 
     protected override void OnInitialized()
     {

@@ -1,129 +1,91 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.JSInterop;
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace ShadcnBlazor;
-public partial class DialogProvider : IAsyncDisposable
+public partial class DialogProvider : IDisposable
 {
-    const string JSFile = "./_content/ShadcnBlazor/Components/DialogProvider.razor.js";
-    readonly DialogOptions _globalDialogOptions = new();
-    readonly Collection<IDialogReference> _modals = [];
-    bool _haveActiveDialogs;
-    IJSObjectReference? _styleFunctions;
-
-    internal event Action? OnDialogClosed;
+    readonly List<IDialogReference> _dialogs = [];
 
     [Inject]
-    IJSRuntime JsRuntime { get; set; } = default!;
+    IDialogService DialogService { get; set; } = default!;
+
     [Inject]
     NavigationManager NavigationManager { get; set; } = default!;
 
-    async ValueTask IAsyncDisposable.DisposeAsync()
+    /// <summary>
+    /// Hides all currently visible dialogs.
+    /// </summary>
+    public void DismissAll()
     {
-        if (_styleFunctions is not null)
+        foreach (var dialog in _dialogs.ToArray())
         {
-            try
-            {
-                await _styleFunctions.DisposeAsync();
-            }
-            catch (JSDisconnectedException)
-            {
-                // If the browser is gone, we don't need it to clean up any browser-side state
-            }
+            DismissInstance(dialog, DialogResult.Cancel());
+        }
+        StateHasChanged();
+    }
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+    internal void DismissInstance(string? id, DialogResult result)
+    {
+        var reference = GetDialogReference(id);
+        if (reference != null)
+        {
+            DismissInstance(reference, result);
         }
     }
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            NavigationManager.LocationChanged -= LocationChanged;
+            DialogService.OnDialogInstanceAddedAsync -= AddInstanceAsync;
+            DialogService.OnDialogCloseRequested -= DismissInstance;
+        }
+    }
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            foreach (var dialogReference in _dialogs.ToArray().Where(x => !x.Result.IsCompleted))
+            {
+                dialogReference.RenderCompleteTaskCompletionSource.TrySetResult(true);
+            }
+        }
 
-    internal async Task CloseInstance(IDialogReference? modal, DialogResult result)
-    {
-        if (modal?.DialogInstanceRef != null)
-        {
-            // Gracefully close the modal
-            await modal.DialogInstanceRef.CloseAsync(result);
-            if (!_modals.Any())
-            {
-                await ClearBodyStyles();
-            }
-            OnDialogClosed?.Invoke();
-        }
-        else
-        {
-            await DismissInstance(modal, result);
-        }
-    }
-    internal Task DismissInstance(Guid id, DialogResult result)
-    {
-        var reference = GetIDialogReference(id);
-        return DismissInstance(reference, result);
-    }
-    internal async Task DismissInstance(IDialogReference? modal, DialogResult result)
-    {
-        if (modal != null)
-        {
-            modal.Dismiss(result);
-            _modals.Remove(modal);
-            if (_modals.Count == 0)
-            {
-                await ClearBodyStyles();
-            }
-            await InvokeAsync(StateHasChanged);
-            OnDialogClosed?.Invoke();
-        }
-    }
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            _styleFunctions = await JsRuntime.InvokeAsync<IJSObjectReference>("import", JSFile);
-        }
+        return base.OnAfterRenderAsync(firstRender);
     }
     protected override void OnInitialized()
     {
-        if (CascadedDialogService == null)
-        {
-            throw new InvalidOperationException($"{GetType()} requires a cascading parameter of type {nameof(IDialogService)}.");
-        }
-
-        ((DialogService)CascadedDialogService).OnDialogInstanceAdded += Update;
-        ((DialogService)CascadedDialogService).OnDialogCloseRequested += CloseInstance;
-        NavigationManager.LocationChanged += CancelDialogs;
+        DialogService.OnDialogInstanceAddedAsync += AddInstanceAsync;
+        DialogService.OnDialogCloseRequested += DismissInstance;
+        NavigationManager.LocationChanged += LocationChanged;
     }
-    async void CancelDialogs(object? sender, LocationChangedEventArgs e)
+    Task AddInstanceAsync(IDialogReference dialog)
     {
-        foreach (var modalReference in _modals.ToList())
-        {
-            modalReference.Dismiss(DialogResult.Cancel());
-        }
-
-        _modals.Clear();
-        await ClearBodyStyles();
-        await InvokeAsync(StateHasChanged);
+        _dialogs.Add(dialog);
+        return InvokeAsync(StateHasChanged);
     }
-    async Task ClearBodyStyles()
+    void DismissInstance(IDialogReference dialog, DialogResult? result)
     {
-        _haveActiveDialogs = false;
-        if (_styleFunctions is not null)
+        if (!dialog.Dismiss(result))
         {
-            await _styleFunctions.InvokeVoidAsync("removeBodyStyle");
+            return;
         }
+
+        _dialogs.Remove(dialog);
+        StateHasChanged();
     }
-    IDialogReference? GetIDialogReference(Guid id)
-        => _modals.SingleOrDefault(x => x.Id == id);
-    async Task Update(IDialogReference modalReference)
+    IDialogReference? GetDialogReference(string? id)
     {
-        _modals.Add(modalReference);
-
-        if (!_haveActiveDialogs)
-        {
-            _haveActiveDialogs = true;
-            if (_styleFunctions is not null)
-            {
-                await _styleFunctions.InvokeVoidAsync("setBodyStyle");
-            }
-        }
-
-        await InvokeAsync(StateHasChanged);
+        return _dialogs.ToArray().FirstOrDefault(x => x.Id == id);
+    }
+    void LocationChanged(object? sender, LocationChangedEventArgs args)
+    {
+        DismissAll();
     }
 }

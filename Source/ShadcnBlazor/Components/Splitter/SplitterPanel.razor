@@ -1,0 +1,89 @@
+﻿@namespace ShadcnBlazor
+@using System.Globalization
+@implements IDisposable
+@inherits ShadcnComponentBase
+
+<CascadingValue Value="this" IsFixed="true">
+    <div @ref="Ref"
+         id="@PanelId"
+         style="@GetPanelStyle()"
+         data-panel=""
+         data-panel-collapsible="@(Collapsible ? "" : null)"
+         data-panel-group-id="@GroupId"
+         data-panel-id="@PanelId"
+         data-panel-size="@PanelSize.ToString("0.0", CultureInfo.InvariantCulture)"
+         data-state="@(Collapsible ? (IsCollapsed ? "collapsed" : "expanded") : null)">
+        @ChildContent?(new PanelSlotProps(IsCollapsed, IsExpanded))
+    </div>
+</CascadingValue>
+
+@code {
+    [CascadingParameter]
+    private PanelGroupContext? PanelGroupContext
+    {
+        get => _panelGroupContext;
+        set
+        {
+            _panelGroupContext = value;
+            if (_panelGroupContext == null)
+            {
+                throw new InvalidOperationException(
+                    "SplitterPanel components must be rendered within a SplitterGroup container");
+            }
+        }
+    }
+
+    /// <summary>
+    /// The size of panel when it is collapsed
+    /// </summary>
+    [Parameter]
+    public double? CollapsedSize { get; set; }
+
+    /// <summary>
+    /// Should panel collapse when resized beyond its minSize
+    /// </summary>
+    [Parameter]
+    public bool Collapsible { get; set; }
+
+    /// <summary>
+    /// Initial size of panel (numeric value between 1-100)
+    /// </summary>
+    [Parameter]
+    public double? DefaultSize { get; set; }
+
+    /// <summary>
+    /// The maximum allowable size of panel (numeric value between 1-100)
+    /// </summary>
+    [Parameter]
+    public double MaxSize { get; set; } = 100;
+
+    /// <summary>
+    /// The minimum allowable size of panel (numeric value between 1-100)
+    /// </summary>
+    [Parameter]
+    public double MinSize { get; set; } = 10;
+
+    /// <summary>
+    /// The order of panel within group
+    /// </summary>
+    [Parameter]
+    public int? Order { get; set; }
+
+    /// <summary>
+    /// Event callback when panel is collapsed
+    /// </summary>
+    [Parameter]
+    public EventCallback OnCollapse { get; set; }
+
+    /// <summary>
+    /// Event callback when panel is expanded
+    /// </summary>
+    [Parameter]
+    public EventCallback OnExpand { get; set; }
+
+    /// <summary>
+    /// Event callback when panel is resized
+    /// </summary>
+    [Parameter]
+    public EventCallback<PanelResizeEventArgs> OnResize { get; set; }
+}

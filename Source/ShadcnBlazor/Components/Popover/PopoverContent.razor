@@ -1,0 +1,64 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+@implements IDisposable
+
+<div class="@(TwMerge.Merge(ClassValue))"
+     data-state="@DataState"
+     data-side="@Side"
+     role="dialog"
+     style="@Style"
+     tabindex="-1"
+     @onanimationend="OnAnimationEndHandler">
+    @ChildContent
+</div>
+
+@code {
+    const string DefaultClasses = "z-50 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--blazor-popper-content-transform-origin] w-80";
+
+    [Parameter]
+    public bool Show { get; set; }
+
+    [Parameter]
+    public string Side { get; set; } = "bottom";
+
+    [CascadingParameter]
+    PopoverContext? Context { get; set; }
+
+    string DataState => Show ? "open" : "closed";
+
+    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
+
+    [Parameter]
+    public EventCallback OnAnimationEnd { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Context != null)
+        {
+            Context.OnClosed += Close;
+        }
+    }
+    bool _shown = true;
+    void OnAnimationEndHandler()
+    {
+        if (!Show)
+        {
+            OnAnimationEnd.InvokeAsync();
+        }
+    }
+
+    public void Dispose()
+    {
+        if (Context != null)
+        {
+            Context.OnClosed -= Close;
+        }
+    }
+
+    void Close()
+    {
+        Show = false;
+        StateHasChanged();
+    }
+}

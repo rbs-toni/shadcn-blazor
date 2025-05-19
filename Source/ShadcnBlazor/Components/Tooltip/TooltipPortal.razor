@@ -1,0 +1,32 @@
+﻿@namespace ShadcnBlazor
+@inject ITooltipService TooltipService
+
+@code {
+    /// <summary>
+    /// Determines whether the child content should be teleported
+    /// </summary>
+    /// <remarks>
+    /// When true, content will be teleported to the target location.
+    /// When false, content will not be teleported to the target location.
+    /// </remarks>
+    [Parameter]
+    public bool Show { get; set; }
+
+    /// <summary>
+    /// Gets or sets the content to be conditionally teleported
+    /// </summary>
+    [Parameter, EditorRequired]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Callback invoked when content is teleported to the target location
+    /// </summary>
+    [Parameter]
+    public EventCallback OnRendered { get; set; }
+
+    /// <summary>
+    /// Callback invoked when teleported content was removed from the target location
+    /// </summary>
+    [Parameter]
+    public EventCallback OnRemoved { get; set; }
+}

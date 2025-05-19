@@ -1,17 +1,33 @@
 ﻿@namespace ShadcnBlazor
 @inherits ShadcnComponentBase
+@inject TwMerge TwMerge
 
-<div class="@Class" id="@Id" style="@StyleValue" @ref=Ref @attributes=Attributes data-state="@OpenValue" data-disabled="@Disabled" hidden="@(!Open)">
-    @ChildContent
+<div class="grid grid-rows-[0fr] data-[state=open]:grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out"
+     data-state="@OpenValue"
+     data-disabled="@Disabled">
+    <div id="@Id"
+         class="@ClassValue"
+         style="@Style"
+         data-state="@OpenValue"
+         @ref="Ref"
+         @attributes="Attributes"
+         data-disabled="@Disabled">
+        @ChildContent
+    </div>
 </div>
 
 @code {
     [CascadingParameter]
-    Collapsible? Collapsible { get; set; }
+    CollapsibleContext? Context { get; set; }
 
-    string? StyleValue => new StyleBuilder(Style).AddStyle("--blazor-collapsible-content-width", $"{Width}px", Width.HasValue)
-        .AddStyle("--blazor-collapsible-content-height", $"{Height}px", Width.HasValue)
-        .Build();
-
+    bool Open => Context?.Open ?? false;
+    bool Disabled => Context?.Disabled ?? false;
     string OpenValue => Open ? "open" : "closed";
+
+    string? ClassValue =>
+    TwMerge.Merge(
+        new CssBuilder(Class)
+            .AddClass("overflow-hidden")
+            .Build()
+    );
 }

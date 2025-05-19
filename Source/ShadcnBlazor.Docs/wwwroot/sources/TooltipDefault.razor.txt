@@ -1,0 +1,11 @@
+﻿<Button id="@_anchorId" Variant="ButtonVariant.Outline">
+    Hover
+</Button>
+
+<Tooltip AnchorId="@_anchorId">
+    <p>Add to library</p>
+</Tooltip>
+
+@code {
+    string _anchorId = Guid.NewGuid().ToString();
+}

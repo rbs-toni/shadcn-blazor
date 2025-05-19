@@ -98,20 +98,20 @@
     LayoutContext LayoutContext { get; set; } = default!;
 
     BreadcrumbCollection _breadcrumbs = new DocsBreadcrumbCollection("Typography");
-    SlotComponent _preview = new SlotComponent(typeof(TypographyDemo));
-    SlotComponent _h1Preview = new SlotComponent(typeof(TypographyHeading1));
-    SlotComponent _h2Preview = new SlotComponent(typeof(TypographyHeading2));
-    SlotComponent _h3Preview = new SlotComponent(typeof(TypographyHeading3));
-    SlotComponent _h4Preview = new SlotComponent(typeof(TypographyHeading4));
-    SlotComponent _pPreview = new SlotComponent(typeof(TypographyParagraph));
-    SlotComponent _blockquotePreview = new SlotComponent(typeof(TypographyBlockquote));
-    SlotComponent _tablePreview = new SlotComponent(typeof(TypographyTable));
-    SlotComponent _listPreview = new SlotComponent(typeof(TypographyList));
-    SlotComponent _inlineCodePreview = new SlotComponent(typeof(TypographyInlineCode));
-    SlotComponent _leadPreview = new SlotComponent(typeof(TypographyLead));
-    SlotComponent _largePreview = new SlotComponent(typeof(TypographyLarge));
-    SlotComponent _smallPreview = new SlotComponent(typeof(TypographySmall));
-    SlotComponent _mutedPreview = new SlotComponent(typeof(TypographyMuted));
+    ComponentTemplate _preview = new ComponentTemplate(typeof(TypographyDemo));
+    ComponentTemplate _h1Preview = new ComponentTemplate(typeof(TypographyHeading1));
+    ComponentTemplate _h2Preview = new ComponentTemplate(typeof(TypographyHeading2));
+    ComponentTemplate _h3Preview = new ComponentTemplate(typeof(TypographyHeading3));
+    ComponentTemplate _h4Preview = new ComponentTemplate(typeof(TypographyHeading4));
+    ComponentTemplate _pPreview = new ComponentTemplate(typeof(TypographyParagraph));
+    ComponentTemplate _blockquotePreview = new ComponentTemplate(typeof(TypographyBlockquote));
+    ComponentTemplate _tablePreview = new ComponentTemplate(typeof(TypographyTable));
+    ComponentTemplate _listPreview = new ComponentTemplate(typeof(TypographyList));
+    ComponentTemplate _inlineCodePreview = new ComponentTemplate(typeof(TypographyInlineCode));
+    ComponentTemplate _leadPreview = new ComponentTemplate(typeof(TypographyLead));
+    ComponentTemplate _largePreview = new ComponentTemplate(typeof(TypographyLarge));
+    ComponentTemplate _smallPreview = new ComponentTemplate(typeof(TypographySmall));
+    ComponentTemplate _mutedPreview = new ComponentTemplate(typeof(TypographyMuted));
 
 
     protected override void OnInitialized()

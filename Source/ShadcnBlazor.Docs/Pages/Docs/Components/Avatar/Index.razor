@@ -3,7 +3,7 @@
 @inherits ShadcnComponentBase
 @inject IStringLocalizer<Index> Localizer
 
-<DocsPageHeader Title="Avatar" Breadcrumbs="_breadcrumbs.Items">
+<DocsPageHeader Title="@COMPONENT" Breadcrumbs="_breadcrumbs.Items">
     <DocsPageHeaderDescription>
         @Localizer["An image element with a fallback for representing the user."]
     </DocsPageHeaderDescription>
@@ -12,19 +12,33 @@
 <DocsPageContent>
     <DocsPreview PreviewComponent="@_avatarDefault"
                  CodePath="AvatarDefault.razor" />
+
+    <DocsExamples Examples="_examples" />
 </DocsPageContent>
 
 @code {
+    const string COMPONENT = "Avatar";
+
     [CascadingParameter]
     LayoutContext LayoutContext { get; set; } = default!;
 
-    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Avatar");
-    SlotComponent _avatarDefault = new SlotComponent(typeof(AvatarDefault));
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection(COMPONENT);
+    ComponentTemplate _avatarDefault = new ComponentTemplate(typeof(AvatarDefault));
+    List<ComponentExample> _examples = new List<ComponentExample>()
+    {
+        new ComponentExample(COMPONENT, "With Text", new ComponentTemplate(typeof(AvatarWithText))),
+        new ComponentExample(COMPONENT, "Sizes", new ComponentTemplate(typeof(AvatarSizes))),
+        new ComponentExample(COMPONENT, "Shapes", new ComponentTemplate(typeof(AvatarShapes))),
+        new ComponentExample(COMPONENT, "With Ring", new ComponentTemplate(typeof(AvatarWithRing))),
+        new ComponentExample(COMPONENT, "Status", new ComponentTemplate(typeof(AvatarStatus))),
+        new ComponentExample(COMPONENT, "Group", new ComponentTemplate(typeof(AvatarGroupDefault))),
+        new ComponentExample(COMPONENT, "Group with max avatar", new ComponentTemplate(typeof(AvatarGroupMaxAvatar))),
+    };
 
     protected override void OnInitialized()
     {
         LayoutContext.SetLayoutOptions(
-            pageTitle: "Avatar",
+            pageTitle: COMPONENT,
             useSidebar: true,
             useOutline: true,
             useFooterLinks: true);

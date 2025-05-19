@@ -17,74 +17,7 @@ public partial class ShadcnKeyCode : IAsyncDisposable
     DotNetObjectReference<ShadcnKeyCode>? _dotNetHelper;
     string _javaScriptEventId = string.Empty;
 
-    /// <summary>
-    /// Gets or sets a collection of additional attributes that will be applied to the created element.
-    /// </summary>
-    [Parameter(CaptureUnmatchedValues = true)]
-    public virtual IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
-    /// <summary>
-    /// Gets or sets the control identifier associated with the KeyCode engine.
-    /// If not set, the KeyCode will be applied to the ShadcnKeyCode content: see <see cref="ChildContent"/>.
-    /// This attribute is ignored when the <see cref="ChildContent" /> is used..
-    /// </summary>
-    [Parameter]
-    public string Anchor { get; set; } = string.Empty;
-    /// <summary>
-    /// Gets or sets the content to be managed by the KeyCode engine.
-    /// </summary>
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
-    /// <summary>
-    /// Gets or sets whether the KeyCode engine is global (using document DOM element) or not (only for <see cref="Anchor"/> or <see cref="ChildContent"/>).
-    /// </summary>
-    [Parameter]
-    public bool GlobalDocument { get; set; }
-    /// <summary>
-    /// Gets or sets the list of <see cref="KeyCode"/> to ignore when evaluating the key code.
-    /// </summary>
-    [Parameter]
-    public KeyCode[] Ignore { get; set; } = [];
-    /// <summary>
-    /// Ignore modifier keys (Shift, Alt, Ctrl, Meta) when evaluating the key code.
-    /// </summary>
-    [Parameter]
-    public bool IgnoreModifier { get; set; } = true;
-    /// <summary>
-    /// Event triggered when a KeyDown event is raised.
-    /// </summary>
-    [Parameter]
-    public EventCallback<KeyCodeEventArgs> OnKeyDown { get; set; }
-    /// <summary>
-    /// Event triggered when a KeyUp event is raised.
-    /// </summary>
-    [Parameter]
-    public EventCallback<KeyCodeEventArgs> OnKeyUp { get; set; }
-    /// <summary>
-    /// Gets or sets the list of <see cref="KeyCode"/> to accept, and only this list, when evaluating the key code.
-    /// </summary>
-    [Parameter]
-    public KeyCode[] Only { get; set; } = [];
-    /// <summary>
-    /// Gets or sets a way to tells the user agent that if the event does not get explicitly handled, its default action should not be taken as it normally would be.
-    /// </summary>
-    [Parameter]
-    public bool PreventDefault { get; set; }
-    /// <summary>
-    /// Gets or sets the list of <see cref="KeyCode"/> to tells the user agent that if the event does not get explicitly handled,
-    /// its default action should not be taken as it normally would be.
-    /// </summary>
-    [Parameter]
-    public KeyCode[] PreventDefaultOnly { get; set; } = [];
-    /// <summary>
-    /// Gets or sets a way to prevent further propagation of the current event in the capturing and bubbling phases.
-    /// </summary>
-    [Parameter]
-    public bool StopPropagation { get; set; }
-    /// <summary>
-    /// Gets or sets whether the key pressed can be repeated.
-    /// </summary>
-    [Parameter]
-    public bool StopRepeat { get; set; }
+    
     IJSObjectReference? _jsModule { get; set; }
     ElementReference Element { get; set; }
     [Inject]
@@ -154,9 +87,9 @@ public partial class ShadcnKeyCode : IAsyncDisposable
     {
         if (firstRender)
         {
-            if (ChildContent is null && string.IsNullOrEmpty(Anchor) && !GlobalDocument)
+            if (ChildContent is null && string.IsNullOrEmpty(AnchorId) && !GlobalDocument)
             {
-                throw new ArgumentNullException(Anchor, $"The {nameof(Anchor)} parameter must be set to the ID of an element. Or the {nameof(ChildContent)} must be set to apply the KeyCode engine to this content.");
+                throw new ArgumentNullException(AnchorId, $"The {nameof(AnchorId)} parameter must be set to the ID of an element. Or the {nameof(ChildContent)} must be set to apply the KeyCode engine to this content.");
             }
 
             _jsModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import", JSFile);
@@ -168,7 +101,7 @@ public partial class ShadcnKeyCode : IAsyncDisposable
                 OnKeyUp.HasDelegate ? "KeyUp" : string.Empty,
             ]);
 
-            _javaScriptEventId = await _jsModule.InvokeAsync<string>("RegisterKeyCode", GlobalDocument, eventNames.Length > 1 ? eventNames : "KeyDown", Anchor, ChildContent is null ? null : Element, Only, IgnoreModifier ? Ignore.Union(_Modifiers) : Ignore, StopPropagation, PreventDefault, PreventDefaultOnly, _dotNetHelper, PreventMultipleKeyDown, StopRepeat);
+            _javaScriptEventId = await _jsModule.InvokeAsync<string>("RegisterKeyCode", GlobalDocument, eventNames.Length > 1 ? eventNames : "KeyDown", AnchorId, ChildContent is null ? null : Element, Only, IgnoreModifier ? Ignore.Union(_Modifiers) : Ignore, StopPropagation, PreventDefault, PreventDefaultOnly, _dotNetHelper, PreventMultipleKeyDown, StopRepeat);
         }
     }
 }

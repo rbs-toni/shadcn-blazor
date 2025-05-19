@@ -1,0 +1,51 @@
+﻿@page "/docs/components/tooltip"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Tooltip.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="@Component" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_tooltipDefault"
+                 CodePath="TooltipDefault.razor" />
+
+    @if (_examples.Count > 0)
+    {
+        <DocsPageSection Title="Examples">
+            @foreach (var item in _examples)
+            {
+                <DocsPageSection Level="3" Title="@item.Title">
+                    <DocsPreview PreviewComponent="@item.Template"
+                                 CodePath="@item.CodePath" />
+                </DocsPageSection>
+            }
+        </DocsPageSection>
+    }
+</DocsPageContent>
+
+@code {
+    const string Component = "Tooltip";
+
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection(Component);
+    ComponentTemplate _tooltipDefault = new ComponentTemplate(typeof(TooltipDefault));
+
+    List<ComponentExample> _examples = new List<ComponentExample>()
+    {
+    };
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: Component,
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

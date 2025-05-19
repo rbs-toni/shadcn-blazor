@@ -1,0 +1,36 @@
+@namespace ShadcnBlazor
+@inherits ShadcnInputBase<string?>
+@inject TwMerge TwMerge
+
+<textarea id=@Id
+          @ref=Ref
+          class="@(TwMerge.Merge(NewClassValue))"
+          style="@StyleValue"
+          readOnly="@ReadOnly"
+          autofocus="@Autofocus"
+          form=@Form
+          list=@DataList
+          maxlength=@Maxlength
+          minlength=@Minlength
+          placeholder="@Placeholder"
+          cols=@Cols
+          rows=@Rows
+          spellcheck=@Spellcheck
+          value=@Value
+          current-value="@BindConverter.FormatValue(CurrentValue)"
+          disabled="@Disabled"
+          name=@Name
+          required="@Required"
+          @onchange="@ChangeHandlerAsync"
+          @oninput="@InputHandlerAsync"
+          @attributes="Attributes">
+</textarea>
+
+@code {
+    const string NewYorkClasses = "flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
+
+    string? NewClassValue => new CssBuilder(Class)
+        .AddClass(NewYorkClasses)
+        .AddClass(base.ClassValue)
+        .Build();
+}

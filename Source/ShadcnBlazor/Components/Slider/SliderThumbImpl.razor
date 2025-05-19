@@ -1,0 +1,19 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@typeparam TValue where TValue : System.Numerics.INumber<TValue>
+
+<span id="@Id" class="@Class" role="slider" style="@Style" @ref="Ref" @attributes="Attributes">
+
+</span>
+
+    @code {
+    [CascadingParameter]
+    SliderContext<TValue>? Context { get; set; }
+
+    [Parameter]
+    public int Index { get; set; }
+
+    string? TabIndex => Context?.Disabled == true ? default : "0";
+
+
+}

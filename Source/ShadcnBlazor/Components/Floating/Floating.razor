@@ -1,31 +1,33 @@
 ﻿@namespace ShadcnBlazor
 @inherits ShadcnJSComponentBase
+@inject TwMerge TwMerge
 
-<div id="@Id" class="@Class" style="@StyleNames" @ref=Ref @attributes=Attributes>
+<div id="@Id"
+     class="@(TwMerge.Merge(ClassValue))"
+     style="@StyleValue"
+     data-side="@Side.ToAttributeValue(false)"
+     data-align="@Align.ToAttributeValue(false)"
+     @ref="Ref"
+     @attributes="Attributes">
     @ChildContent
 </div>
 
 @code {
     [Parameter]
     [EditorRequired]
-    public required string Anchor { get; set; }
+    public required string AnchorId { get; set; }
 
+    /// <summary>
+    /// The preferred side of the trigger to render against when open.
+    /// </summary>
     [Parameter]
-    public FloatingPlacement Placement
-    {
-        get => _placement; set
-        {
-            if (_placement == value)
-            {
-                return;
-            }
-            _placement = value;
-            if (JSAvailable && !string.IsNullOrWhiteSpace(_referenceId))
-            {
-                InvokeAsync(ChangeOptionsAsync);
-            }
-        }
-    }
+    public FloatingSide Side { get; set; } = FloatingSide.Bottom;
+
+    /// <summary>
+    /// The preferred alignment against the trigger.
+    /// </summary>
+    [Parameter]
+    public FloatingAlign Align { get; set; } = FloatingAlign.Center;
 
     [Parameter]
     public FloatingStrategy Strategy
@@ -37,7 +39,7 @@
                 return;
             }
             _strategy = value;
-            if (JSAvailable && !string.IsNullOrWhiteSpace(_referenceId))
+            if (JSAvailable && !string.IsNullOrWhiteSpace(Id))
             {
                 InvokeAsync(ChangeOptionsAsync);
             }
@@ -45,16 +47,16 @@
     }
 
     [Parameter]
-    public FloatingOffset? Offset
+    public FloatingOffset Offset
     {
         get => _offset; set
         {
-            if (_offset==value)
+            if (_offset == value)
             {
                 return;
             }
             _offset = value;
-            if (JSAvailable && !string.IsNullOrWhiteSpace(_referenceId))
+            if (JSAvailable && !string.IsNullOrWhiteSpace(Id))
             {
                 InvokeAsync(ChangeOptionsAsync);
             }
@@ -63,4 +65,15 @@
 
     [Parameter]
     public bool Inline { get; set; }
+
+    [Parameter]
+    public EventCallback<PositionChangedEventArgs> OnPositionChanged { get; set; }
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("fixed", "absolute", Strategy == FloatingStrategy.Fixed)
+        .Build();
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("visibility", "hidden")
+        .Build();
 }

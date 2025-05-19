@@ -1,6 +1,6 @@
 ﻿// Add Stylesheets
-hljs_addStylesheet('./_content/ShadcnBlazor.Docs/js/highlightjs/stackoverflow-light.min.css', 'highlight-light', null)
-hljs_addStylesheet('./_content/ShadcnBlazor.Docs/js/highlightjs/stackoverflow-dark.min.css', 'highlight-dark', true)
+hljs_addStylesheet('./_content/ShadcnBlazor.Docs/js/highlightjs/github-dark.min.css', 'github-dark', null)
+hljs_addStylesheet('./_content/ShadcnBlazor.Docs/js/highlightjs/github.min.css', 'github', true)
 //hljs_addStylesheet('./_content/ShadcnBlazor.Docs/js/highlightjs/hljs-ln-numbers.css', 'hljs-ln-numbers', null)
 
 // Add Scripts

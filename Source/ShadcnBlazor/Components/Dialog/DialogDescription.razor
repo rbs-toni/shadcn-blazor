@@ -1,14 +1,15 @@
 ﻿@namespace ShadcnBlazor
 @inherits ShadcnComponentBase
 
-<p id="@Id" class="@ClassValue" style="@Style" @ref=Ref @attributes=Attributes>
+<p id="@Id" class="@ClassValue" style="@Style" @ref="Ref" @attributes="Attributes">
     @ChildContent
 </p>
 
 @code{
     const string DefaultClasses = "text-sm text-muted-foreground";
+    const string NewYorkClasses = "text-sm text-muted-foreground";
 
     string? ClassValue => new CssBuilder(Class)
-        .AddClass(DefaultClasses)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
         .Build();
 }

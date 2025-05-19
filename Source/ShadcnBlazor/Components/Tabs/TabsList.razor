@@ -7,9 +7,9 @@
      class="@(TwMerge.Merge(ClassValue))"
      style="@Style"
      role="tablist"
-     aria-orientation="@Tabs?.Orientation.ToStringFast()"
-     @ref=Ref
-     @attributes=Attributes>
+     aria-orientation="@Orientation"
+     @ref="Ref"
+     @attributes="Attributes">
     @ChildContent
 </div>
 
@@ -17,15 +17,23 @@
     const string DefaultClasses = "inline-flex items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground";
 
     [CascadingParameter]
-    Tabs? Tabs { get; set; }
+    TabsContext? Context { get; set; }
 
     string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
+    string? Orientation => Context?.Orientation.ToAttributeValue(false);
+    string? Direction => Context?.Direction.ToAttributeValue(false);
+
+    /// <summary>
+    /// When `true`, keyboard navigation will loop from last tab to first, and vice versa.
+    /// </summary>
+    [Parameter]
+    public bool Loop { get; set; }
 
     protected override void OnInitialized()
     {
-        if (Tabs != null)
+        if (Context != null)
         {
-            Tabs.OnChanged += () => InvokeAsync(StateHasChanged);
+            Context.SetTabList(this);
         }
     }
 }

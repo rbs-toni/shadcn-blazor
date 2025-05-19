@@ -1,17 +1,19 @@
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
+[assembly: InternalsVisibleTo("ShadcnBlazor.Tests")]
 namespace ShadcnBlazor;
 
 /// <summary>
 /// Splits the text into fragments, according to the text to be highlighted
 /// </summary>
 /// <remarks>Inspired from https://github.com/MudBlazor</remarks>
-internal class Splitter
+static class Splitter
 {
-    private const string NextBoundary = ".*?\\b";
+    const string NextBoundary = ".*?\\b";
 
-    private static StringBuilder? _stringBuilderCached;
+    static StringBuilder? _stringBuilderCached;
 
     /// <summary>
     /// Splits the text into fragments, according to the
@@ -23,7 +25,7 @@ internal class Splitter
     /// <param name="caseSensitive">Whether it's case sensitive or not</param>
     /// <param name="untilNextBoundary">If true, splits until the next regex boundary</param>
     /// <returns></returns>
-    internal static Memory<string> GetFragments(
+    public static Memory<string> GetFragments(
         string text,
         IEnumerable<string> highlightedTexts,
         out string regex,

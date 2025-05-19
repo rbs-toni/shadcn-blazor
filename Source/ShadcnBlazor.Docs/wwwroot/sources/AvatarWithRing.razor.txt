@@ -1,0 +1,4 @@
+﻿<Avatar Class="ring-2 ring-green-500 ring-offset-[3px] ring-offset-background">
+    <AvatarImage Src="https://avatars.githubusercontent.com/u/117208821?s=96&v=4" alt="rbs-toni" />
+    <AvatarFallback>RT</AvatarFallback>
+</Avatar>

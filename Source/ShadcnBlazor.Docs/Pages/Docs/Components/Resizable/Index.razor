@@ -1,0 +1,32 @@
+﻿@page "/docs/components/resizable"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Resizable.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Resizable" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Accessible resizable panel groups and layouts with keyboard support."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_resizableDefault"
+                 CodePath="ResizableDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Resizable");
+    ComponentTemplate _resizableDefault = new ComponentTemplate(typeof(ResizableDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Resizable",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

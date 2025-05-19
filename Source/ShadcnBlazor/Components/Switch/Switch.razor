@@ -1,0 +1,36 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnInputBase<bool>
+@inject TwMerge TwMerge
+
+<button id=@Id
+        role="switch"
+        type="button"
+        value="@(bool.TrueString)"
+        aria-label="@(string.IsNullOrEmpty(AriaLabel) ? Label : AriaLabel)"
+        aria-checked="@CurrentValue"
+        aria-required="@Required"
+        data-state="@ValueAsString"
+        data-disabled="@Disabled"
+        class="@(TwMerge.Merge(NewClassValue))"
+        style="@StyleValue"
+        disabled="@Disabled"
+        name="@Name"
+        @ref="Ref"
+        @attributes="@Attributes"
+        @onclick="ToggleCheck">
+    <CascadingValue Value="_context" IsFixed="true">
+        <SwitchThumb />
+    </CascadingValue>
+</button>
+
+@code {
+    const string DefaultClasses = "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input";
+    const string NewYorkClasses = "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input";
+
+    string ValueAsString => CurrentValue ? "checked" : "unchecked";
+
+    string? NewClassValue => new CssBuilder(Class)
+        .AddClass(base.ClassValue)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+        .Build();
+}

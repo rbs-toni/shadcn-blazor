@@ -1,5 +1,6 @@
 using System.Xml;
 using System.Xml.Linq;
+using TailwindMerge;
 
 namespace ShadcnBlazor;
 
@@ -75,5 +76,19 @@ public static class XmlExtensions
         }
 
         return result;
+    }
+}
+
+
+static class CssBuilderExtensions
+{
+    public static string? Cn(this CssBuilder builder, TwMerge twMerge)
+    {
+        return twMerge.Merge(builder.Build());
+    }
+
+    public static string? Cn(this string? str, TwMerge twMerge)
+    {
+        return twMerge.Merge(str);
     }
 }

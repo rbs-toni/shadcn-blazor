@@ -1,0 +1,59 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<div @ref="Ref" class="@Class" data-scroll-area-viewport tabindex="0" style="@StyleValue" @attributes="Attributes">
+    <div @ref="_contentRef" style="@ContentStyleValue">
+        @ChildContent
+    </div>
+</div>
+<style nonce="@Nonce">
+    [data-scroll-area-viewport] {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        [data-scroll-area-viewport]::-webkit-scrollbar {
+            display: none;
+        }
+</style>
+
+@code {
+    ElementReference _contentRef;
+
+    [CascadingParameter]
+    ScrollAreaRootContext? RootContext { get; set; }
+
+    [Parameter]
+    public bool Nonce { get; set; }
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("overflow-x", RootContext?.ScrollbarXEnabled == true ? "scroll" : "hidden")
+        .AddStyle("overflow-y", RootContext?.ScrollbarYEnabled == true ? "scroll" : "hidden")
+        .Build();
+
+    string? ContentStyleValue => new StyleBuilder(Style)
+        .AddStyle("min-width", "fit-content", RootContext?.ScrollbarXEnabled == true)
+        .Build();
+
+    protected override void OnInitialized()
+    {
+        if (RootContext != null)
+        {
+            RootContext.OnScrollbarXEnabledChange += () => InvokeAsync(StateHasChanged);
+            RootContext.OnScrollbarYEnabledChange += () => InvokeAsync(StateHasChanged);
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (RootContext != null)
+            {
+                RootContext.SetViewport(Ref);
+                RootContext.SetContent(_contentRef);
+            }
+        }
+    }
+}

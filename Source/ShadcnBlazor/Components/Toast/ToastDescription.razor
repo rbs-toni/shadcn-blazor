@@ -1,0 +1,34 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+
+@if (Content != null)
+{
+    <div data-description class="@(TwMerge.Merge(ClassValue))">
+        @if (Content?.IsString == true)
+        {
+            @Content?.Label
+            ;
+        }
+        else if (Content?.IsFragment == true)
+        {
+            @Content?.Fragment
+            ;
+        }
+        else
+        {
+            throw new ArgumentNullException(nameof(Content), "Description must be a string or a fragment.");
+        }
+    </div>
+}
+
+@code{
+    const string DefaultClasses = "group-[.toast]:text-muted-foreground";
+
+    [Parameter]
+    public TextOrFragment? Content { get; set; }
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses)
+        .Build();
+}

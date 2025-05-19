@@ -1,20 +1,24 @@
 ﻿@namespace ShadcnBlazor
 @inherits ShadcnComponentBase
 
-<CascadingValue Value="this" IsFixed="true">
-    <div id="@Id"
-         class="@Class"
-         style="@Style"
-         dir="@Direction?.ToStringFast()"
-         data-orientation="@Orientation.ToString().ToLower()"
-         @ref=Ref
-         @attributes=Attributes>
+<div id="@Id"
+     class="@Class"
+     style="@Style"
+     dir="@Direction.ToAttributeValue(false)"
+     data-orientation="@Orientation.ToAttributeValue(false)"
+     @ref=Ref
+     @attributes=Attributes>
+    <CascadingValue Value="_context" IsFixed="true">
         @ChildContent
-    </div>
-</CascadingValue>
+    </CascadingValue>
+</div>
 
 @code {
-    string _value;
+    string? _value;
+
+    /// <summary>
+    /// The controlled value of the tab to activate.
+    /// </summary>
     [Parameter]
     public string? Value
     {
@@ -25,19 +29,28 @@
                 return;
             }
             _value = value;
-            ValueChanged.InvokeAsync(_value);
+            ValueChanged.InvokeAsync(value);
         }
     }
 
     [Parameter]
     public EventCallback<string> ValueChanged { get; set; }
 
+    /// <summary>
+    /// The orientation the tabs are laid out. Mainly so arrow navigation is done accordingly (left & right vs. up & down)
+    /// </summary>
     [Parameter]
     public Orientation Orientation { get; set; }
 
+    /// <summary>
+    /// The reading direction of the combobox when applicable.
+    /// </summary>
     [Parameter]
-    public Direction? Direction { get; set; }
+    public Direction Direction { get; set; }
 
+    /// <summary>
+    /// Whether a tab is activated automatically (on focus) or manually (on click).
+    /// </summary>
     [Parameter]
     public ActivationMode ActivationMode { get; set; }
 

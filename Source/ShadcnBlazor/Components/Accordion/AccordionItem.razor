@@ -1,60 +1,64 @@
 ﻿@namespace ShadcnBlazor
 @inherits ShadcnComponentBase
 @implements IDisposable
+@inject TwMerge TwMerge
 
-<CascadingValue Value="this" IsFixed="true">
-    <div id="@Id"
-         class="@ClassValue"
-         style="@Style"
-         @ref="Ref"
-         @attributes="Attributes"
-         data-state="@OpenValue">
+<div id="@Id"
+     class="overflow-hidden @(TwMerge.Merge(ClassValue))"
+     style="@Style"
+     data-orientation="@Accordion?.Orientation.ToAttributeValue(false)"
+     data-disabled="@IsDisabled"
+     disabled="@IsDisabled"
+     data-state="@OpenValue"
+     @ref="Ref"
+     @attributes="Attributes">
+    <CascadingValue Value="_context" IsFixed="true">
         @ChildContent
-    </div>
-</CascadingValue>
+    </CascadingValue>
+</div>
 
 @code {
     [CascadingParameter]
-    Accordion? Accordion { get; set; }
+    InternalAccordionContext? Accordion { get; set; }
 
+    /// <summary>
+    /// Whether or not an accordion item is disabled from user interaction. When `true`, prevents the user from interacting with the item.
+    /// </summary>
     [Parameter]
     public bool Disabled { get; set; }
 
-    public string ContentId { get; } = "accordion-content-" + Identifier.NewId();
-    public string Labelledby { get; } = "accordion-trigger-" + Identifier.NewId();
-
     public bool IsDisabled => Accordion?.Disabled == true && Disabled;
 
-    public bool Open => Accordion?.IsItemActive(this) ?? false;
+    public bool Open => Accordion?.IsActive(this) ?? false;
 
     public string OpenValue => Open ? "open" : "closed";
 
     string? ClassValue => new CssBuilder(Class)
         .AddClass("border-b")
+        .AddClass("group focus-visible:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-ring")
         .Build();
 
     protected override void OnInitialized()
     {
-        Accordion?.RegisterItem(this);
+        if (Accordion != null)
+        {
+            Accordion.RegisterItem(this);
+            Accordion.OnStateChanged += () => InvokeAsync(StateHasChanged);
+        }
     }
 
     public void ToggleOpen()
     {
         if (!IsDisabled)
         {
-            Accordion?.ToggleItem(this);
+            Accordion?.SetActiveItem(this);
         }
     }
 
     public async Task FocusAsync()
     {
-        if (OnFocusAsync != null)
-        {
-            await OnFocusAsync();
-        }
+        await _context.FocusAsync();
     }
-
-    public event Func<Task>? OnFocusAsync;
 
     public void Dispose()
     {

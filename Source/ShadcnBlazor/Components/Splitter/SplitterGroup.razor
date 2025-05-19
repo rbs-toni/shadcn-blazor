@@ -1,0 +1,39 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<CascadingValue Value="_context" IsFixed="true">
+    <div @ref="Ref"
+         class="@Class"
+         style="@StyleValue"
+         data-panel-group
+         data-orientation="@Direction.ToAttributeValue(false)"
+         data-panel-group-id="@_context.GroupId">
+        <CascadingValue Value="_layout" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
+    </div>
+</CascadingValue>
+
+@code {
+    const int ExceededHorizontalMin = 0b0001; // 1
+    const int ExceededHorizontalMax = 0b0010; // 2
+    const int ExceededVerticalMin = 0b0100;   // 4
+    const int ExceededVerticalMax = 0b1000;   // 8
+
+    [Parameter]
+    public Orientation Direction { get; set; }
+
+    [Parameter]
+    public int KeyboardResizeBy { get; set; } = 10;
+
+    [Parameter]
+    public EventCallback<int[]> OnLayoutChanged { get; set; }
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("display", "flex")
+        .AddStyle("flex-direction", Direction == Orientation.Horizontal ? "row" : "column")
+        .AddStyle("width", "100%")
+        .AddStyle("height", "100%")
+        .AddStyle("overflow", "hidden")
+        .Build();
+}

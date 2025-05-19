@@ -1,0 +1,16 @@
+﻿@namespace ShadcnBlazor
+@inherits Arrow
+
+<span id="@TooltipContext?.ArrowId" style="@Style">
+    <Arrow Style="display: block" Rounded="Rounded" Width="@Width" Height="@Height" />
+</span>
+
+@code {
+    [CascadingParameter]
+    InternalTooltipContext? TooltipContext { get; set; }
+
+    string? StyleValue => new StyleBuilder()
+        .AddStyle("position", "absolute")
+        .AddStyle("visibility", "hidden", TooltipContext?.ShowArrow == false)
+        .Build();
+}

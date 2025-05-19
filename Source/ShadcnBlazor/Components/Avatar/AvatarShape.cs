@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 
 namespace ShadcnBlazor;
-
 public enum AvatarShape
 {
     [Description("rounded-full")]
@@ -9,4 +8,3 @@ public enum AvatarShape
     [Description("rounded-md")]
     Squere
 }
-

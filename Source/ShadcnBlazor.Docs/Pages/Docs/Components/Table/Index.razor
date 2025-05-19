@@ -1,0 +1,32 @@
+﻿@page "/docs/components/table"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Table.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Table" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["A responsive table component."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_tableDefault"
+                 CodePath="TableDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Table");
+    ComponentTemplate _tableDefault = new ComponentTemplate(typeof(TableDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Table",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

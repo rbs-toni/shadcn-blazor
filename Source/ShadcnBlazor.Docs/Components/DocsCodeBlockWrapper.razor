@@ -1,0 +1,31 @@
+﻿@namespace ShadcnBlazor.Docs
+@using TailwindMerge
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+
+<Collapsible @bind-Open="@_open">
+    <div class="@TwMerge.Merge("relative overflow-hidden", Class)">
+        <CollapsibleContent Class="@ContentClassValue">
+            <div class="@InnerContentClassValue">
+                @ChildContent
+            </div>
+        </CollapsibleContent>
+        <CollapsibleTrigger Variant="ButtonVariant.Secondary" Class="h-8 text-xs">
+            @(_open ? "Collapse" : ExpandTitle)
+        </CollapsibleTrigger>
+    </div>
+
+</Collapsible>
+
+
+@code {
+    [Parameter]
+    public string? ExpandTitle { get; set; } = "View Code";
+
+    bool _open;
+
+    string? ContentClassValue => new CssBuilder("overflow-hidden").AddClass("max-h-32", !_open).Build();
+    string? InnerContentClassValue => new CssBuilder("[&_pre]:my-0 [&_pre]:max-h-[650px] [&_pre]:pb-[100px]")
+        .AddClass("[&_pre]:overflow-hidden", "[&_pre]:overflow-auto]", !_open)
+        .Build();
+}

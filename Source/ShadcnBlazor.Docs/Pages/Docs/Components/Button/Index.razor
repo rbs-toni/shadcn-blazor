@@ -19,7 +19,7 @@
     LayoutContext LayoutContext { get; set; } = default!;
 
     BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Button");
-    SlotComponent _buttonDefault = new SlotComponent(typeof(ButtonDefault));
+    ComponentTemplate _buttonDefault = new ComponentTemplate(typeof(ButtonDefault));
 
     protected override void OnInitialized()
     {

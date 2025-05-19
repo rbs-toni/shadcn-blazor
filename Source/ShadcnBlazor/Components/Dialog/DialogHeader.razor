@@ -7,8 +7,9 @@
 
 @code{
     const string DefaultClasses = "flex flex-col space-y-1.5 text-center sm:text-left";
+    const string NewYorkClasses = "flex flex-col gap-y-1.5 text-center sm:text-left";
 
     string? ClassValue => new CssBuilder(Class)
-        .AddClass(DefaultClasses)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
         .Build();
 }

@@ -1,6 +1,5 @@
 namespace ShadcnBlazor;
-
-internal static class AdditionalAttributesExtensions
+static class AdditionalAttributesExtensions
 {
     /// <summary> Determines whether two sets of attributes are equal when rendered. </summary>
     /// <param name="x">The compared set</param>
@@ -31,7 +30,7 @@ internal static class AdditionalAttributesExtensions
         return true;
     }
 
-    private static bool AllRenderedAttributesInAndEqual(
+    static bool AllRenderedAttributesInAndEqual(
         this IReadOnlyDictionary<string, object> x,
         IReadOnlyDictionary<string, object>? y)
     {

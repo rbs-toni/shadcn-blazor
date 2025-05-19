@@ -1,0 +1,39 @@
+﻿@page "/docs/components/skeleton"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Skeleton.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Skeleton" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Use to show a placeholder while content is loading."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_skeletonDefault"
+                 CodePath="SkeletonDefault.razor" />
+
+    <DocsPageSection Title="Examples">
+        <DocsPageSection Level="3" Title="Card">
+            <DocsPreview PreviewComponent="@_skeletonCard" CodePath="SkeletonCard.razor" />
+        </DocsPageSection>
+    </DocsPageSection>
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Skeleton");
+    ComponentTemplate _skeletonDefault = new ComponentTemplate(typeof(SkeletonDefault));
+    ComponentTemplate _skeletonCard = new ComponentTemplate(typeof(SkeletonCard));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Skeleton",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

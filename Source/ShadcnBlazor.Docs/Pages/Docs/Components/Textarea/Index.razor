@@ -1,0 +1,32 @@
+﻿@page "/docs/components/textarea"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Textarea.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Textarea" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Displays a form textarea or a component that looks like a textarea."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_textareaDefault"
+                 CodePath="TextareaDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Textarea");
+    ComponentTemplate _textareaDefault = new ComponentTemplate(typeof(TextareaDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Textarea",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

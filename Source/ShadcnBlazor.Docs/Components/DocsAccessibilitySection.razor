@@ -1,0 +1,42 @@
+﻿@namespace ShadcnBlazor.Docs
+@inherits ShadcnComponentBase
+
+@if (KeyboardShortcutDescriptions?.Count > 0)
+{
+    <DocsPageSection Title="Accessibility">
+        <Paragraph>
+            @ChildContent
+        </Paragraph>
+
+        <DocsPageSection Title="Keyboard Interactions" Level="3">
+            <div class="rounded-md border [&:not(:first-child)]:mt-6">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead Class="w-[35%]">Key</TableHead>
+                            <TableHead>Description</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach (var item in KeyboardShortcutDescriptions)
+                        {
+                            <TableRow>
+                                <TableCell>
+                                    <Kdb>@item.Key</Kdb>
+                                </TableCell>
+                                <TableCell>
+                                    @((MarkupString)item.Description)
+                                </TableCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </div>
+        </DocsPageSection>
+    </DocsPageSection>
+}
+
+@code {
+    [Parameter]
+    public List<KeyboardShortcutDescription>? KeyboardShortcutDescriptions { get; set; }
+}

@@ -1,0 +1,33 @@
+﻿@page "/docs/components/scroll-area"
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Scroll-area" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Augments native scroll functionality for custom, cross-browser styling."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_scrollAreaDefault"
+                 CodePath="ScrollAreaDefault.razor" />
+</DocsPageContent>
+
+@code {
+    const string COMPONENT = "ScrollArea";
+
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Scroll-area");
+    ComponentTemplate _scrollAreaDefault = new ComponentTemplate(typeof(ScrollAreaDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Scroll-area",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

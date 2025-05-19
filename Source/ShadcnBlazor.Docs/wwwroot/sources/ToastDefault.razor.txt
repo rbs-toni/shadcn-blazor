@@ -1,0 +1,15 @@
+﻿@inject IToastService Toast
+
+<Button Variant="ButtonVariant.Outline" @onclick="@OnClick">
+    Add to calendar
+</Button>
+
+@code {
+    void OnClick()
+    {
+        Toast.Show("Event has been created", a =>
+        {
+            a.Description = DateTime.Now.ToString("dddd, MMMM dd, yyyy 'at' h:mm tt");
+        });
+    }
+}

@@ -3,8 +3,8 @@
 namespace ShadcnBlazor.Docs;
 public class HttpBasedStaticAssetService : IStaticAssetService
 {
-    readonly HttpClient _httpClient;
     readonly CacheStorageAccessor _cacheStorageAccessor;
+    readonly HttpClient _httpClient;
 
     public HttpBasedStaticAssetService(HttpClient httpClient, NavigationManager navigationManager, CacheStorageAccessor cacheStorageAccessor)
     {
@@ -51,6 +51,5 @@ public class HttpBasedStaticAssetService : IStaticAssetService
 
         return result;
     }
-
     static HttpRequestMessage CreateMessage(string url) => new(HttpMethod.Get, url);
 }

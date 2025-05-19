@@ -1,27 +1,40 @@
 ﻿@namespace ShadcnBlazor
-@inherits ShadcnComponentBase
+@inherits Button
 
-<button id="@Id"
-        class="@Class"
-        style="@Style"
-        aria-control="@Collapsible?.ContentId"
-        @ref=Ref @attributes=Attributes
-        aria-expanded="@Collapsible?.Open"
+<Button Id="@Id"
+        Class="@Class"
+        Style="@Style"
+        Variant="Variant"
+        Size="Size"
+        Ref=Ref
+        aria-control="@Context?.ContentId"
+        aria-expanded="@Context?.Open"
         data-state="@OpenValue"
-        data-disabled="@Collapsible?.Disabled"
-        disabled="@Collapsible?.Disabled"
-        @onclick=ToggleOpen>
+        data-disabled="@Context?.Disabled"
+        disabled="@Context?.Disabled"
+        @attributes="Attributes"
+        @onclick=ToggleOpenAsync>
     @ChildContent
-</button>
+</Button>
 
 @code {
     [CascadingParameter]
-    Collapsible? Collapsible { get; set; }
+    CollapsibleContext? Context { get; set; }
 
-    string OpenValue => Collapsible?.Open == true ? "open" : "closed";
+    string OpenValue => Context?.Open == true ? "open" : "closed";
 
-    void ToggleOpen()
+    async Task ToggleOpenAsync()
     {
-        Collapsible?.ToggleOpen();
+        if (Context != null)
+        {
+            await Context.ToggleOpenAsync();
+            if (Context.Open)
+            {
+                OnOpen.InvokeAsync(true);
+            }
+        }
     }
+
+    [Parameter]
+    public EventCallback<bool> OnOpen { get; set; }
 }

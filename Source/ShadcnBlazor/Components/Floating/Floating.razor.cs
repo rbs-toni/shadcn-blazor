@@ -1,9 +1,7 @@
 ﻿namespace ShadcnBlazor;
 public partial class Floating : ShadcnJSComponentBase
 {
-    FloatingOffset _offset = new FloatingOffset(10);
-    FloatingPlacement _placement = FloatingPlacement.BottomStart;
-    string? _referenceId;
+    FloatingOffset _offset = new(10);
     FloatingStrategy _strategy = FloatingStrategy.Fixed;
 
     public Floating() : base("Floating/Floating")
@@ -13,29 +11,23 @@ public partial class Floating : ShadcnJSComponentBase
 
     FloatingOptions Options => BuildOptions();
 
-    string? StyleNames => new StyleBuilder()
-        .AddStyle("position", Strategy.ToAttributeValue())
-        .AddStyle(Style)
-        .Build();
-
     protected override async ValueTask OnAfterImportAsync()
     {
-        await base.OnAfterImportAsync();
-        _referenceId = await InitAsync();
+        await InitAsync();
     }
-
-    FloatingOptions BuildOptions()
-    {
-        var options = new FloatingOptions() { Placement = Placement, Strategy = Strategy, Offset = Offset, };
-
-        return options;
-    }
-
-    async Task ChangeOptionsAsync() { await InvokeVoidAsync("changeOptions", Id, Options); }
-    async Task<string> InitAsync() { return await InvokeAsync<string>("init", Anchor, Id, Options); }
-
     protected override async ValueTask OnDisposingAsync()
     {
-        await InvokeVoidAsync("dispose", _referenceId);
+        await InvokeVoidAsync("dispose", Id);
+    }
+    FloatingOptions BuildOptions()
+    {
+        var placement = FloatingUtils.BuildPlacement(Side, Align);
+
+        return new(placement ?? "bottom", Strategy, Offset);
+    }
+    async Task ChangeOptionsAsync() { await InvokeVoidAsync("changeOptions", Id, Options); }
+    async Task<string> InitAsync()
+    {
+        return await InvokeAsync<string>("init", AnchorId, Id, Options);
     }
 }

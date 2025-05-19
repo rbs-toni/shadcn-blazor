@@ -1,0 +1,18 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@typeparam TValue where TValue : System.Numerics.INumber<TValue>
+
+<span id="@Id"
+      class="@Class"
+      style="@Style"
+      data-disabled="@Context?.Disabled"
+      data-orientation="@Context?.Orientation.ToAttributeValue(false)"
+      @ref="Ref"
+      @attributes="Attributes">
+    @ChildContent
+</span>
+
+@code {
+    [CascadingParameter]
+    SliderContext<TValue>? Context { get; set; }
+}

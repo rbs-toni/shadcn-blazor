@@ -1,0 +1,150 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@implements IDisposable
+
+<div id="@Id"
+     class="h-full w-full"
+     style="@Style"
+     data-panel
+     data-panel-collapsible="@(Collapsible ? "" : null)"
+     data-panel-group-id="@PanelGroupContext?.GroupId"
+     data-panel-id="@Id"
+     data-panel-size="@CurrentSize.ToString("0.0")"
+     data-state="@(Collapsible ? (IsCollapsed ? "collapsed" : "expanded") : null)"
+     @ref="Ref"
+     @attributes="Attributes">
+    @ChildContent
+</div>
+
+@code {
+    [CascadingParameter]
+    ResizablePanelGroupContext? PanelGroupContext { get; set; }
+
+    /// <summary>
+    /// The size of the panel when it is collapsed, in pixels or percentage depending on context.
+    /// </summary>
+    [Parameter]
+    public double? CollapsedSize { get; set; }
+
+    /// <summary>
+    /// If true, the panel will automatically collapse when resized below its <see cref="MinSize"/>.
+    /// </summary>
+    [Parameter]
+    public bool Collapsible { get; set; }
+
+    /// <summary>
+    /// The initial size of the panel as a percentage (1 to 100).
+    /// </summary>
+    [Parameter]
+    public double? DefaultSize { get; set; }
+
+    /// <summary>
+    /// The maximum size of the panel as a percentage (1 to 100). Defaults to 100.
+    /// </summary>
+    [Parameter]
+    public int MaxSize { get; set; } = 100;
+
+    /// <summary>
+    /// The minimum size of the panel as a percentage (1 to 100). Defaults to 10.
+    /// </summary>
+    [Parameter]
+    public int MinSize { get; set; } = 10;
+
+    /// <summary>
+    /// The order of the panel within a splitter group. Required when conditionally rendering panels.
+    /// </summary>
+    [Parameter]
+    public int? Order { get; set; }
+
+    [Parameter] public EventCallback OnCollapse { get; set; }
+    [Parameter] public EventCallback OnExpand { get; set; }
+    [Parameter] public EventCallback<PanelResizeEventArgs> OnResize { get; set; }
+
+    PanelData? panelData;
+    public bool IsCollapsed => PanelGroupContext?.IsPanelCollapsed(panelData) ?? false;
+    public bool IsExpanded => PanelGroupContext?.IsPanelExpanded(panelData) ?? true;
+    public double CurrentSize => PanelGroupContext?.GetPanelSize(panelData) ?? (DefaultSize ?? 0);
+    const int PRECISION = 4;
+    protected override void OnInitialized()
+    {
+        if (PanelGroupContext == null)
+        {
+            throw new InvalidOperationException(
+                "SplitterPanel components must be rendered within a SplitterGroup container");
+        }
+        Id ??= Identifier.NewId();
+
+        panelData = new PanelData
+            {
+                Callbacks = new PanelCallbacks
+                {
+                    OnCollapse = OnCollapse,
+                    OnExpand = OnExpand,
+                    OnResize = OnResize
+                },
+                Constraints = new PanelConstraints
+                {
+                    CollapsedSize = CollapsedSize.HasValue ?
+                            Math.Round(CollapsedSize.Value, PRECISION) : (double?)null,
+                    Collapsible = Collapsible,
+                    DefaultSize = DefaultSize,
+                    MaxSize = MaxSize,
+                    MinSize = MinSize
+                },
+                Id = Id,
+                Order = Order
+            };
+
+        PanelGroupContext.RegisterPanel(panelData);
+    }
+
+    protected override void OnParametersSet()
+    {
+        var newConstraints = new PanelConstraints
+            {
+                CollapsedSize = CollapsedSize.HasValue ?
+                        Math.Round(CollapsedSize.Value, PRECISION) : (double?)null,
+                Collapsible = Collapsible,
+                DefaultSize = DefaultSize,
+                MaxSize = MaxSize,
+                MinSize = MinSize
+            };
+
+        // If constraints have changed, reevaluate
+        if (!ConstraintsEqual(panelData.Constraints, newConstraints))
+        {
+            var prevConstraints = panelData.Constraints;
+            panelData.Constraints = newConstraints;
+            PanelGroupContext.ReevaluatePanelConstraints(panelData, prevConstraints);
+        }
+    }
+
+    private bool ConstraintsEqual(PanelConstraints a, PanelConstraints b)
+    {
+        return Nullable.Equals(a.CollapsedSize, b.CollapsedSize) &&
+               a.Collapsible == b.Collapsible &&
+               Nullable.Equals(a.DefaultSize, b.DefaultSize) &&
+               a.MaxSize == b.MaxSize &&
+               a.MinSize == b.MinSize;
+    }
+
+    public void Collapse()
+    {
+        PanelGroupContext?.CollapsePanel(panelData);
+    }
+
+    public void Expand()
+    {
+        PanelGroupContext?.ExpandPanel(panelData);
+    }
+
+    public void Resize(double size)
+    {
+        PanelGroupContext?.ResizePanel(panelData, size);
+    }
+
+    public void Dispose()
+    {
+        PanelGroupContext?.UnregisterPanel(panelData);
+    }
+}

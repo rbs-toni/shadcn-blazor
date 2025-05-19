@@ -13,7 +13,7 @@ namespace ShadcnBlazor;
 /// </summary>
 public sealed class DynamicDictionary : DynamicObject, IDictionary<string, object>
 {
-    private readonly IDictionary<string, object> _dictionary;
+    readonly IDictionary<string, object> _dictionary;
 
     /// <summary>
     /// Creates a new instance of <see cref="DynamicDictionary"/>.

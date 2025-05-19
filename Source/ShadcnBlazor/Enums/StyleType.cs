@@ -1,7 +1,6 @@
 using System.ComponentModel;
 
 namespace ShadcnBlazor;
-
 public enum StyleType
 {
     [Description("Default")]

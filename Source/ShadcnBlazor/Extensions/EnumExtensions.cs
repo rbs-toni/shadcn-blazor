@@ -1,29 +1,12 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO.Compression;
 using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Text;
-using System.Xml.Linq;
-using System.Xml;
-using System.Dynamic;
-using System.Collections;
 
 namespace ShadcnBlazor;
-
 public static class EnumExtensions
 {
-
-    public static string? ToAttributeValue<TEnum>(this TEnum? value, bool lowercase = true) where TEnum : struct, Enum
-        => value == null ? null : ToAttributeValue(value.Value, lowercase);
-
-    public static string? ToAttributeValue<TEnum>(this TEnum value, bool lowercase = true) where TEnum : struct, Enum
-        => GetDescription(value, lowercase);
-
-    public static string? GetDescription<TEnum>(this TEnum value, bool lowercase = true) where TEnum : struct, IConvertible
+    public static string? GetDescription<TEnum>(this TEnum value, bool lowercase = true)
+        where TEnum : struct, IConvertible
     {
         if (!typeof(TEnum).IsEnum)
         {
@@ -32,7 +15,7 @@ public static class EnumExtensions
 
         var description = value.ToString();
 
-        FieldInfo? fieldInfo = value.GetType().GetField(value.ToString() ?? "");
+        FieldInfo? fieldInfo = value.GetType().GetField(value.ToString() ?? string.Empty);
         if (fieldInfo != null)
         {
             var attributes = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), true);
@@ -49,16 +32,15 @@ public static class EnumExtensions
 
         return description;
     }
-
     public static string GetDisplayName(this Enum enumValue)
     {
         var memberInfo = enumValue.GetType().GetMember(enumValue.ToString());
         var displayAttribute = memberInfo[0].GetCustomAttribute<DisplayAttribute>();
         return displayAttribute?.GetName() ?? enumValue.ToString();
     }
-
-    public static bool IsNullableEnum(this Type t)
-    {
-        return Nullable.GetUnderlyingType(t)?.IsEnum == true;
-    }
+    public static bool IsNullableEnum(this Type t) { return Nullable.GetUnderlyingType(t)?.IsEnum == true; }
+    public static string? ToAttributeValue<TEnum>(this TEnum? value, bool lowercase = true) where TEnum : struct, Enum
+    { return value == null ? null : ToAttributeValue(value.Value, lowercase); }
+    public static string? ToAttributeValue<TEnum>(this TEnum value, bool lowercase = true) where TEnum : struct, Enum
+    { return GetDescription(value, lowercase); }
 }

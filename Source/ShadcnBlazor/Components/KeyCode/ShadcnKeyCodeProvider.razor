@@ -1,3 +1,14 @@
 ﻿@namespace ShadcnBlazor
 
-<ShadcnKeyCode GlobalDocument="true" OnKeyDown="@KeyDownHandler" OnKeyUp="@KeyUpHandler" PreventDefault="@PreventDefault" />
+<ShadcnKeyCode GlobalDocument="true"
+               OnKeyDown="@KeyDownHandler"
+               OnKeyUp="@KeyUpHandler"
+               PreventDefault="@PreventDefault" />
+
+@code {
+    /// <summary>
+    /// Gets or sets a way to tells the user agent that if the event does not get explicitly handled, its default action should not be taken as it normally would be.
+    /// </summary>
+    [Parameter]
+    public bool PreventDefault { get; set; }
+}

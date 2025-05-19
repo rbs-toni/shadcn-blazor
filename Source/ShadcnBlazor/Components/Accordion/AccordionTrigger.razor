@@ -1,59 +1,71 @@
 ﻿@namespace ShadcnBlazor
 @inherits ShadcnComponentBase
-@implements IDisposable
+@inject TwMerge TwMerge
 
-<h3 class="flex" data-state="@OpenValue">
-    <button id="@Id"
-            class="@ClassValue"
+<AccordionHeader Class="flex">
+    <button id="@AccordionItem?.TriggerId"
+            class="@(TwMerge.Merge(ClassValue))"
             style="@Style"
-            @ref=Ref
-            @attributes=Attributes
             type="button"
-            data-state="@OpenValue"
-            aria-expanded="@Open"
-            disabled="@Disabled"
-            @onclick=ToggleOpen
+            aria-disabled="@AccordionItem?.Disabled"
+            aria-expanded="@AccordionItem?.Open"
+            data-disabled="@AccordionItem?.Disabled"
+            data-orientation="@Accordion?.Orientation.ToAttributeValue(false)"
+            data-state="@AccordionItem?.DataState"
+            disabled="@AccordionItem?.Disabled"
+            @ref="Ref"
+            @attributes="Attributes"
+            @onclick="SetActiveItem"
             @onclick:preventDefault=true
             @onclick:stopPropagation=true>
         @ChildContent
-        <LucideIcon Name="IconName.ChevronDown" Class="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
+        @if (ExpandIcon == null)
+        {
+            <LucideIcon Name="IconName.ChevronDown" Class="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
+        }
+        else
+        {
+            @ExpandIcon
+        }
     </button>
-</h3>
+</AccordionHeader>
 
 @code {
     [CascadingParameter]
-    AccordionItem? AccordionItem { get; set; }
+    InternalAccordionContext? Accordion { get; set; }
+
+    [CascadingParameter]
+    InternalAccordionItemContext? AccordionItem { get; set; }
+
+    [Parameter]
+    public RenderFragment? ExpandIcon { get; set; }
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("flex flex-1 items-center justify-between py-4 text-sm font-medium transition-all hover:underline text-left [&[data-state=open]>svg]:rotate-180")
+        .AddClass("focus:outline-none")
+        .Build();
+
+    void SetActiveItem()
+    {
+        if (AccordionItem != null && Accordion != null)
+        {
+            AccordionItem.SetActiveItem(Accordion);
+        }
+    }
 
     public async Task FocusAsync()
     {
         await Ref.FocusAsync();
     }
 
-    bool Disabled => AccordionItem?.IsDisabled ?? false;
-    string? ClassValue => new CssBuilder(Class)
-        .AddClass("flex flex-1 items-center justify-between py-4 text-sm font-medium transition-all hover:underline text-left [&[data-state=open]>svg]:rotate-180")
-        .Build();
-
-    bool Open => AccordionItem?.Open ?? false;
-    string? OpenValue => AccordionItem?.OpenValue;
-    void ToggleOpen()
-    {
-        AccordionItem?.ToggleOpen();
-    }
-
     protected override void OnInitialized()
     {
         if (AccordionItem != null)
         {
-            AccordionItem.OnFocusAsync += FocusAsync;
-        }
-    }
-
-    public void Dispose()
-    {
-        if (AccordionItem != null)
-        {
-            AccordionItem.OnFocusAsync -= FocusAsync;
+            AccordionItem.OnFocus += async () =>
+            {
+                await InvokeAsync(FocusAsync);
+            };
         }
     }
 }

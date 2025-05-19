@@ -1,0 +1,44 @@
+﻿<Collapsible Class="w-[350px] space-y-2" @bind-Open="_isOpen">
+    @for (var i = 0; i < 2; i++)
+    {
+        var index = i;
+
+        <div @key=@index class="flex items-center gap-2">
+            <div class="h-10 w-10 shrink-0 rounded-full bg-accent" />
+            <div class="w-full flex flex-col gap-1.5">
+                <div class="h-2.5 w-[40%] rounded-lg bg-accent" />
+                <div class="h-2.5 w-full rounded-lg bg-accent" />
+            </div>
+        </div>
+    }
+    <CollapsibleContent Class="space-y-2">
+        @for (var i = 0; i < 3; i++)
+        {
+            var index = i + 2;
+
+            <div key=@index class="flex items-center gap-2">
+                <div class="h-10 w-10 shrink-0 rounded-full bg-accent" />
+                <div class="w-full flex flex-col gap-1.5">
+                    <div class="h-2.5 w-[40%] rounded-lg bg-accent" />
+                    <div class="h-2.5 w-full rounded-lg bg-accent" />
+                </div>
+            </div>
+        }
+    </CollapsibleContent>
+    <CollapsibleTrigger Variant="ButtonVariant.Outline" Size="ButtonSize.Sm">
+        @if (_isOpen)
+        {
+            @("Show less")
+            <LucideIcon Name="IconName.ChevronUp" />
+        }
+        else
+        {
+            @("Show more")
+            <LucideIcon Name="IconName.ChevronDown" />
+        }
+    </CollapsibleTrigger>
+</Collapsible>
+
+@code {
+    bool _isOpen;
+}

@@ -1,0 +1,78 @@
+﻿<Tabs Class="w-[400px] flex items-start gap-4 justify-center" @bind-Value="_activeTab">
+    <TabsList Class="shrink-0 grid grid-cols-1 min-w-28 p-0 bg-background">
+        @foreach (var tab in _tabs)
+        {
+            <TabsTrigger Value="@tab.Value" Class="border-l-2 border-transparent justify-start rounded-none data-[state=active]:shadow-none data-[state=active]:border-primary data-[state=active]:bg-primary/5 py-1.5">
+                @tab.Title
+            </TabsTrigger>
+        }
+    </TabsList>
+
+    @foreach (var tab in _tabs)
+    {
+        <TabsContent Value="@tab.Value" Class="mt-0">
+            @GetTabContent(tab.Value)
+        </TabsContent>
+    }
+</Tabs>
+
+@code {
+    string _activeTab = "account";
+
+    readonly List<TabDefinition> _tabs = new()
+                        {
+        new("account", "Account"),
+        new("password", "Password")
+                        };
+
+    RenderFragment GetTabContent(string tabValue) => tabValue switch
+    {
+        "account" => @<Card>
+        <CardHeader>
+            <CardTitle>Account</CardTitle>
+            <CardDescription>
+                Make changes to your account here. Click save when you're done.
+            </CardDescription>
+        </CardHeader>
+        <CardContent class="space-y-2">
+            <div class="space-y-1">
+                <Label for="name">Name</Label>
+                <Input id="name" Value="Pedro Duarte" />
+            </div>
+            <div class="space-y-1">
+                <Label for="username">Username</Label>
+                <Input id="username" />
+            </div>
+        </CardContent>
+        <CardFooter>
+            <Button>Save changes</Button>
+        </CardFooter>
+    </Card>,
+
+        "password" => @<Card>
+        <CardHeader>
+            <CardTitle>Password</CardTitle>
+            <CardDescription>
+                Change your password here. After saving, you'll be logged out.
+            </CardDescription>
+        </CardHeader>
+        <CardContent class="space-y-2">
+            <div class="space-y-1">
+                <Label for="current">Current password</Label>
+                <Input id="current" type="password" />
+            </div>
+            <div class="space-y-1">
+                <Label for="new">New password</Label>
+                <Input id="new" type="password" />
+            </div>
+        </CardContent>
+        <CardFooter>
+            <Button>Save password</Button>
+        </CardFooter>
+    </Card>,
+
+        _ => throw new NotImplementedException($"Tab {tabValue} not implemented")
+    };
+
+    record TabDefinition(string Value, string Title);
+}

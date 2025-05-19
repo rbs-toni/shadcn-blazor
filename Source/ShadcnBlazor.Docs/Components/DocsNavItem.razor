@@ -1,13 +1,27 @@
 ﻿@namespace ShadcnBlazor.Docs
 @inherits ShadcnComponentBase
+@inject NavigationManager NavigationManager
 
-@if (Item != null)
+@if (Item is not null)
 {
-    <a class="transition-colors hover:text-foreground/80 text-foreground/80" href="@Item.Href">
+    <a class="transition-colors hover:text-foreground text-foreground/80 data-active:text-foreground data-active:font-semibold"
+       href="@Item.Href"
+       data-active="@IsActive"
+       data-current-path="@CurrentPath">
         @Item.Title
     </a>
 }
+
 @code {
     [Parameter]
     public NavItem? Item { get; set; }
+
+    string CurrentPath => NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+
+    bool IsActive =>
+       Item is not null &&
+       !string.IsNullOrWhiteSpace(Item.Href) &&
+       CurrentPath.StartsWith(NormalizeHref(Item.Href), StringComparison.OrdinalIgnoreCase);
+
+    static string NormalizeHref(string href) => href.StartsWith('/') ? href[1..] : href;
 }

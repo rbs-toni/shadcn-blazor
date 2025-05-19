@@ -12,11 +12,3 @@ public enum AvatarSize
     [Description("h-32 w-32 text-5xl")]
     Large,
 }
-
-public enum ImageLoadingStatus
-{
-    Idle,
-    Loading,
-    Loaded,
-    Error
-}

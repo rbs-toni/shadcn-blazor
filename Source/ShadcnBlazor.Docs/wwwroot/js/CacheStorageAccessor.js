@@ -23,7 +23,7 @@ function createRequest(url, method, body = "") {
 }
 
 export async function put(url, method, body = "", responseString) {
-    const CACHING_DURATION = 60
+    const CACHING_DURATION = 10
 
     const expires = new Date()
     expires.setSeconds(expires.getSeconds() + CACHING_DURATION)

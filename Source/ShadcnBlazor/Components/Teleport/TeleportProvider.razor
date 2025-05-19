@@ -1,0 +1,10 @@
+﻿@namespace ShadcnBlazor
+@using Microsoft.AspNetCore.Components.Routing
+@inject ITeleporter Teleporter
+@inject NavigationManager NavigationManager
+@implements IDisposable
+
+@foreach (var fragment in Fragments)
+{
+    @fragment
+}

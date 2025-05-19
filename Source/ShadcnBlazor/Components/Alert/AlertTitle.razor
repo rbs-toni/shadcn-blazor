@@ -1,7 +1,8 @@
 ﻿@namespace ShadcnBlazor
 @inherits ShadcnComponentBase
+@inject TwMerge TwMerge
 
-<h5 id="@Id" class="@ClassValue" style="@Style" @ref=Ref @attributes=Attributes>
+<h5 id="@Id" class="@(TwMerge.Merge(ClassValue))" style="@Style" @ref=Ref @attributes=Attributes>
     @ChildContent
 </h5>
 

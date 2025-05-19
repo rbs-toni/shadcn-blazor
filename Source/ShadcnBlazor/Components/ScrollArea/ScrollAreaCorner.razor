@@ -1,0 +1,19 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+
+@if (HasCorner)
+{
+    <ScrollAreaCornerImpl Id="@Id"
+                          Class="@TwMerge.Merge(Class)"
+                          Style="@Style"
+                          @attributes="Attributes" />
+}
+
+@code {
+    [CascadingParameter]
+    ScrollAreaRootContext? RootContext { get; set; }
+
+    bool HasBothScrollbarsVisible => RootContext?.ScrollbarY != null && RootContext?.ScrollbarX != null;
+    public bool HasCorner => RootContext?.ScrollType != ScrollType.Scroll && HasBothScrollbarsVisible;
+}

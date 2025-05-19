@@ -1,0 +1,33 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<div id="@Id" class="@Class" style="@StyleValue" data-dismissable-layer @ref="Ref" @attributes="Attributes">
+    @ChildContent
+</div>
+
+@code{
+    /// <summary>
+    /// When `true`, hover/focus/click interactions will be disabled on elements outside the `DismissableLayer`. 
+    /// Users will need to click twice on outside elements to interact with them: once to close the `DismissableLayer`, and again to trigger the element.
+    /// </summary>
+    [Parameter]
+    public bool DisableOutsidePointerEvents { get; set; }
+
+    [Parameter]
+    public EventCallback<KeyboardEventArgs> OnEscapeKeyDown { get; set; }
+
+    [Parameter]
+    public EventCallback<PointerEventArgs> OnPointerDownOutside { get; set; }
+
+    [Parameter]
+    public EventCallback<FocusEventArgs> OnFocusOutside { get; set; }
+
+    [Parameter]
+    public EventCallback<PointerEventArgs> OnInteactOutside { get; set; }
+
+    public EventCallback OnDismiss { get; set; }
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("pointer-events", DisableOutsidePointerEvents ? "none" : "auto")
+        .Build();
+}

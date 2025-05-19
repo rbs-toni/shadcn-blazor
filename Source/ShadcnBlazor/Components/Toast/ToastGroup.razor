@@ -1,0 +1,43 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<ol @ref="Ref"
+    class="@Class"
+    data-sonner-toaster
+    dir="@Direction.ToAttributeValue(false)"
+    tabindex="-1"
+    data-theme="@Theme.ToAttributeValue(false)"
+    data-rich-colors="@RichColors.ToAttributeValue()"
+    data-y-position="@PositionY"
+    data-x-position="@PositionX"
+    data-lifted="@Lifted.ToAttributeValue()"
+    style="@Style"
+    @attributes="Attributes">
+    @ChildContent
+</ol>
+
+@code {
+    [Parameter]
+    public Direction Direction { get; set; }
+
+    [Parameter]
+    public DocumentTheme Theme { get; set; }
+
+    [Parameter]
+    public bool RichColors { get; set; }
+
+    [Parameter]
+    public string? PositionX { get; set; }
+
+    [Parameter]
+    public string? PositionY { get; set; }
+
+    [Parameter]
+    public bool Lifted { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnInteracting { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnExpanded { get; set; }
+}

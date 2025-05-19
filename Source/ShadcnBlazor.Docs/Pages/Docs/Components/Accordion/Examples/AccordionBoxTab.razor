@@ -1,0 +1,22 @@
+﻿@namespace ShadcnBlazor.Docs.Pages.Examples
+
+<Accordion Collapsible Class="w-full">
+    @foreach (var item in _items)
+    {
+        <AccordionItem @key="item.title" Class="border rounded-md px-4">
+            <AccordionTrigger>@item.title</AccordionTrigger>
+            <AccordionContent>
+                @item.content
+            </AccordionContent>
+        </AccordionItem>
+    }
+</Accordion>
+
+@code {
+    List<(string title, string content)> _items = new()
+    {
+        ("Is it accessible?", "Yes. It adheres to the WAI-ARIA design pattern."),
+        ("Is it styled?", "Yes. It comes with default styles that matches the other components' aesthetic."),
+        ("Is it animated?", "Yes. It's animated by default, but you can disable it if you prefer.")
+    };
+}

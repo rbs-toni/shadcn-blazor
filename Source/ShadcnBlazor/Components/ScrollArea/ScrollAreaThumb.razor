@@ -1,0 +1,26 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnJSComponentBase
+
+<div id="@Id"
+     style="@StyleValue"
+     class="@Class"
+     data-state="@(HasThumb ? "visible" : "hidden")"
+     @ref="Ref"
+     @onpointerup="HandlePointerUp">
+    @ChildContent
+</div>
+
+@code {
+    [CascadingParameter]
+    ScrollAreaRootContext? RootContext { get; set; }
+
+    [CascadingParameter]
+    ScrollAreaScrollbarVisibleContext? ScrollbarVisibleContext { get; set; }
+
+    bool HasThumb => ScrollbarVisibleContext?.HasThumb ?? false;
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("width", "var(--scroll-area-thumb-width)")
+        .AddStyle("height", "var(--scroll-area-thumb-height)")
+        .Build();
+}

@@ -1,0 +1,22 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+
+<ScrollAreaScrollbar Id="@Id"
+                     Class="@ClassValue.Cn(TwMerge)"
+                     Style="@Style"
+                     Orientation="@Orientation"
+                     @attributes="Attributes">
+    <ScrollAreaThumb Class="relative flex-1 rounded-full bg-border" />
+</ScrollAreaScrollbar>
+
+@code {
+    [Parameter]
+    public Orientation Orientation { get; set; } = Orientation.Vertical;
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass("flex touch-none select-none transition-colors")
+        .AddClass("h-full w-2.5 border-l border-l-transparent p-px", Orientation == Orientation.Vertical)
+        .AddClass("h-2.5 flex-col border-t border-t-transparent p-px", Orientation == Orientation.Horizontal)
+        .Build();
+}

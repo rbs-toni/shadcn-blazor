@@ -2,21 +2,6 @@
 
 <DocsHomeHero />
 
-<ContainerWrapper>
-    <Container>
-        <Button Id="@_id1" @onclick=@(() => _open1=!_open1)>CLick Me</Button>
-        <Popover @bind-Open="_open1" AnchorId="@_id1">
-            Ini adalah contoh
-        </Popover>
-
-        <Button Id="@_id2" @onclick=@(() => _open2=!_open2)>CLick Me</Button>
-        <Popover @bind-Open="_open2" AnchorId="@_id2">
-            Ini adalah contoh 2
-        </Popover>
-    </Container>
-</ContainerWrapper>
-
-
 @code {
     [CascadingParameter]
     LayoutContext LayoutContext { get; set; } = default!;
@@ -28,9 +13,4 @@
             useOutline: false,
             useFooterLinks: false);
     }
-
-    bool _open1;
-    bool _open2;
-    string _id1 = Identifier.NewId();
-    string _id2 = Identifier.NewId();
 }

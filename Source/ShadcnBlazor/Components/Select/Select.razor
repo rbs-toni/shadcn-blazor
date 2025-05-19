@@ -4,6 +4,13 @@
 @inherits ShadcnInputBase<string?>
 @typeparam TItem
 
+<CascadingValue Value="_internalSelectContext"
+                Name="SelectContext"
+                TValue="InternalSelectContext<TItem>"
+                IsFixed="true">
+    @ChildContent
+</CascadingValue>
+
 @code
 {
     /// <summary>

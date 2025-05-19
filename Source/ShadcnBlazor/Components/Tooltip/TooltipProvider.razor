@@ -1,0 +1,27 @@
+﻿@namespace ShadcnBlazor
+@inject ITooltipService TooltipService
+@implements IDisposable
+
+@foreach (var item in Tooltips)
+{
+    @item
+}
+
+@code {
+    protected IEnumerable<RenderFragment> Tooltips => TooltipService.Tooltips;
+
+    protected override void OnInitialized()
+    {
+        TooltipService.OnUpdated += OnUpdated;
+    }
+
+    void OnUpdated()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        TooltipService.OnUpdated -= OnUpdated;
+    }
+}

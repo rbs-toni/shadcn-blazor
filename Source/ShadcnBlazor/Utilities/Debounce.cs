@@ -1,4 +1,3 @@
-using ShadcnBlazor;
 // ------------------------------------------------------------------------
 // MIT License - Copyright (c) Microsoft Corporation. All rights reserved.
 // ------------------------------------------------------------------------
@@ -11,9 +10,9 @@ namespace ShadcnBlazor;
 /// </summary>
 public class Debounce : IDisposable
 {
-    private bool _disposed;
-    private readonly System.Timers.Timer _timer = new();
-    private TaskCompletionSource? _taskCompletionSource;
+    bool _disposed;
+    readonly System.Timers.Timer _timer = new();
+    TaskCompletionSource? _taskCompletionSource;
 
     /// <summary>
     /// Gets a value indicating whether the DebounceTask dispatcher is busy.

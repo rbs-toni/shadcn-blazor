@@ -2,13 +2,12 @@
 // MIT License - Copyright (c) Microsoft Corporation. All rights reserved.
 // ------------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.JSInterop;
+using System.Diagnostics.CodeAnalysis;
 using static ShadcnBlazor.LinkerFlags;
 
 namespace ShadcnBlazor;
-
-internal static class LinkerFlags
+static class LinkerFlags
 {
     /// <summary>
     /// Flags for a member that is JSON (de)serialized.
@@ -31,8 +30,8 @@ internal static class LinkerFlags
 /// </summary>
 public abstract class JSModule : IAsyncDisposable
 {
-    private bool _isDisposed;
-    private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
+    bool _isDisposed;
+    readonly Lazy<Task<IJSObjectReference>> _moduleTask;
 
     // On construction, we start loading the JSRuntime module
     protected JSModule(IJSRuntime js, string moduleUrl)
@@ -55,14 +54,20 @@ public abstract class JSModule : IAsyncDisposable
     protected async ValueTask InvokeVoidAsync(string identifier, params object[]? args)
         => await (await _moduleTask.Value).InvokeVoidAsync(identifier, args);
 
-    protected async ValueTask<T> InvokeAsync<[DynamicallyAccessedMembers(JsonSerialized)] T>(string identifier, params object[]? args)
+    protected async ValueTask<T> InvokeAsync<[DynamicallyAccessedMembers(JsonSerialized)] T>(string identifier, params object?[]? args)
         => await (await _moduleTask.Value).InvokeAsync<T>(identifier, args);
 
     // On disposal, we release the JSRuntime module
     public async ValueTask DisposeAsync()
     {
+        await OnDisposing();
         await DisposeCoreAsync().ConfigureAwait(false);
         GC.SuppressFinalize(this);
+    }
+
+    public virtual ValueTask OnDisposing()
+    {
+        return ValueTask.CompletedTask;
     }
 
     protected virtual async ValueTask DisposeCoreAsync()

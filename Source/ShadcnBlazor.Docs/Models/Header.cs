@@ -38,3 +38,14 @@ public class Header
     public override int GetHashCode()
          => HashCode.Combine(Level, Title, Href);
 }
+
+public record KeyboardShortcutDescription
+{
+    public KeyboardShortcutDescription(string key, string description)
+    {
+        Key = key;
+        Description = description;
+    }
+    public string Key { get; set; }
+    public string Description { get; set; }
+}

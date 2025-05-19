@@ -1,0 +1,15 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+
+<tfoot id="@Id" class="@(TwMerge.Merge(ClassValue))" style="@Style" @ref="Ref" @attributes="Attributes">
+    @ChildContent
+</tfoot>
+
+@code {
+    const string NewYorkClasses = "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0";
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(NewYorkClasses)
+        .Build();
+}

@@ -1,0 +1,49 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<ScrollAreaScrollbarImpl Ref="@Ref"
+                         Style="@StyleValue"
+                         Class="@Class"
+                         IsHorizontal="false"
+                         OnDragScroll="OnDragScroll"
+                         @attributes="Attributes"
+                         data-orientation="vertical">
+    @ChildContent
+</ScrollAreaScrollbarImpl>
+
+@code {
+    [CascadingParameter]
+    ScrollAreaScrollbarVisibleContext? ScrollbarVisibleContext { get; set; }
+
+    [CascadingParameter]
+    ScrollAreaRootContext? RootContext { get; set; }
+
+    ScrollSize? Sizes => ScrollbarVisibleContext?.Sizes;
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("top", "0")
+        .AddStyle("right", RootContext?.Direction == Direction.LTR ? "0" : "")
+        .AddStyle("left", RootContext?.Direction == Direction.RTL ? "0" : "")
+        .AddStyle("bottom", "var(--scroll-area-corner-height)")
+        .AddStyle("--scroll-area-thumb-height", Sizes != null ? ScrollAreaUtils.GetThumbSize(Sizes).ToPx() : "")
+        .Build();
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (RootContext != null)
+            {
+                RootContext.SetScrollbarY(Ref);
+            }
+        }
+    }
+
+    void OnDragScroll((double x, double y) args)
+    {
+        if (ScrollbarVisibleContext != null)
+        {
+            ScrollbarVisibleContext.DragScroll(args.y);
+        }
+    }
+}

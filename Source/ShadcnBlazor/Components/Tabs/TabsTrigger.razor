@@ -13,19 +13,18 @@
         data-state="@(IsSelected ? "active":"inactive")"
         disabled="@Disabled"
         data-disabled="@Disabled"
-        data-orientation="@Tabs?.Orientation.ToStringFast()"
-        @onclick=OnClickHandler
-        @ref=Ref
-        @attributes=Attributes>
+        data-orientation="@Orientation"
+        @onclick="OnClickHandler"
+        @ref="Ref"
+        @attributes="Attributes">
     @ChildContent
-    @Tabs?.Value
 </button>
 
 @code {
     const string DefaultClasses = "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow";
 
     [CascadingParameter]
-    Tabs? Tabs { get; set; }
+    TabsContext? Context { get; set; }
 
     [Parameter, EditorRequired]
     public string? Value { get; set; }
@@ -33,26 +32,19 @@
     [Parameter]
     public bool Disabled { get; set; }
 
-    string TriggerId => TabsUtils.MakeTriggerId(Tabs?.Id, Value);
-    string ContentId => TabsUtils.MakeContentId(Tabs?.Id, Value);
-    bool IsSelected => Value == Tabs?.Value;
+    string TriggerId => TabsUtils.MakeTriggerId(Context?.BaseId, Value);
+    string ContentId => TabsUtils.MakeContentId(Context?.BaseId, Value);
+    bool IsSelected => Value == Context?.Value;
     string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses).Build();
-
-    protected override void OnInitialized()
-    {
-        if (Tabs != null)
-        {
-            Tabs.OnChanged += () => InvokeAsync(StateHasChanged);
-        }
-    }
+    string? Orientation => Context?.Orientation.ToAttributeValue(false);
 
     void OnClickHandler()
     {
-        if (Tabs != null && !string.IsNullOrWhiteSpace(Value) && !IsSelected)
+        if (Context != null && !string.IsNullOrWhiteSpace(Value) && !IsSelected)
         {
             if (!Disabled)
             {
-                Tabs.ChangeValue(Value);
+                Context.ChangeValue(Value);
             }
         }
     }

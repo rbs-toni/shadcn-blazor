@@ -4,11 +4,7 @@ using Microsoft.Extensions.Logging;
 namespace ShadcnBlazor;
 public abstract class ShadcnComponentBase : ComponentBase
 {
-    [Inject]
-    ILoggerFactory LoggerFactory { get; set; } = default!;
     ILogger? _logger;
-    protected ILogger Logger => _logger ??= LoggerFactory.CreateLogger(GetType());
-
     ElementReference _ref;
 
     /// <summary>
@@ -23,7 +19,6 @@ public abstract class ShadcnComponentBase : ComponentBase
     /// </summary>
     [Parameter]
     public string? Class { get; set; }
-
     /// <summary>
     /// A reference to the enclosing component.
     /// </summary>
@@ -39,15 +34,24 @@ public abstract class ShadcnComponentBase : ComponentBase
     /// Gets or sets the associated web component. 
     /// May be <see langword="null"/> if accessed before the component is rendered.
     /// </summary>
+    [Parameter]
     public ElementReference Ref
     {
         get => _ref;
-        protected set
+        set
         {
             _ref = value;
-            ForwardRef?.Set(value);
+            ForwardRef?.Set(_ref);
         }
     }
+
+    /// <summary>
+    /// Gets or sets the associated web component. 
+    /// May be <see langword="null"/> if accessed before the component is rendered.
+    /// </summary>
+    [Parameter]
+    public EventCallback<ElementReference> RefChanged { get; set; }
+
     /// <summary>
     /// Optional in-line styles. If given, these will be included in the style attribute of the component.
     /// </summary>
@@ -58,8 +62,11 @@ public abstract class ShadcnComponentBase : ComponentBase
     protected bool IsDefaultStyle => GlobalStyle.HasValue
         ? GlobalStyle.Value == StyleType.Default
         : StyleType == StyleType.Default;
+    protected ILogger Logger => _logger ??= LoggerFactory.CreateLogger(GetType());
     [CascadingParameter(Name = "Global Style")]
     StyleType? GlobalStyle { get; set; }
+    [Inject]
+    ILoggerFactory LoggerFactory { get; set; } = default!;
 
     protected string? GetId()
     {

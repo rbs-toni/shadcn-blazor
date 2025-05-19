@@ -12,5 +12,10 @@
     const string DefaultClasses = "py-1.5 pl-8 pr-2 text-sm font-semibold";
     const string NewYorkClasses = "px-2 py-1.5 text-sm font-semibold";
 
-    string? ClassValue => new CssBuilder(Class).AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle).Build();
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+        .Build();
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("pointer-event", "none").Build();
 }

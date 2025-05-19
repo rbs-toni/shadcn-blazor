@@ -1,0 +1,45 @@
+﻿<div class="w-full">
+    @if (_isAlertVisible)
+    {
+        <Alert Class="flex justify-between items-center pr-2 [&>svg+div]:translate-y-0">
+            <LucideIcon Name=IconName.CircleFadingArrowUp Class="h-4 w-4" />
+
+            <div class="flex-col justify-center">
+                <AlertTitle>Update Available</AlertTitle>
+                <AlertDescription>
+                    A new version of the app is now available.
+                </AlertDescription>
+            </div>
+
+            <Button
+                Size="ButtonSize.Icon"
+                Variant="ButtonVariant.Ghost"
+                Class="!pl-0"
+                @onclick="HideAlert">
+                <LucideIcon Name=IconName.X Class="h-5 w-5" />
+            </Button>
+        </Alert>
+    }
+    else
+    {
+        <div class="flex justify-center">
+            <Button Class="mt-2 mx-auto" @onclick=ShowAlert>
+                Reopen
+            </Button>
+        </div>
+    }
+</div>
+
+@code{
+    bool _isAlertVisible=true;
+
+    void ShowAlert()
+    {
+        _isAlertVisible = true;
+    }
+
+    void HideAlert()
+    {
+        _isAlertVisible = false;
+    }
+}

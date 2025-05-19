@@ -1,0 +1,75 @@
+﻿@namespace ShadcnBlazor
+@inherits Primitive
+
+<div data-popper-content-wrapper @ref="_floatingRef">
+    <Primitive Id="@Id"
+               Class="@Class"
+               Style="@Style"
+               StyleType="@StyleType"
+               ForwardRef="@ForwardRef"
+               RefChanged="RefChanged"
+               PreventDefault="PreventDefault"
+               StopPropagation="StopPropagation"
+               As="@As"
+               Ref="@Ref"
+               @attributes="Attributes">
+        @ChildContent
+    </Primitive>
+</div>
+
+@code {
+    [Parameter]
+    public PopperSide Side { get; set; } = PopperSide.Bottom;
+
+    [Parameter]
+    public int SideOffset { get; set; } = 0;
+
+    [Parameter]
+    public PopperAlign Align { get; set; } = PopperAlign.Center;
+
+    [Parameter]
+    public int AlignOffset { get; set; } = 0;
+
+    [Parameter]
+    public bool AvoidCollisions { get; set; } = true;
+
+    [Parameter]
+    public ElementReference? CollisionBoundary { get; set; }
+
+    [Parameter]
+    public int CollisionPadding { get; set; } = 0;
+
+    [Parameter]
+    public int? ArrowPadding { get; set; }
+
+    [Parameter]
+    public PopperSticky Sticky { get; set; } = PopperSticky.Partial;
+
+    [Parameter]
+    public bool HideWhenDetached { get; set; } = false;
+
+    [Parameter]
+    public PopperStrategy Strategy { get; set; } = PopperStrategy.Fixed;
+
+    [Parameter]
+    public PopperUpdateStrategy UpdateStrategy { get; set; } = PopperUpdateStrategy.Optimized;
+
+    [Parameter]
+    public bool DisableUpdateOnLayoutShift { get; set; }
+
+    [Parameter]
+    public bool PrioritizePosition { get; set; } = false;
+
+    [Parameter]
+    public ElementReference? Reference { get; set; }
+
+    [Parameter]
+    public EventCallback OnPlaced { get; set; }
+
+    [Parameter]
+    public PopperAutoUpdateOptions? AutoUpdateOptions { get; set; }
+
+    string DesiredPlacement => Side.ToAttributeValue(false) + (Align != PopperAlign.Center ? "-" + Align.ToAttributeValue(false) : string.Empty);
+    string PlacedSide => DesiredPlacement.Split("-")[0];
+    string PlacedAlign => DesiredPlacement.Split("-")[1];
+}

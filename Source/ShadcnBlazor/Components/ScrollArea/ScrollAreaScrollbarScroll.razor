@@ -1,0 +1,14 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnJSComponentBase
+
+<ScrollAreaScrollbarVisible Ref="Ref" @attributes="Attributes" Class="@Class">
+    @ChildContent
+</ScrollAreaScrollbarVisible>
+
+@code{
+    [CascadingParameter]
+    ScrollAreaRootContext? RootContext { get; set; }
+
+    [CascadingParameter]
+    ScrollAreaScrollbarContext? ScrollbarContext { get; set; }
+}

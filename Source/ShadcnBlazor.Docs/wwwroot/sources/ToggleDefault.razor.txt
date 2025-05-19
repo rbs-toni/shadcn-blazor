@@ -1,0 +1,3 @@
+﻿<Toggle aria-label="Toggle bold">
+    <LucideIcon Name="IconName.Bold" Class="h-4 w-4" />
+</Toggle>

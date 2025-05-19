@@ -1,0 +1,32 @@
+﻿@page "/docs/components/toggle"
+@using ShadcnBlazor.Docs.Pages.Docs.Components.Toggle.Examples
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="Toggle" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["A two-state button that can be either on or off."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_toggleDefault"
+                 CodePath="ToggleDefault.razor" />
+</DocsPageContent>
+
+@code {
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Toggle");
+    ComponentTemplate _toggleDefault = new ComponentTemplate(typeof(ToggleDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: "Toggle",
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

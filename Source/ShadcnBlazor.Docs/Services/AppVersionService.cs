@@ -1,5 +1,4 @@
 using System.Reflection;
-using Blazored.LocalStorage;
 
 namespace ShadcnBlazor.Docs;
 public class AppVersionService : IAppVersionService
@@ -19,30 +18,5 @@ public class AppVersionService : IAppVersionService
         }
 
         return strVersion;
-    }
-}
-
-public interface ICultureInfoService
-{
-    Task<string> GetLanguageAsync();
-    Task SetLanguageAsync(string language);
-}
-
-class CultureInfoService : ICultureInfoService
-{
-    private readonly ILocalStorageService _localStorage;
-    const string LocalStorageKey = "ShadcnBlazorLanguage";
-    public CultureInfoService(ILocalStorageService localStorage)
-    {
-        _localStorage = localStorage;
-    }
-    public async Task<string> GetLanguageAsync()
-    {
-        return await _localStorage.GetItemAsStringAsync(LocalStorageKey).ConfigureAwait(false);
-    }
-
-    public async Task SetLanguageAsync(string language)
-    {
-        await _localStorage.SetItemAsStringAsync(LocalStorageKey, language);
     }
 }

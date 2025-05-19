@@ -10,9 +10,8 @@ public static class Program
         builder.RootComponents.Add<App>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
-        builder.AddTeleporter();
         builder.Services.AddShadcnBlazor();
-        builder.Services.AddDocsServices();
+        builder.Services.AddShadcnBlazorDocs();
 
         builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

@@ -9,6 +9,7 @@ public partial class DocsCode : IAsyncDisposable
     bool _hasCode;
     IJSObjectReference? _jsModule;
 
+    string AssetUrl => $"./_content/ShadcnBlazor.Docs/sources/{Path}.txt";
     [Inject]
     HttpClient HttpClient { get; set; } = default!;
     [Inject]
@@ -51,7 +52,7 @@ public partial class DocsCode : IAsyncDisposable
 
         try
         {
-            _codeContent = await StaticAssetService.GetAsync($"./_content/ShadcnBlazor.Docs/sources/{Path}.txt");
+            _codeContent = await StaticAssetService.GetAsync(AssetUrl);
             if (OnLoad.HasDelegate)
             {
                 await OnLoad.InvokeAsync(Path);

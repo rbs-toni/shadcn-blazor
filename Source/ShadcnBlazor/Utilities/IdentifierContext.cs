@@ -3,7 +3,7 @@ namespace ShadcnBlazor;
 // Inspiration: https://dvoituron.com/2020/01/22/UnitTest-DateTime/
 public sealed class IdentifierContext : IDisposable
 {
-    private static readonly ThreadLocal<Stack<IdentifierContext>> _threadScopeStack = new(() => new Stack<IdentifierContext>());
+    static readonly ThreadLocal<Stack<IdentifierContext>> _threadScopeStack = new(() => new Stack<IdentifierContext>());
 
     public IdentifierContext(Func<uint, string> newId)
     {
@@ -27,9 +27,9 @@ public sealed class IdentifierContext : IDisposable
         }
     }
 
-    private uint CurrentIndex { get; set; }
+    uint CurrentIndex { get; set; }
 
-    private Func<uint, string> NewId { get; init; }
+    Func<uint, string> NewId { get; init; }
 
     /// <summary>
     /// Returns the next number between 0 and 99999999.

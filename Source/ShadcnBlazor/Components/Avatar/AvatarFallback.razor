@@ -1,9 +1,9 @@
 ﻿@namespace ShadcnBlazor
 @inherits ShadcnComponentBase
-
+@inject TwMerge TwMerge
 @if (Show)
 {
-    <span id="@Id" class="@Class" style="@Style" @ref="Ref" @attributes="Attributes">
+    <span id="@Id" class="@(TwMerge.Merge(ClassValue))" style="@Style" @ref="Ref" @attributes="Attributes">
         @ChildContent
     </span>
 }
@@ -14,6 +14,9 @@
 
     bool Show => AvatarContext?.ImageLoadingStatus != ImageLoadingStatus.Loaded;
 
+    const string DefaultClasses = "flex h-full w-full items-center justify-center rounded-full bg-muted";
+    const string NewYorkClasses = "flex h-full w-full items-center justify-center rounded-full bg-muted";
+
     protected override void OnInitialized()
     {
         if (AvatarContext != null)
@@ -21,4 +24,8 @@
             AvatarContext.PropertyChanged += (_, _) => InvokeAsync(StateHasChanged);
         }
     }
+
+    string? ClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+        .Build();
 }

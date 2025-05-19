@@ -1,8 +1,5 @@
-// ------------------------------------------------------------------------
-// MIT License - Copyright (c) Microsoft Corporation. All rights reserved.
-// ------------------------------------------------------------------------
-
 using System.Collections.Concurrent;
+using System.Timers;
 
 namespace ShadcnBlazor;
 
@@ -12,9 +9,9 @@ namespace ShadcnBlazor;
 /// <remarks>
 /// Inspired from Microsoft.Toolkit.Uwp.UI.DispatcherQueueTimerExtensions
 /// </remarks>
-internal static class DispatcherTimerExtensions
+static class DispatcherTimerExtensions
 {
-    private static readonly ConcurrentDictionary<System.Timers.Timer, TimerDebounceItem> _debounceInstances = new();
+    static readonly ConcurrentDictionary<System.Timers.Timer, TimerDebounceItem> _debounceInstances = new();
 
     /// <summary>
     /// Delays the invocation of an action until a predetermined interval has elapsed since the last call.
@@ -60,7 +57,7 @@ internal static class DispatcherTimerExtensions
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private static void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+    static void Timer_Elapsed(object? sender, ElapsedEventArgs e)
     {
         // This event is only registered/run if we weren't in immediate mode above
         if (sender is System.Timers.Timer timer)
@@ -98,7 +95,7 @@ internal static class DispatcherTimerExtensions
     /// <summary>
     /// Timer debounce item.
     /// </summary>
-    private class TimerDebounceItem
+    class TimerDebounceItem
     {
         /// <summary>
         /// Gets the task completion source.

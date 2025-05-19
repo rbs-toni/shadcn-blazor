@@ -1,0 +1,80 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<TooltipPortal Show="IsDisplay" OnRendered="OnRendered">
+    <Floating Id="@ContentId"
+              AnchorId="@AnchorId"
+              Side="@Side"
+              Align="@Align"
+              Strategy="FloatingStrategy.Fixed"
+              Offset="new FloatingOffset(Offset)">
+        <TooltipContent Id="@ContentId"
+                        AriaLabel="@AriaLabel"
+                        Side="@Side"
+                        Align="@Align"
+                        Class="@Class"
+                        Style="@Style"
+                        Show="@IsShow"
+                        DataState="@DataState">
+            @ChildContent
+        </TooltipContent>
+    </Floating>
+</TooltipPortal>
+
+@code {
+    protected bool IsShow { get; set; }
+    protected bool IsDisplay { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string AnchorId { get; set; }
+
+    [Parameter]
+    public FloatingSide Side { get; set; } = FloatingSide.Top;
+
+    [Parameter]
+    public FloatingAlign Align { get; set; } = FloatingAlign.Center;
+
+    [Parameter]
+    public int Offset { get; set; } = 8;
+
+    /// <summary>
+    /// The duration from when the mouse enters a tooltip trigger until the tooltip opens.
+    /// </summary>
+    [Parameter]
+    public int DelayDuration { get; set; } = 700;
+
+    /// <summary>
+    /// How much time a user has to enter another trigger without incurring a delay again.
+    /// </summary>
+    [Parameter]
+    public int SkipDelayDuration { get; set; } = 300;
+
+    /// <summary>
+    /// Prevents Tooltip content from remaining open when hovering. Disabling this has accessibility consequences.
+    /// </summary>
+    [Parameter]
+    public bool DisableHoverableContent { get; set; }
+
+    /// <summary>
+    /// When `true`, clicking on trigger will not close the content.
+    /// </summary>
+    [Parameter]
+    public bool DisableClosingTrigger { get; set; }
+
+    [Parameter]
+    public bool IgnoreNonKeyboardFocus { get; set; }
+
+    [Parameter]
+    public bool ShowArrow { get; set; }
+
+    [Parameter]
+    public string? AriaLabel { get; set; }
+
+    [Parameter]
+    public EventCallback OnOpen { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    internal event Action<bool>? OnStateChanged;
+}

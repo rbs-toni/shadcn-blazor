@@ -1,0 +1,191 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject IDocumentService DocumentService
+@inject TwMerge TwMerge
+
+<section aria-label="@ContainerAriaLabel"
+         tabindex="-1"
+         aria-live="polite"
+         aria-relevant="Additions text"
+         aria-atomic="false">
+    @if (Toasts.Any())
+    {
+        @foreach (var (pos, posIdx) in PossiblePositions)
+        {
+            var position = pos.ToAttributeValue(false)?.Split("-");
+            <ToastGroup @key="@pos"
+                        Class="@(TwMerge.Merge(ClassValue))"
+                        Direction="Direction"
+                        Theme="Theme"
+                        RichColors="RichColors"
+                        PositionY="@position?[0]"
+                        PositionX="@position?[1]"
+                        Lifted="_expanded && Toasts.Count > 1 && !Expand"
+                        Style="@StyleValue"
+                        OnInteracting="OnInteracting"
+                        OnExpanded="OnExpanded"
+                        @attributes="Attributes">
+                @foreach (var (toast, idx) in FilteredToasts(pos, posIdx))
+                {
+                    <Toast Heights="_heights.Where(x=>x.Position==toast.Position).ToList()"
+                           @key="@toast.Id"
+                           Icons="@Icons"
+                           Index="@idx"
+                           Instance="toast"
+                           DefaultRichColors="RichColors"
+                           Duration="ToastOptions.Duration ?? Duration"
+                           Class="@ToastOptions.Class"
+                           DescriptionClass="@ToastOptions.DescriptionClass"
+                           Invert="@Invert"
+                           VisibleToasts="@VisibleToasts"
+                           CloseButton="@(ToastOptions.CloseButton ?? CloseButton)"
+                           Interacting="@_interacting"
+                           Position="pos"
+                           Style="@ToastOptions.Style"
+                           Unstyled="@(ToastOptions.Unstyled ?? false)"
+                           Classes="@ToastOptions.Classes"
+                           CancelButtonStyle="@ToastOptions.CancelButtonStyle"
+                           ActionButtonStyle="@ToastOptions.ActionButtonStyle"
+                           Toasts="GetFilteredToasts(pos)"
+                           ExpandByDefault="Expand"
+                           Gap="@Gap"
+                           Expanded="@_expanded"
+                           PauseWhenPageIsHidden="@PauseWhenPageHidden"
+                           OnUpdateHeights="OnUpdateHeights"
+                           OnRemoveToast="OnRemoveToast">
+                        <CloseIcon>
+                            @if (CloseIcon != null)
+                            {
+                                @CloseIcon
+                            }
+                            else
+                            {
+                                <LucideIcon Name="IconName.X" Size="12" />
+                            }
+                        </CloseIcon>
+                        <SuccessIcon>
+                            @if (SuccessIcon != null)
+                            {
+                                @SuccessIcon
+                            }
+                            else
+                            {
+                                <LucideIcon Name="IconName.Check" Size="12" />
+                            }
+                        </SuccessIcon>
+                        <InfoIcon>
+                            @if (InfoIcon != null)
+                            {
+                                @InfoIcon
+                            }
+                            else
+                            {
+                                <LucideIcon Name="IconName.Info" Size="12" />
+                            }
+                        </InfoIcon>
+                        <WarningIcon>
+                            @if (WarningIcon != null)
+                            {
+                                @WarningIcon
+                            }
+                            else
+                            {
+                                <LucideIcon Name="IconName.AlertTriangle" Size="12" />
+                            }
+                        </WarningIcon>
+                        <ErrorIcon>
+                            @if (ErrorIcon != null)
+                            {
+                                @ErrorIcon
+                            }
+                            else
+                            {
+                                <LucideIcon Name="IconName.XCircle" Size="12" />
+                            }
+                        </ErrorIcon>
+                    </Toast>
+                }
+            </ToastGroup>
+        }
+    }
+</section>
+@code {
+    const int VISIBLE_TOASTS_AMOUNT = 3;
+    const int VIEWPORT_OFFSET = 32;
+    const int TOAST_WIDTH = 356;
+    const int TOAST_GAP = 14;
+
+    [Parameter]
+    public bool Invert { get; set; }
+
+    [Parameter]
+    public DocumentTheme Theme { get; set; }
+
+    [Parameter]
+    public ToastPosition Position { get; set; } = ToastPosition.BottomRight;
+
+    [Parameter]
+    public string[] HotKey { get; set; } = ["altKey", "keyT"];
+
+    [Parameter]
+    public bool RichColors { get; set; }
+
+    [Parameter]
+    public bool Expand { get; set; }
+
+    [Parameter]
+    public int Duration { get; set; }
+
+    [Parameter]
+    public int Gap { get; set; } = TOAST_GAP;
+
+    [Parameter]
+    public int VisibleToasts { get; set; } = VISIBLE_TOASTS_AMOUNT;
+
+    [Parameter]
+    public bool CloseButton { get; set; } = true;
+
+    [Parameter]
+    public int Offset { get; set; } = VIEWPORT_OFFSET;
+
+    [Parameter]
+    public Direction Direction { get; set; } = Direction.LTR;
+
+    [Parameter]
+    public ToastOptions ToastOptions { get; set; } = new()
+        {
+            Classes = new ToastClasses
+            {
+                Toast = "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
+                Description = "group-[.toast]:text-muted-foreground",
+                CancelButton = "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+                ActionButton = "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
+            },
+        };
+
+    [Parameter]
+    public ToastIcons? Icons { get; set; }
+
+    [Parameter]
+    public string? ContainerAriaLabel { get; set; } = "Notifications";
+
+    [Parameter]
+    public bool PauseWhenPageHidden { get; set; }
+
+    List<ToastHeight> _heights = [];
+
+    [Parameter]
+    public RenderFragment? CloseIcon { get; set; }
+
+    [Parameter]
+    public RenderFragment? SuccessIcon { get; set; }
+
+    [Parameter]
+    public RenderFragment? ErrorIcon { get; set; }
+
+    [Parameter]
+    public RenderFragment? WarningIcon { get; set; }
+
+    [Parameter]
+    public RenderFragment? InfoIcon { get; set; }
+}

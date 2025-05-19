@@ -19,7 +19,7 @@
     LayoutContext LayoutContext { get; set; } = default!;
 
     BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection("Calendar");
-    SlotComponent _calendarDefault = new SlotComponent(typeof(CalendarDefault));
+    ComponentTemplate _calendarDefault = new ComponentTemplate(typeof(CalendarDefault));
 
     protected override void OnInitialized()
     {

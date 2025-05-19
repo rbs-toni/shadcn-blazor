@@ -1,0 +1,11 @@
+{
+  "name": "shadcnblazor.docs",
+  "version": "1.0.0",
+  "author": "Rantoni Pasaribu",
+  "license": "MIT",
+  "keywords": [],
+  "devDependencies": {
+    "esbuild": "^0.25.4",
+    "shiki": "^3.4.0"
+  }
+}
