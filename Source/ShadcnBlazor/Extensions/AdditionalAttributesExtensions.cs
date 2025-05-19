@@ -1,5 +1,5 @@
 namespace ShadcnBlazor;
-static class AdditionalAttributesExtensions
+static class AttributesExtensions
 {
     /// <summary> Determines whether two sets of attributes are equal when rendered. </summary>
     /// <param name="x">The compared set</param>

@@ -5,21 +5,25 @@ using System.Linq;
 namespace ShadcnBlazor;
 public class PopperContentContext
 {
-    private readonly PopperContent _popperContent;
+    readonly PopperContent _popperContent;
+    ElementReference _arrow;
 
     public PopperContentContext(PopperContent popperContent)
     {
         _popperContent = popperContent;
     }
-    public event Action<ElementReference>? OnArrowChange;
 
-    public double ArrowX { get; set; }
-    public double ArrowY { get; set; }
+    public event Action? OnArrowChange;
+
+    public ElementReference Arrow => _arrow;
+    public double ArrowX => _popperContent.ArrowX;
+    public double ArrowY => _popperContent.ArrowY;
     public bool ShouldHideArrow { get; set; }
     public PopperSide Side { get; set; }
 
-    public void NotifyArrowChange(ElementReference arrow)
+    public void SetArrow(ElementReference arrow)
     {
-        OnArrowChange?.Invoke(arrow);
+        _arrow = arrow;
+        OnArrowChange?.Invoke();
     }
 }

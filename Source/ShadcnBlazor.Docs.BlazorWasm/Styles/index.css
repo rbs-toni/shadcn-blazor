@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./app.css";
 @import "./fonts.css";
 @import "./mdx.css";
 @import "./toast.css";

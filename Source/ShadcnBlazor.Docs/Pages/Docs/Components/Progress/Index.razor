@@ -1,0 +1,39 @@
+﻿@page "/docs/components/progress"
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="@COMPONENT" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Displays an indicator showing the completion progress of a task, typically displayed as a progress bar."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_progressDefault"
+                 CodePath="ProgressDefault.razor" />
+
+    <DocsExamples Examples="_examples" />
+</DocsPageContent>
+
+@code {
+    const string COMPONENT = "Progress";
+
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection(COMPONENT);
+    ComponentTemplate _progressDefault = new ComponentTemplate(typeof(ProgressDefault));
+    List<ComponentExample> _examples = new List<ComponentExample>()
+    {
+        new ComponentExample(COMPONENT, "Circular", new ComponentTemplate(typeof(ProgressCircular))),
+    };
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: COMPONENT,
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

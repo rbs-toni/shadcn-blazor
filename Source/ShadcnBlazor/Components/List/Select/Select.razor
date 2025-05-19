@@ -1,0 +1,21 @@
+﻿@namespace ShadcnBlazor
+@inherits ListComponentBase<TOption>
+@typeparam TOption
+
+<CascadingValue Value="_internalListContext" Name="ListContext" TValue="InternalListContext<TOption>" IsFixed="true">
+    <fluent-select id=@Id
+                   @ref="Ref"
+                   class="@ClassValue"
+                   style="@StyleValue"
+                   open="@Open"
+                   multiple="@Multiple"
+                   disabled="@Disabled"
+                   current-value="@Value"
+                   required="@Required"
+                   name="@Name"
+                   @onchange="@ChangeHandlerAsync"
+                   @onkeydown="@OnKeydownHandlerAsync"
+                   @attributes="Attributes">
+        @_renderOptions
+    </fluent-select>
+</CascadingValue>

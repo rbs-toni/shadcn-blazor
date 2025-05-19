@@ -1,0 +1,33 @@
+﻿@page "/docs/components/spinner"
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="@COMPONENT" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Informs users about the status of ongoing processes."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_spinnerDefault"
+                 CodePath="SpinnerDefault.razor" />
+</DocsPageContent>
+
+@code {
+    const string COMPONENT = "Spinner";
+
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection(COMPONENT);
+    ComponentTemplate _spinnerDefault = new ComponentTemplate(typeof(SpinnerDefault));
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: COMPONENT,
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

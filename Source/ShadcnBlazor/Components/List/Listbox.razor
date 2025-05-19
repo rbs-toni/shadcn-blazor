@@ -1,0 +1,28 @@
+﻿@namespace ShadcnBlazor
+@inherits ListComponentBase<TOption>
+@typeparam TOption
+@if (!String.IsNullOrEmpty(Height))
+{
+    <style>
+        @($"#{Id}:focus-within:not([disabled]) {{outline: none; }}")
+    </style>
+}
+<CascadingValue Value="@_internalListContext" Name="ListContext" TValue="InternalListContext<TOption>" IsFixed="true">
+    <div style="@BorderStyle.Build()">
+        <fluent-listbox @ref="Ref"
+                        id="@Id"
+                        class="@ClassValue"
+                        style="@($"{StyleValue} border: none; width: 100%;")"
+                        disabled="@Disabled"
+                        size="@Size"
+                        multiple="@Multiple"
+                        required="@Required"
+                        name="@Name"
+                        selectedOptions="@(SelectedOptions != null && SelectedOptions.Any() ? string.Join(',', SelectedOptions.Select(i => GetOptionValue(i))) : null)"
+                        @onchange="@ChangeHandlerAsync"
+                        @onkeydown="@OnKeydownHandlerAsync"
+                        @attributes="Attributes">
+                @_renderOptions
+        </fluent-listbox>
+    </div>
+</CascadingValue>

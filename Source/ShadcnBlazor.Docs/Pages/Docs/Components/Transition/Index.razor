@@ -1,0 +1,50 @@
+﻿@page "/docs/components/transition"
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="@Component" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["Provides smooth enter and exit animations."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_transitionDefault"
+                 CodePath="TransitionDefault.razor" />
+
+    @if (_examples.Count > 0)
+    {
+        <DocsPageSection Title="Examples">
+            @foreach (var item in _examples)
+            {
+                <DocsPageSection Level="3" Title="@item.Title">
+                    <DocsPreview PreviewComponent="@item.Template"
+                                 CodePath="@item.CodePath" />
+                </DocsPageSection>
+            }
+        </DocsPageSection>
+    }
+</DocsPageContent>
+
+@code {
+    const string Component = "Transition";
+
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection(Component);
+    ComponentTemplate _transitionDefault = new ComponentTemplate(typeof(TransitionDefault));
+
+    List<ComponentExample> _examples = new List<ComponentExample>()
+    {
+    };
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: Component,
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

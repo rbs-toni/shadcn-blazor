@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace ShadcnBlazor;
 
-public static class ScrollAreaUtils
+public static class ScrollUtils
 {
     const double EPSILON = 0.0001;
 
@@ -119,6 +119,15 @@ public static class ScrollAreaUtils
                 _currentState = newState;
             }
         }
+    }
+
+
+    public static double ConvertValueToPercentage(double value, double min, double max)
+    {
+        var delta = max - min;
+        var steps = 100/delta;
+        var percent = steps * (value - min);
+        return Math.Clamp(percent, 0, 100);
     }
 }
 

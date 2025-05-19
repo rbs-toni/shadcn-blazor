@@ -10,12 +10,9 @@ public class PopperAnchor : Primitive
 
     protected override void OnAfterRender(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && Context != null)
         {
-            if (Context != null)
-            {
-                Context.OnAnchorChanged.InvokeAsync(Ref);
-            }
+            Context.SetAnchor(Ref);
         }
     }
 }

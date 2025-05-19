@@ -176,7 +176,13 @@ public class NavProvider
                             Href = "/docs/components/popover",
                             ProgressState = ProgressState.InProgress
                         },
-                        new() { Title = "Progress", Order = 32, Href = "/docs/components/progress" },
+                        new()
+                        {
+                            Title = "Progress",
+                            Order = 32,
+                            Href = "/docs/components/progress",
+                            ProgressState = ProgressState.InProgress
+                        },
                         new() { Title = "Radio Group", Order = 33, Href = "/docs/components/radio-group" },
                         new()
                         {
@@ -209,7 +215,20 @@ public class NavProvider
                             Href = "/docs/components/skeleton",
                             ProgressState = ProgressState.InProgress
                         },
-                        new() { Title = "Slider", Order = 41, Href = "/docs/components/slider" },
+                        new()
+                        {
+                            Title = "Slider",
+                            Order = 41,
+                            Href = "/docs/components/slider",
+                            ProgressState = ProgressState.InProgress
+                        },
+                        new()
+                        {
+                            Title = "Spinner",
+                            Order = 41,
+                            Href = "/docs/components/spinner",
+                            ProgressState = ProgressState.InProgress
+                        },
                         new()
                         {
                             Title = "Switch",
@@ -258,6 +277,13 @@ public class NavProvider
                             Title = "Tooltip",
                             Order = 50,
                             Href = "/docs/components/tooltip",
+                            ProgressState = ProgressState.InProgress
+                        },
+                        new()
+                        {
+                            Title = "Transition",
+                            Order = 52,
+                            Href = "/docs/components/transition",
                             ProgressState = ProgressState.InProgress
                         }
                     }.OrderBy(item => item.Order)  // Sort by Order property for sidebar items

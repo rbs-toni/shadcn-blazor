@@ -1,0 +1,121 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<div id="@Id"
+     class="@Class"
+     style="@Style"
+     aria-valuemax="@Max"
+     aria-valuemin="@Min"
+     aria-valuenow="@Value"
+     aria-valuetext="@ValueLabel"
+     aria-label="@ValueLabel"
+     role="progressbar"
+     data-state="@ProgressState"
+     data-value="@Value"
+     data-max="@Max"
+     @ref="Ref"
+     @attributes="Attributes">
+    <CascadingValue Value="_context" IsFixed="true">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    int? _max;
+    int? _min;
+    int? _value;
+    /// <summary>
+    /// Gets or sets the minimum value.
+    /// </summary>
+    [Parameter]
+    public int? Min
+    {
+        get => _min;
+        set
+        {
+            if (value is null || (_max is not null && value > _max))
+            {
+                _min = 0;
+                return;
+            }
+
+            _min = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the maximum value.
+    /// </summary>
+    [Parameter]
+    public int? Max
+    {
+        get => _max;
+        set
+        {
+            if (value is null || (Min is not null && value < Min))
+            {
+                _max = DefaultMax;
+                return;
+            }
+
+            _max = value;
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the current value.
+    /// </summary>
+    [Parameter]
+    public int? Value
+    {
+        get => _value;
+        set
+        {
+            if (value == _value)
+                return;
+
+            if (value is null)
+            {
+                _value = null;
+                return;
+            }
+
+            if ((_min is null || value >= _min) && (_max is null || value <= _max))
+            {
+                _value = value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the visibility of the component
+    /// </summary>
+    [Parameter]
+    public bool Visible { get; set; } = true;
+
+    const int DefaultMax = 100;
+
+    string? ValueLabel =>
+        Value is not null && Max is not null && Max != 0
+        ? Math.Round((double)Value / Max.Value * DefaultMax).ToPercentage()
+        : default;
+
+    internal string ProgressState
+    {
+        get
+        {
+            if (Value == null)
+            {
+                return "indeterminate";
+            }
+            else if (Value == Max)
+            {
+                return "complete";
+            }
+            else
+            {
+                return "loading";
+            }
+        }
+    }
+}

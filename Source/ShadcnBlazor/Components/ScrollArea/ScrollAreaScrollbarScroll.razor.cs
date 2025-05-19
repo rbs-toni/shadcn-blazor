@@ -2,7 +2,7 @@
 using Microsoft.JSInterop;
 using System;
 using System.Linq;
-using static ShadcnBlazor.ScrollAreaUtils;
+using static ShadcnBlazor.ScrollUtils;
 
 namespace ShadcnBlazor;
 public partial class ScrollAreaScrollbarScroll : ShadcnJSComponentBase

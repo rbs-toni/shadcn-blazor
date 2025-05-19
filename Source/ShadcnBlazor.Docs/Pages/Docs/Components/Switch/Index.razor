@@ -1,5 +1,4 @@
 ﻿@page "/docs/components/switch"
-@using ShadcnBlazor.Docs.Pages.Docs.Components.Switch.Examples
 @inherits ShadcnComponentBase
 @inject IStringLocalizer<Index> Localizer
 
@@ -11,7 +10,7 @@
 
 <DocsPageContent>
     <DocsPreview PreviewComponent="@_switchDefault"
-    CodePath="SwitchDefault.razor" />
+                 CodePath="SwitchDefault.razor" />
 
     @if (_examples.Count > 0)
     {
@@ -20,7 +19,7 @@
             {
                 <DocsPageSection Level="3" Title="@item.Title">
                     <DocsPreview PreviewComponent="@item.Template"
-                    CodePath="@item.CodePath" />
+                                 CodePath="@item.CodePath" />
                 </DocsPageSection>
             }
         </DocsPageSection>

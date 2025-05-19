@@ -1,0 +1,7 @@
+﻿@namespace ShadcnBlazor.Docs.Pages.Examples
+
+<Slider Value="@_value" Min="0" Max="100" Step="10" Class="w-3/5" />
+
+@code {
+    double _value = 50;
+}

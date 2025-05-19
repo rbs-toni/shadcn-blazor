@@ -1,0 +1,22 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@typeparam TOption
+
+<div id="@Id"
+     role="option"
+     aria-labelledby=""
+     data-highlighted=""
+     aria-selected=""
+     data-state="@(Selected ? "checked" :"unchecked")"
+     aria-disabled="@Disabled"
+     data-disabled="@Disabled"
+     tabindex="@(Disabled ? null : "-1")"
+     class="@Class"
+     style="@Style"
+     disabled="@Disabled"
+     value="@Value"
+     @ref=Ref
+     @onclick="@OnClickHandlerAsync"
+     @attributes="Attributes">
+    @ChildContent
+</div>

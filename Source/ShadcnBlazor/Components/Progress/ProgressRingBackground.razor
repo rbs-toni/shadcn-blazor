@@ -1,0 +1,27 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@inject TwMerge TwMerge
+
+<circle r="@Radius"
+        cx="@(Size/2)"
+        cy="@(Size/2)"
+        fill="transparent"
+        stroke-width="@StrokeWidth"
+        stroke-dasharray="@StrokeDashArray"
+        stroke-dashoffset="0"
+        class="@TwMerge.Merge("stroke-primary/25", Class)">
+</circle>
+
+@code{
+    [Parameter]
+    public double Radius { get; set; }
+
+    [Parameter]
+    public int Size { get; set; }
+
+    [Parameter]
+    public int StrokeWidth { get; set; }
+
+    [Parameter]
+    public double StrokeDashArray { get; set; }
+}

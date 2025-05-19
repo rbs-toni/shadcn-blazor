@@ -1,0 +1,20 @@
+﻿@namespace ShadcnBlazor.Docs.Pages.Examples
+
+<div class="max-w-xs mx-auto w-full flex flex-col items-center space-y-2">
+    <ProgressRing Value="@_progress" Min="0" Max="100" />
+    <Slider @bind-Value="@_progress" Min="0" Max="100" Step="2" />
+</div>
+
+@code {
+    int _progress = 13;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.Delay(500);
+            _progress = 66;
+            StateHasChanged();
+        }
+    }
+}

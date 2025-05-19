@@ -1,0 +1,55 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@typeparam TValue where TValue : System.Numerics.INumber<TValue>
+@inject IElementService ElementService
+
+<SliderImpl TValue="TValue"
+            OnSlideStart="OnSlideStartHandlerAsync"
+            OnSlideMove="OnSlideMoveHandlerAsync"
+            OnSlideEnd="OnSlideEndHandler"
+            OnStepKeyDown="OnStepKeyDownHandler"
+            OnHomeKeyDown="OnHomeKeyDownHandler"
+            OnEndKeyDown="OnEndKeyDownHandler"
+            Style="@StyleValue"
+            dir="@Direction.ToAttributeValue(false)"
+            data-orientation="horizontal"
+            Ref="Ref">
+    <CascadingValue Value="_orientationContext" IsFixed="true">
+        @ChildContent
+    </CascadingValue>
+</SliderImpl>
+
+@code {
+    [CascadingParameter]
+    SliderRootContext<TValue>? RootContext { get; set; }
+
+    [Parameter]
+    public TValue? Min { get; set; }
+
+    [Parameter]
+    public TValue? Max { get; set; }
+
+    [Parameter]
+    public bool Inverted { get; set; }
+
+    [Parameter]
+    public Direction Direction { get; set; }
+
+    [Parameter]
+    public EventCallback<double> OnSlideStart { get; set; }
+
+    [Parameter]
+    public EventCallback<double> OnSlideMove { get; set; }
+
+    [Parameter]
+    public EventCallback<double> OnSlideEnd { get; set; }
+
+    [Parameter]
+    public EventCallback<KeyboardEventArgs> OnHomeKeyDown { get; set; }
+
+    [Parameter]
+    public EventCallback<KeyboardEventArgs> OnEndKeyDown { get; set; }
+
+    [Parameter]
+    public EventCallback<(KeyboardEventArgs, int)> OnStepKeyDown { get; set; }
+}

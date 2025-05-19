@@ -21,7 +21,7 @@ public partial class ScrollAreaScrollbarVisible : ShadcnJSComponentBase
     {
         get
         {
-            var thumbRatio = ScrollAreaUtils.GetThumbRatio(Sizes.ViewPort, Sizes.Content);
+            var thumbRatio = ScrollUtils.GetThumbRatio(Sizes.ViewPort, Sizes.Content);
             return thumbRatio > 0 && thumbRatio < 1;
         }
     }
@@ -66,13 +66,13 @@ public partial class ScrollAreaScrollbarVisible : ShadcnJSComponentBase
         if (IsShowingScrollbarX)
         {
             var scrollPos = viewportInfo?.ScrollLeft ?? 0;
-            var offset = ScrollAreaUtils.GetThumbOffsetFromScroll(scrollPos, Sizes, Direction);
+            var offset = ScrollUtils.GetThumbOffsetFromScroll(scrollPos, Sizes, Direction);
             await SetElementInfoAsync(ThumbRef, "style.transform", $"translate3d({offset}px, 0, 0)");
         }
         else
         {
             var scrollPos = viewportInfo?.ScrollTop ?? 0;
-            var offset = ScrollAreaUtils.GetThumbOffsetFromScroll(scrollPos, Sizes, Direction);
+            var offset = ScrollUtils.GetThumbOffsetFromScroll(scrollPos, Sizes, Direction);
             await SetElementInfoAsync(ThumbRef, "style.transform", $"translate3d(0, {offset}px, 0)");
         }
     }
@@ -96,7 +96,7 @@ public partial class ScrollAreaScrollbarVisible : ShadcnJSComponentBase
     }
     double GetScrollPositionFromPointer(double pointerPos, double pointerOffset, ScrollSize sizes, Direction direction)
     {
-        var thumbSizePx = ScrollAreaUtils.GetThumbSize(sizes);
+        var thumbSizePx = ScrollUtils.GetThumbSize(sizes);
         var thumbCenter = thumbSizePx / 2;
         var offset = pointerOffset != 0 ? pointerOffset : thumbCenter;
         var thumbOffsetFromEnd = thumbSizePx - offset;
@@ -104,7 +104,7 @@ public partial class ScrollAreaScrollbarVisible : ShadcnJSComponentBase
         var maxPointerPos = sizes.Scrollbar?.Size - sizes.Scrollbar?.PaddingEnd - thumbOffsetFromEnd;
         var maxScrollPos = sizes.Content - sizes.ViewPort;
         var scrollRange = direction == Direction.LTR ? (0d, maxScrollPos) : (maxScrollPos * -1, 0d);
-        var interpolate = ScrollAreaUtils.LinearScale((minPointerPos ?? 0, maxPointerPos ?? 0), scrollRange);
+        var interpolate = ScrollUtils.LinearScale((minPointerPos ?? 0, maxPointerPos ?? 0), scrollRange);
 
         return interpolate(pointerPos);
     }

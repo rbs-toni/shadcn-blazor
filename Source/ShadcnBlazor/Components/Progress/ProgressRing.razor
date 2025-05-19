@@ -1,0 +1,78 @@
+﻿@namespace ShadcnBlazor
+@inherits ProgressRoot
+@inject TwMerge TwMerge
+
+<ProgressRoot Class="relative" Value="Value" Min="Min" Max="Max" Visible="Visible">
+    <svg width="@Size"
+         height="@Size"
+         viewBox="@ViewBox"
+         xmlns="http://www.w3.org/2000/svg"
+         style="transform: rotate(-90deg)"
+         class="relative">
+        <ProgressRingBackground Size="@Size"
+                                Radius="@Radius"
+                                StrokeWidth="@(StrokeWidth ?? CircleStrokeWidth)"
+                                StrokeDashArray="Circumference"
+                                Class="@Class" />
+        <ProgressRingProgress Size="@Size"
+                              Radius="@Radius"
+                              StrokeWidth="@(StrokeWidth ?? CircleStrokeWidth)"
+                              StrokeDashOffset="@Percentage"
+                              StrokeDashArray="Circumference"
+                              Class="@ProgressClass" />
+    </svg>
+    @if (ShowLabel)
+    {
+        <div class="@(TwMerge.Merge("absolute inset-0 flex items-center justify-center text-md", LabelClass))">
+            @ValueLabel
+        </div>
+    }
+</ProgressRoot>
+
+@code {
+    const int DefaultMax = 100;
+
+    [Parameter]
+    public int Size { get; set; } = 100;
+
+    [Parameter]
+    public int? StrokeWidth { get; set; }
+
+    [Parameter]
+    public int CircleStrokeWidth { get; set; } = 10;
+
+    [Parameter]
+    public int ProgressStrokeWidth { get; set; } = 10;
+
+    [Parameter]
+    public bool IsSquare { get; set; }
+
+    [Parameter]
+    public string? ProgressClass { get; set; }
+
+    [Parameter]
+    public string? LabelClass { get; set; }
+
+    [Parameter]
+    public bool ShowLabel { get; set; } = true;
+
+    double Radius => Size / 2;
+    double Circumference => Math.Ceiling(2 * Math.PI * Radius);
+    double Percentage
+    {
+        get
+        {
+            var effectiveMax = Max ?? DefaultMax;
+            var effectiveValue = Value ?? 0;
+            var progressRatio = (double)(effectiveMax - effectiveValue) / effectiveMax;
+            return Math.Ceiling(Circumference * progressRatio);
+        }
+    }
+
+    string ViewBox => $"-{Size * .125} -{Size * .125} {Size * 1.25} {Size * 1.25}";
+
+    string? ValueLabel =>
+        Value is not null
+        ? Math.Round(((double)Value / (Max ?? DefaultMax)) * DefaultMax).ToPercentage()
+        : default;
+}

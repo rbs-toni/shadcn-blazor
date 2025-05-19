@@ -13,6 +13,13 @@ export function getBoundingClientRect(element) {
   }
 }
 
+export function getElementInfo(element) {
+  return {
+    clientWidth: element.clientWidth,
+    clientHeight: element.clientHeight,
+  }
+}
+
 export function getOffsetTop(element) {
   return element.offsetTop
 }

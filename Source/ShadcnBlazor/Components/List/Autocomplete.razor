@@ -1,0 +1,218 @@
+﻿@namespace ShadcnBlazor
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@inherits ListComponentBase<TOption>
+@typeparam TOption
+
+<CascadingValue Value="@_internalListContext" Name="ListContext" TValue="InternalListContext<TOption>" IsFixed=true>
+    <div class="@ClassValue fluent-autocomplete-multiselect"
+         style="@StyleValue"
+         @attributes="Attributes"
+         auto-height="@(!string.IsNullOrEmpty(MaxAutoHeight))">
+        <ShadcnKeyCode Anchor="@Id" OnKeyDown="@KeyDownHandlerAsync" Only="@CatchOnly" PreventDefaultOnly="@PreventOnly" />
+
+        <Input Id="@Id"
+               role="combobox"
+               @ref="@Element"
+               Name="@Name"
+               Embedded="true"
+               Required="@Required"
+               AutoComplete="@AutoComplete"
+               Disabled="@Disabled"
+               ReadOnly="@ReadOnly"
+               Label="@Label"
+               LabelTemplate="@LabelTemplate"
+               Placeholder="@(SelectedOptions?.Any() is false ? Placeholder : string.Empty)"
+               aria-expanded="@(IsMultiSelectOpened ? "true" : "false")"
+               aria-controls="@(IsMultiSelectOpened ? IdPopup : string.Empty)"
+               aria-label="@GetAutocompleteAriaLabel()"
+               Value="@ValueText"
+               @onclick="@OnDropDownExpandedAsync"
+               @oninput="@InputHandlerAsync"
+               autofocus="@Autofocus"
+               Style="@ComponentWidth">
+            @* Selected Items *@
+        @if (this.SelectedOptions?.Any() == true)
+            {
+                @* Normal (single) line height *@
+                if (string.IsNullOrEmpty(MaxAutoHeight))
+                {
+                <fluent-horizontal-scroll id="@IdScroll" style="width: 100%;" slot="start">
+                    <fluent-flipper onclick="event.stopPropagation(); document.getElementById('@IdScroll').scrollToPrevious();"
+                                    slot="previous-flipper"
+                                    aria-hidden="false"
+                                    aria-label="@TitleScrollToPrevious"
+                                    title="@TitleScrollToPrevious"
+                                    role="button"
+                                    tabindex="0"
+                                    class="previous fluent-autocomplete-previous"
+                                    direction="previous"></fluent-flipper>
+                    <fluent-flipper onclick="event.stopPropagation(); document.getElementById('@IdScroll').scrollToNext();"
+                                    slot="next-flipper"
+                                    aria-hidden="false"
+                                    aria-label="@TitleScrollToNext"
+                                    title="@TitleScrollToNext"
+                                    role="button"
+                                    tabindex="0"
+                                    class="next fluent-autocomplete-next"
+                                    direction="next"></fluent-flipper>
+                        @RenderSelectedOptions
+                    &nbsp;
+                </fluent-horizontal-scroll>
+                }
+
+                @* Auto-height with items wrap *@
+                else
+                {
+                <div id="@IdScroll" slot="start" class="auto-height" style="@($"max-height: {MaxAutoHeight};")">
+                        @RenderSelectedOptions
+                </div>
+                }
+
+            }
+            @if (!Disabled && !ReadOnly)
+            {
+                if (this.SelectedOptions?.Any() == true || !string.IsNullOrEmpty(ValueText))
+                {
+                    if (IconDismiss != null)
+                    {
+                    <LucideIcon Name="@IconDismiss"
+                                width="12px"
+                                Style="cursor: pointer;"
+                                title="@AccessibilityIconDismiss"
+                                focusable="true"
+                                @onfocus="@(e => { IsReachedMaxItems = false; IsMultiSelectOpened = false; })"
+                                OnClick="@OnClearAsync" />
+                    }
+                }
+                else
+                {
+                    if (IconSearch != null)
+                    {
+                    <LucideIcon Name="@IconSearch"
+                                width="16px"
+                                Style="cursor: pointer;"
+                                title="@AccessibilityIconSearch"
+                                focusable="true"
+                                @onfocus="@(e => { IsReachedMaxItems = false; IsMultiSelectOpened = false; })"
+                                @onclick="@OnDropDownExpandedAsync" />
+                    }
+                }
+            }
+        </Input>
+
+        @* List of available items *@
+        @if (IsMultiSelectOpened && (ShowOverlayOnEmptyResults || Items?.Any() == true))
+        {
+            @if (SelectValueOnTab)
+            {
+                <ShadcnKeyCode AnchorId="@Id"
+                               OnKeyDown="@KeyDownHandlerAsync"
+                               Only="@SelectValueOnTabOnly"
+                               PreventDefaultOnly="@SelectValueOnTabOnly" />
+            }
+
+            <Overlay OnClose="@(e => IsMultiSelectOpened = false)" Open="true" Transparent="true" FullScreen="true" />
+            <Floating AnchorId="@Id"
+                      Style="margin-top: 10px; border-radius: calc(var(--control-corner-radius) * 2px); background-color: var(--neutral-layer-floating);">
+                @if (HeaderContent != null)
+                {
+                    @HeaderContent(Items ?? Array.Empty<TOption>())
+                }
+
+                <div id="@IdPopup" role="listbox" style="@ListStyleValue" tabindex="0">
+                    @if (Items != null)
+                    {
+                        var selectableItem = GetOptionValue(SelectableItem);
+
+                        @if (Virtualize)
+                        {
+                            <Virtualize ItemsProvider="LoadFilteredItemsAsync" @ref="VirtualizationContainer" ItemSize="ItemSize">
+                                @RenderOption((context, selectableItem))
+                            </Virtualize>
+                        }
+                        else
+                        {
+                            foreach (TOption item in Items)
+                            {
+                                @RenderOption((item, selectableItem))
+                            }
+                        }
+                    }
+                </div>
+
+                @if (FooterContent != null)
+                {
+                    @FooterContent(Items ?? Array.Empty<TOption>())
+                }
+            </Floating>
+        }
+
+        @* Tooltip *@
+        else if (IsReachedMaxItems && MaximumSelectedOptionsMessage != null)
+        {
+            <Overlay OnClose="@(e => IsReachedMaxItems = false)" Open="true" Transparent="true" FullScreen="true" />
+            <Floating AnchorId="@Id"
+                      Style="margin-top: 10px; border-radius: calc(var(--control-corner-radius) * 2px); background-color: var(--neutral-layer-floating); padding: 10px;">
+                @MaximumSelectedOptionsMessage
+            </Floating>
+        }
+    </div>
+</CascadingValue>
+
+@code {
+    private RenderFragment<(TOption Item, string? SelectableItem)> RenderOption => context => __builder =>
+    {
+        var optionValue = GetOptionValue(context.Item);
+        <ListOption TOption="TOption"
+                    @key="@context.Item"
+                    Value="@optionValue"
+                    Style="@OptionStyle"
+                    Class="@OptionClass"
+                    Selected="@GetOptionSelected(context.Item)"
+                    Disabled="@(GetOptionDisabled(context.Item) ?? false)"
+                    OnSelect="@OnSelectCallback(context.Item)"
+                    aria-selected="@(GetOptionSelected(context.Item) || optionValue == context.SelectableItem ? "true" : "false")"
+                    selectable="@(optionValue == context.SelectableItem)">
+            @if (OptionTemplate == null)
+            {
+                @GetOptionText(context.Item)
+            }
+            else
+            {
+                @OptionTemplate(context.Item)
+            }
+        </ListOption>
+    };
+
+    private RenderFragment RenderSelectedOptions => __builder =>
+    {
+        if (SelectedOptions != null)
+        {
+            foreach (var item in SelectedOptions)
+            {
+                if (SelectedOptionTemplate == null)
+                {
+                    var text = @GetOptionText(item);
+
+                    if (ReadOnly || Disabled)
+                    {
+                        <Badge aria-label="@GetOptionText(item)">
+                            @text
+                        </Badge>
+                    }
+                    else
+                    {
+                        <Badge @onclick="@(e => RemoveSelectedItemAsync(item))"
+                               aria-label="@GetOptionText(item)">
+                            @text
+                        </Badge>
+                    }
+                }
+                else
+                {
+                    @SelectedOptionTemplate(item)
+                }
+            }
+        }
+    };
+}

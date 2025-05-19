@@ -4,21 +4,26 @@
 @inject IElementService ElementService
 
 <SliderImpl TValue="TValue"
-            OnSlideStart="OnSlideStartHandler"
-            OnSlideMove="OnSlideMoveHandler"
+            OnSlideStart="OnSlideStartHandlerAsync"
+            OnSlideMove="OnSlideMoveHandlerAsync"
             OnSlideEnd="OnSlideEndHandler"
-            OnStepKeyDown="OnStepKeyDownHandler"
             OnHomeKeyDown="OnHomeKeyDownHandler"
             OnEndKeyDown="OnEndKeyDownHandler"
+            OnStepKeyDown="OnStepKeyDownHandler"
+            Id="@Id"
+            Style="@StyleValue"
+            Class="@Class"
             dir="@Direction.ToAttributeValue(false)"
-            data-orientation="horizontal"
-            Ref="Ref">
-    @ChildContent
+            data-orientation="horizontal">
+    <CascadingValue Value="_orientationContext" IsFixed="true">
+        @ChildContent
+    </CascadingValue>
 </SliderImpl>
 
 @code {
+    ForwardRef _forwardRef = new();
     [CascadingParameter]
-    SliderContext<TValue>? SliderContext { get; set; }
+    SliderRootContext<TValue>? RootContext { get; set; }
 
     [Parameter]
     public TValue? Min { get; set; }
@@ -32,32 +37,21 @@
     [Parameter]
     public Direction Direction { get; set; }
 
-    void OnSlideStartHandler(PointerEventArgs args)
-    {
-    }
-    void OnSlideMoveHandler(PointerEventArgs args)
-    {
-    }
-    void OnSlideEndHandler(PointerEventArgs args)
-    {
-    }
-    void OnStepKeyDownHandler(KeyboardEventArgs args)
-    {
-    }
-    void OnHomeKeyDownHandler(KeyboardEventArgs args)
-    {
-    }
-    void OnEndKeyDownHandler(KeyboardEventArgs args)
-    {
-    }
+    [Parameter]
+    public EventCallback<double> OnSlideStart { get; set; }
 
-    bool IsSlidingFromLeft => (Direction == Direction.LTR && !Inverted) || (Direction != Direction.LTR && Inverted);
-    string? StyleValue => new StyleBuilder()
-        .AddStyle("--reka-slider-thumb-transform", "translateX(50%)", "translateX(-50%)", IsSlidingFromLeft == false && SliderContext?.ThumbAlignment == ThumbAlignment.Overflow)
-        .Build();
+    [Parameter]
+    public EventCallback<double> OnSlideMove { get; set; }
 
-    async Task GetValueFromPointerEvent(PointerEventArgs args, bool slideStart)
-    {
-        var rect = await ElementService.GetBoundingClientRectAsync(Ref);
-    }
+    [Parameter]
+    public EventCallback OnSlideEnd { get; set; }
+
+    [Parameter]
+    public EventCallback<KeyboardEventArgs> OnHomeKeyDown { get; set; }
+
+    [Parameter]
+    public EventCallback<KeyboardEventArgs> OnEndKeyDown { get; set; }
+
+    [Parameter]
+    public EventCallback<(KeyboardEventArgs, int)> OnStepKeyDown { get; set; }
 }

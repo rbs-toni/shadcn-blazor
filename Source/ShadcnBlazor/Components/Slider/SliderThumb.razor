@@ -1,0 +1,13 @@
+﻿@namespace ShadcnBlazor
+@inherits SliderThumbImpl<TValue>
+@typeparam TValue where TValue : System.Numerics.INumber<TValue>
+
+<SliderThumbImpl TValue="TValue"
+                 Class="@Class"
+                 Style="@Style"
+                 AriaLabel="@AriaLabel"
+                 Index="@Index"
+                 StyleType="StyleType"
+                 @attributes="Attributes">
+    @ChildContent
+</SliderThumbImpl>

@@ -14,20 +14,6 @@
     public bool Show { get; set; }
 
     /// <summary>
-    /// Gets or sets the transition class name to be applied when the component is shown or hidden.
-    /// The class should include the following states:
-    /// <list type="bullet">
-    /// <c>{name}-enter-from</c>, <c>{name}-enter-to</c>, and <c>{name}-enter-active</c>,
-    /// </list>
-    /// <list type="bullet">
-    /// <c>{name}-leave-from</c>, <c>{name}-leave-to</c>, and <c>{name}-leave-active</c>.
-    /// </list>
-    /// If not provided, the default value is <c>v</c>.
-    /// </summary>
-    [Parameter]
-    public string? Name { get; set; }
-
-    /// <summary>
     /// Gets or sets the ID of the target HTML element to which this transition should be applied.
     /// This parameter is required and must be specified.
     /// </summary>
@@ -47,4 +33,10 @@
     /// </summary>
     [Parameter]
     public EventCallback AfterLeave { get; set; }
+
+    [Parameter]
+    public TransitionClasses OnEnterClasses { get; set; } = TransitionClasses.OnEnterDefaultClasses();
+
+    [Parameter]
+    public TransitionClasses OnLeaveClasses { get; set; } = TransitionClasses.OnLeaveDefaultClasses();
 }

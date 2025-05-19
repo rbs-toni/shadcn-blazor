@@ -1,0 +1,16 @@
+﻿@namespace ShadcnBlazor.Docs.Pages.Examples
+<div class="flex flex-col gap-2">
+    <Button @onclick="ToggleShow">Toggle</Button>
+    <Transition Target="content" Show="_show">
+        <p id="content">hello</p>
+    </Transition>
+</div>
+
+@code{
+    bool _show;
+
+    void ToggleShow()
+    {
+        _show = !_show;
+    }
+}

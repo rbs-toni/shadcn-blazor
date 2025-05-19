@@ -37,7 +37,6 @@ public partial class Toaster
 
     public void OnRemoveToast(ToastInstance toast)
     {
-        Console.WriteLine("Calllinnnnnnnnnnnnling");
         InvokeAsync(() =>
         {
             var toastInstance = Toasts.SingleOrDefault(x => x.Id == toast.Id);

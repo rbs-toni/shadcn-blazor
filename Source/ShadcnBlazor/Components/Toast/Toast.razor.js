@@ -1,7 +1,6 @@
 ﻿let callback = null
 
 export function init(dotnet, method) {
-  console.log('listenVisibilityChange')
   callback = () => {
     dotnet.invokeMethodAsync(method, document.hidden)
   }

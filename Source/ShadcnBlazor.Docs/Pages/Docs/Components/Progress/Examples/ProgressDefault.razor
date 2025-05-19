@@ -1,0 +1,16 @@
+﻿@namespace ShadcnBlazor.Docs.Pages.Examples
+<Progress Class="w-3/5" Value="@_progress"/>
+
+@code {
+    int _progress = 13;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.Delay(500);
+            _progress = 66;
+            StateHasChanged();
+        }
+    }
+}

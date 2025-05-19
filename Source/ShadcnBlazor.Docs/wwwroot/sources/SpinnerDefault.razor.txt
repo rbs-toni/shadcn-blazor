@@ -1,0 +1,3 @@
+﻿@namespace ShadcnBlazor.Docs.Pages.Examples
+
+<Spinner />

@@ -1,0 +1,23 @@
+﻿@namespace ShadcnBlazor
+@inherits ListComponentBase<TOption>
+@typeparam TOption
+
+<CascadingValue Value=@_internalListContext Name="ListContext" TValue="InternalListContext<TOption>" IsFixed=true>
+    <div @ref=Ref
+         id="@Id"
+         class="@ClassValue"
+         style="@StyleValue"
+         autocomplete="@Autocomplete.ToAttributeValue()"
+         open=@Open
+         current-value=@Value
+         placeholder=@Placeholder
+         disabled=@Disabled
+         required="@Required"
+         @oncomboboxchange="@ChangeHandlerAsync"
+         @oncontrolinput="@InputHandlerAsync"
+         autofocus="@Autofocus"
+         name="@Name"
+         @attributes="Attributes">
+        @_renderOptions
+    </div>
+</CascadingValue>

@@ -12,5 +12,5 @@ public partial class PopperRoot
     }
 
     [Parameter]
-    public RenderFragment<PopperRootContext>? ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 }

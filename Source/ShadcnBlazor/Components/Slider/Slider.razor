@@ -1,46 +1,68 @@
 ﻿@namespace ShadcnBlazor
-@inherits ShadcnInputBase<TValue>
-@typeparam TValue
-@attribute [CascadingTypeParameter(nameof(TValue))]
-<CascadingValue Value="this" IsFixed="true">
-    <fluent-slider id="@Id"
-                   class="@ClassValue"
-                   style="@StyleValue"
-                   readonly="@ReadOnly"
-                   min="@FormatValueAsString(Min)"
-                   max="@FormatValueAsString(Max)"
-                   step="@FormatValueAsString(Step)"
-                   orientation="@Orientation.ToAttributeValue()"
-                   value="@FormatValueAsString(Value)"
-                   disabled="@Disabled"
-                   name=@Name
-                   required=@Required
-                   @onsliderchange="@ChangeHandlerAsync"
-                   @ref="Ref"
-                   @attributes="Attributes">
-        @ChildContent
-    </fluent-slider>
-</CascadingValue>
+@inherits SliderRoot<TValue>
+@typeparam TValue where TValue : System.Numerics.INumber<TValue>
+@inject TwMerge TwMerge
+
+<SliderRoot TValue="TValue"
+            Class="@SliderClassValue.Cn(TwMerge)"
+            Style="@Style"
+            @attributes="Attributes"
+            Min="@Min"
+            Max="@Max"
+            Step="@Step"
+            Value="@Value"
+            ValueChanged="@ValueChanged"
+            ValueExpression="@ValueExpression"
+            AriaLabel="@AriaLabel"
+            Label="@Label"
+            LabelTemplate="@LabelTemplate"
+            DisplayName="@DisplayName"
+            Placeholder="@Placeholder"
+            Id="@Id"
+            Name="@Name"
+            Field="@Field"
+            Direction="@Direction"
+            Orientation="@Orientation"
+            ThumbAlignment="@ThumbAlignment"
+            MinStepsBetweenThumbs="@MinStepsBetweenThumbs"
+            Autofocus="@Autofocus"
+            Disabled="@Disabled"
+            Embedded="@Embedded"
+            Immediate="@Immediate"
+            ImmediateDelay="@ImmediateDelay"
+            Inverted="@Inverted"
+            ReadOnly="@ReadOnly"
+            Required="@Required">
+    <SliderTrack TValue="TValue" Class="@SliderTrackClassValue">
+        <SliderRange TValue="TValue" Class="@SliderRangeClassValue" />
+    </SliderTrack>
+    <SliderThumb TValue="TValue" Class="@SliderThumbClassValue" />
+</SliderRoot>
 
 @code {
-    /// <summary>
-    /// The reading direction of the combobox when applicable. If omitted, inherits globally from `ConfigProvider` or assumes LTR (left-to-right) reading mode.
-    /// </summary>
-    [Parameter]
-    public Direction Direction { get; set; }
+    const string DefaultClasses = "relative flex w-full touch-none select-none items-center data-[orientation=vertical]:flex-col data-[orientation=vertical]:w-2 data-[orientation=vertical]:h-full";
 
-    /// <summary>
-    /// Whether the slider is visually inverted.
-    /// </summary>
-    [Parameter]
-    public bool Inverted { get; set; }
+    const string NewYorkClasses = "relative flex w-full touch-none select-none items-center data-[orientation=vertical]:flex-col data-[orientation=vertical]:w-1.5 data-[orientation=vertical]:h-full";
 
-    /// <summary>
-    /// The minimum permitted steps between multiple thumbs.
-    /// </summary>
-    [Parameter]
-    public int MinStepsBetweenThumbs { get; set; } = 0;
+    const string SliderTrackDefaultClasses = "relative h-2 w-full data-[orientation=vertical]:w-2 grow overflow-hidden rounded-full bg-secondary";
+    const string SliderRangeDefaultClasses = "absolute h-full data-[orientation=vertical]:w-full bg-primary";
+    const string SliderThumbDefaultClasses = "block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
+    const string SliderTrackNewYorkClasses = "relative h-1.5 w-full data-[orientation=vertical]:w-1.5 grow overflow-hidden rounded-full bg-primary/20";
+    const string SliderRangeNewYorkClasses = "absolute h-full data-[orientation=vertical]:w-full bg-primary";
+    const string SliderThumbNewYorkClasses = "block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
 
-    [Parameter]
-    public ThumbAlignment ThumbAlignment { get; set; } = ThumbAlignment.Contain;
+    string? SliderClassValue => new CssBuilder(Class)
+        .AddClass(DefaultClasses, NewYorkClasses, IsDefaultStyle)
+        .AddClass(base.ClassValue)
+        .Build();
+
+    string? SliderTrackClassValue => new CssBuilder()
+        .AddClass(SliderTrackDefaultClasses, SliderTrackNewYorkClasses, IsDefaultStyle)
+        .Build();
+    string? SliderRangeClassValue => new CssBuilder()
+        .AddClass(SliderRangeDefaultClasses, SliderRangeNewYorkClasses, IsDefaultStyle)
+        .Build();
+    string? SliderThumbClassValue => new CssBuilder()
+        .AddClass(SliderThumbDefaultClasses, SliderThumbNewYorkClasses, IsDefaultStyle)
+        .Build();
 }

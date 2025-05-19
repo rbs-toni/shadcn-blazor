@@ -10,4 +10,14 @@ public static class NumberExtensions
     {
         return value + "px";
     }
+
+    public static string? ToPercentage(this int value)
+    {
+        return value + "%";
+    }
+
+    public static string? ToPercentage(this double value)
+    {
+        return value + "%";
+    }
 }

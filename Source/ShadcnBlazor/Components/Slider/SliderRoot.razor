@@ -1,0 +1,135 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnInputBase<TValue>
+@typeparam TValue
+@attribute [CascadingTypeParameter(nameof(TValue))]
+
+<CascadingValue Value="_context" IsFixed="true">
+    @if (Orientation == Orientation.Horizontal)
+    {
+        <SliderHorizontal TValue="TValue"
+                          Id="@Id"
+                          Class="@ClassValue"
+                          Style="@StyleValue"
+                          readonly="@ReadOnly"
+                          Min="Min"
+                          Max="Max"
+                          Direction="Direction"
+                          Inverted="Inverted"
+                          aria-disabled="@Disabled"
+                          data-disabled="@Disabled"
+                          @onpointerdown="OnPointerDown"
+                          OnSlideStart="OnSlideStart"
+                          OnSlideMove="OnSlideMove"
+                          OnSlideEnd="OnSlideEnd"
+                          Ref="@Ref"
+                          @attributes="Attributes">
+            @ChildContent
+        </SliderHorizontal>
+    }
+    else
+    {
+        <SliderVertical TValue="TValue"
+                        Id="@Id"
+                        Class="@ClassValue"
+                        Style="@StyleValue"
+                        readonly="@ReadOnly"
+                        Min="Min"
+                        Max="Max"
+                        Direction="Direction"
+                        Inverted="Inverted"
+                        aria-disabled="@Disabled"
+                        data-disabled="@Disabled"
+                        @onpointerdown="OnPointerDown"
+                        OnSlideStart="OnSlideStart"
+                        OnSlideMove="OnSlideMove"
+                        OnSlideEnd="OnSlideEnd"
+                        Ref="@Ref"
+                        @attributes="Attributes">
+            @ChildContent
+        </SliderVertical>
+    }
+</CascadingValue>
+
+@code {
+    /// <summary>
+    /// Gets or sets the slider's step value.
+    /// </summary>
+    [Parameter]
+    [EditorRequired]
+    public TValue? Step { get; set; }
+    public override TValue? Value
+    {
+        get => base.Value;
+        set
+        {
+            if (base.Value != value)
+            {
+                base.Value = value;
+                _updateSliderThumb = true;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the slider's maximum value.
+    /// </summary>
+    [Parameter]
+    [EditorRequired]
+    public TValue? Max
+    {
+        get => _max;
+        set
+        {
+            if (_max != value)
+            {
+                _max = value;
+                _updateSliderThumb = true;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the slider's minimal value.
+    /// </summary>
+    [Parameter]
+    [EditorRequired]
+    public TValue? Min
+    {
+        get => _min;
+        set
+        {
+            if (_min != value)
+            {
+                _min = value;
+                _updateSliderThumb = true;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the orientation of the slider. See <see cref="AspNetCore.Components.Orientation"/>
+    /// </summary>
+    [Parameter]
+    public Orientation Orientation { get; set; } = Orientation.Horizontal;
+
+    /// <summary>
+    /// The reading direction of the combobox when applicable. If omitted, inherits globally from `ConfigProvider` or assumes LTR (left-to-right) reading mode.
+    /// </summary>
+    [Parameter]
+    public Direction Direction { get; set; }
+
+    /// <summary>
+    /// Whether the slider is visually inverted.
+    /// </summary>
+    [Parameter]
+    public bool Inverted { get; set; }
+
+    /// <summary>
+    /// The minimum permitted steps between multiple thumbs.
+    /// </summary>
+    [Parameter]
+    public int MinStepsBetweenThumbs { get; set; } = 0;
+
+    [Parameter]
+    public ThumbAlignment ThumbAlignment { get; set; } = ThumbAlignment.Contain;
+}

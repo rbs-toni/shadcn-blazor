@@ -47,9 +47,9 @@ function transformOrigin(options) {
   }
 }
 
-export function init(reference, popper, options = {}) {
-  if (!reference || !popper) {
-    console.error(`Floating UI Init Error: Missing elements reference or popper`)
+export function init(anchor, popper, options = {}) {
+  if (!anchor || !popper) {
+    console.error(`Floating UI Init Error: Missing elements anchor or popper`)
     return
   }
 
@@ -67,10 +67,10 @@ export function init(reference, popper, options = {}) {
       transformOrigin(options),
       size({
         apply: ({ elements, rects }) => {
-          elements.floating.style.setProperty('--blazor-popper-available-width', `${rects.floating.width}px`)
-          elements.floating.style.setProperty('--blazor-popper-available-height', `${rects.floating.height}px`)
-          elements.floating.style.setProperty('--blazor-popper-anchor-width', `${rects.reference.width}px`)
-          elements.floating.style.setProperty('--blazor-popper-anchor-height', `${rects.reference.height}px`)
+          elements.floating.style.setProperty('--popper-available-width', `${rects.floating.width}px`)
+          elements.floating.style.setProperty('--popper-available-height', `${rects.floating.height}px`)
+          elements.floating.style.setProperty('--popper-anchor-width', `${rects.anchor.width}px`)
+          elements.floating.style.setProperty('--popper-anchor-height', `${rects.anchor.height}px`)
         }
       }),
       hide(),
@@ -85,7 +85,7 @@ export function init(reference, popper, options = {}) {
       return
     }
     updateInProgress = true
-    computePosition(referenceEl, floatingEl, internalOptions)
+    computePosition(anchorEl, floatingEl, internalOptions)
       .then(({ x, y, placement, strategy, middlewareData }) => {
         const hasChanged =
           !lastPosition ||
@@ -96,7 +96,7 @@ export function init(reference, popper, options = {}) {
 
         if (middlewareData.hide) {
           Object.assign(floatingEl.style, {
-            visibility: middlewareData.hide.referenceHidden
+            visibility: middlewareData.hide.anchorHidden
               ? 'hidden'
               : 'visible',
           })
@@ -109,7 +109,7 @@ export function init(reference, popper, options = {}) {
         if (hasChanged) {
           floatingEl.style.left = `${x}px`
           floatingEl.style.top = `${y}px`
-          floatingEl.style.setProperty('--blazor-popper-transform-origin',
+          floatingEl.style.setProperty('--popper-transform-origin',
             `${middlewareData.transformOrigin?.x}, ${middlewareData.transformOrigin?.y}`)
 
           lastPosition = { x, y, placement, strategy }
@@ -123,7 +123,7 @@ export function init(reference, popper, options = {}) {
       })
   }
 
-  const cleanup = autoUpdate(referenceEl, floatingEl, updatePosition, autoUpdateOptions)
+  const cleanup = autoUpdate(anchorEl, floatingEl, updatePosition, autoUpdateOptions)
 
   return cleanup
 }

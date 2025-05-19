@@ -1,0 +1,17 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+
+<div id="@Id"
+    class="@Class" 
+    style="@Style" 
+    data-state="@RootContext?.ProgressState"
+    data-value="@RootContext?.Value"
+    data-max="@RootContext?.Max"
+    @ref="Ref"
+    @attributes="Attributes">
+    @ChildContent
+</div>
+@code {
+    [CascadingParameter]
+    ProgressRootContext? RootContext { get; set; }
+}

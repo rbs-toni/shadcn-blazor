@@ -25,7 +25,7 @@
         .AddStyle("right", RootContext?.Direction == Direction.LTR ? "0" : "")
         .AddStyle("left", RootContext?.Direction == Direction.RTL ? "0" : "")
         .AddStyle("bottom", "var(--scroll-area-corner-height)")
-        .AddStyle("--scroll-area-thumb-height", Sizes != null ? ScrollAreaUtils.GetThumbSize(Sizes).ToPx() : "")
+        .AddStyle("--scroll-area-thumb-height", Sizes != null ? ScrollUtils.GetThumbSize(Sizes).ToPx() : "")
         .Build();
 
     protected override void OnAfterRender(bool firstRender)

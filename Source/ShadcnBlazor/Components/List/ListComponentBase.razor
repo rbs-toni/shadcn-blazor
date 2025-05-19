@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNetCore.Components.Rendering
+@using System.Reflection
+
+@namespace ShadcnBlazor
+@inherits ShadcnInputBase<string?>
+@typeparam TOption
+
+@code
+{
+    void RenderOptions(RenderTreeBuilder __builder)
+    {
+        if (!string.IsNullOrEmpty(Placeholder) && this is Select<TOption>)
+        {
+            <ListOption TOption="TOption" Value="" Style="display:none;" aria-hidden="true">@Placeholder</ListOption>
+        }
+        if (Items is null)
+        {
+            @ChildContent
+        }
+        else
+        {
+            bool optionItems = typeof(TOption).IsGenericType && typeof(TOption).GetGenericTypeDefinition() == typeof(Option<>);
+
+            @foreach (TOption item in Items)
+            {
+                <ListOption TOption="TOption"
+                            Value="@GetOptionValue(item)"
+                            Selected="@GetOptionSelected(item)"
+                            Disabled="@(GetOptionDisabled(item) ?? false)"
+                            OnSelect="@OnSelectCallback(item)"
+                            aria-selected="@(GetOptionSelected(item) ? "true" : "false")">
+                    @if (OptionTemplate is not null)
+                    {
+                        @OptionTemplate(item)
+                    }
+                    else
+                    {
+                        @GetOptionText(item)
+                    }
+                    @if (optionItems)
+                    {
+                        var optionIcon = (IOptionIcon)item;
+                        var value = optionIcon.Icon;
+
+                        if (value.HasValue)
+                        {
+                            var icon = value.Value;
+                            <LucideIcon Name="@icon.Name" Class="@icon.Class" />
+                        }
+
+                    }
+                </ListOption>
+            }
+        }
+    }
+}

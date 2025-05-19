@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using System;
 using System.Linq;
@@ -7,13 +6,12 @@ using System.Linq;
 namespace ShadcnBlazor;
 public partial class ToastGroup : IAsyncDisposable
 {
+    DotNetObjectReference<ToastGroup>? _dotNetObject;
     IJSObjectReference? _jsModule;
     IJSObjectReference? _toastGroup;
 
     [Inject]
     IJSRuntime JSRuntime { get; set; } = default!;
-
-    DotNetObjectReference<ToastGroup>? _dotNetObject;
 
     public async ValueTask DisposeAsync()
     {
@@ -28,6 +26,16 @@ public partial class ToastGroup : IAsyncDisposable
             await _jsModule.DisposeAsync();
         }
     }
+    [JSInvokable]
+    public async Task InvokeOnExpanded(bool expanded)
+    {
+        await OnExpanded.InvokeAsync(expanded);
+    }
+    [JSInvokable]
+    public async Task InvokeOnInteracting(bool interacting)
+    {
+        await OnInteracting.InvokeAsync(interacting);
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -39,18 +47,5 @@ public partial class ToastGroup : IAsyncDisposable
                 _toastGroup = await _jsModule.InvokeAsync<IJSObjectReference>("init", Ref, _dotNetObject);
             }
         }
-    }
-
-    [JSInvokable]
-    public async Task InvokeOnExpanded(bool expanded)
-    {
-        await OnExpanded.InvokeAsync(expanded);
-    }
-
-    [JSInvokable]
-    public async Task InvokeOnInteracting(bool interacting)
-    {
-        Console.WriteLine("InvokeOnInteracting");
-        await OnInteracting.InvokeAsync(interacting);
     }
 }

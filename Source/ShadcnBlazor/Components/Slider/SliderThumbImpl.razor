@@ -2,18 +2,42 @@
 @inherits ShadcnComponentBase
 @typeparam TValue where TValue : System.Numerics.INumber<TValue>
 
-<span id="@Id" class="@Class" role="slider" style="@Style" @ref="Ref" @attributes="Attributes">
+<span id="@Id"
+      class="@Class"
+      role="slider"
+      style="@StyleValue"
+      tabindex="@TabIndex"
+      aria-label="@(AriaLabel ?? Label)"
+      data-disabled="@RootContext?.Disabled"
+      data-orientation="@RootContext?.Orientation"
+      aria-valuenow="@Value"
+      aria-valuemin="@RootContext?.Min?.ToString()"
+      aria-valuemax="@RootContext?.Max?.ToString()"
+      aria-orientation="@RootContext?.Orientation.ToAttributeValue(false)"
+      @ref="Ref"
+      @attributes="Attributes">
 
 </span>
 
     @code {
     [CascadingParameter]
-    SliderContext<TValue>? Context { get; set; }
+    SliderRootContext<TValue>? RootContext { get; set; }
+
+    [CascadingParameter]
+    ISliderOrientationContext? OrientationContext { get; set; }
 
     [Parameter]
     public int Index { get; set; }
 
-    string? TabIndex => Context?.Disabled == true ? default : "0";
+    [Parameter]
+    public string? AriaLabel { get; set; }
 
+    string? TabIndex => RootContext?.Disabled == true ? default : "0";
 
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("transform", "var(--slider-thumb-transform)")
+        .AddStyle("position", "absolute")
+        .AddStyle(OrientationContext?.StartEdge.ToString().ToLower(), $"calc({Percentage}% + {ThumbInBoundsOffset}px)")
+        .AddStyle("display", "none", Value == null)
+        .Build();
 }

@@ -4,82 +4,33 @@ using Microsoft.JSInterop;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
+using System.Threading.Tasks;
 
 namespace ShadcnBlazor;
-public partial class Slider<TValue> : ShadcnInputBase<TValue>, IAsyncDisposable
+public partial class SliderRoot<TValue> : ShadcnInputBase<TValue>, IAsyncDisposable
     where TValue : INumber<TValue>
 {
-    const string JAVASCRIPT_FILE = "./_content/ShadcnBlazor/Components/Slider/Slider.razor.js";
+    const string JS_FILE = "./_content/ShadcnBlazor/Components/Slider/SliderRoot.razor.js";
+    SliderRootContext<TValue> _context;
     Debounce _debounce;
     TValue? _max;
     TValue? _min;
     bool _updateSliderThumb;
 
-    public Slider()
+    public SliderRoot()
     {
         _debounce = new Debounce();
+        _context = new(this);
     }
 
-    /// <summary>
-    /// Gets or sets the slider's maximum value.
-    /// </summary>
-    [Parameter]
-    [EditorRequired]
-    public TValue? Max
-    {
-        get => _max;
-        set
-        {
-            if (_max != value)
-            {
-                _max = value;
-                _updateSliderThumb = true;
-            }
-        }
-    }
-    /// <summary>
-    /// Gets or sets the slider's minimal value.
-    /// </summary>
-    [Parameter]
-    [EditorRequired]
-    public TValue? Min
-    {
-        get => _min;
-        set
-        {
-            if (_min != value)
-            {
-                _min = value;
-                _updateSliderThumb = true;
-            }
-        }
-    }
-    /// <summary>
-    /// Gets or sets the orientation of the slider. See <see cref="AspNetCore.Components.Orientation"/>
-    /// </summary>
-    [Parameter]
-    public Orientation Orientation { get; set; } = Orientation.Horizontal;
-    /// <summary>
-    /// Gets or sets the slider's step value.
-    /// </summary>
-    [Parameter]
-    [EditorRequired]
-    public TValue? Step { get; set; }
-    public override TValue? Value
-    {
-        get => base.Value;
-        set
-        {
-            if (base.Value != value)
-            {
-                base.Value = value;
-                _updateSliderThumb = true;
-            }
-        }
-    }
     protected override string? ClassValue
     {
-        get { return new CssBuilder(base.ClassValue).AddClass(Orientation.ToAttributeValue() ?? "horizontal").Build(); }
+        get
+        {
+            return new CssBuilder(base.ClassValue)
+                .AddClass(Orientation.ToAttributeValue() ?? "horizontal")
+                .Build();
+        }
     }
     [Inject]
     IJSRuntime JSRuntime { get; set; } = default!;
@@ -126,7 +77,7 @@ public partial class Slider<TValue> : ShadcnInputBase<TValue>, IAsyncDisposable
     {
         if (firstRender)
         {
-            Module ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import", JAVASCRIPT_FILE);
+            Module ??= await JSRuntime.InvokeAsync<IJSObjectReference>("import", JS_FILE);
         }
         else
         {
@@ -160,6 +111,49 @@ public partial class Slider<TValue> : ShadcnInputBase<TValue>, IAsyncDisposable
         {
             validationErrorMessage = string.Format(CultureInfo.InvariantCulture, "The {0} field must be a number.", DisplayName ?? (FieldBound ? FieldIdentifier.FieldName : "(unknown)"));
             return false;
+        }
+    }
+
+    TValue _valueBeforeSlideSlideStart;
+
+    void OnPointerDown()
+    {
+        if (!Disabled)
+        {
+            _valueBeforeSlideSlideStart = CurrentValue;
+        }
+    }
+
+    async Task OnSlideStart(double value)
+    {
+        if (!Disabled)
+        {
+            await ChangeHandlerAsync(new ChangeEventArgs()
+            {
+                Value = value,
+            });
+            _context.NotifyValueChanged();
+        }
+    }
+
+    async Task OnSlideMove(double value)
+    {
+        if (!Disabled)
+        {
+            await ChangeHandlerAsync(new ChangeEventArgs()
+            {
+                Value = value,
+            });
+            _context.NotifyValueChanged();
+        }
+    }
+
+    async Task OnSlideEnd()
+    {
+        if (!Disabled)
+        {
+            var prevValue = _valueBeforeSlideSlideStart;
+            var nextValue = CurrentValue;
         }
     }
 }

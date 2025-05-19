@@ -1,0 +1,50 @@
+﻿@page "/docs/components/slider"
+@inherits ShadcnComponentBase
+@inject IStringLocalizer<Index> Localizer
+
+<DocsPageHeader Title="@Component" Breadcrumbs="_breadcrumbs.Items">
+    <DocsPageHeaderDescription>
+        @Localizer["An input where the user selects a value from within a given range."]
+    </DocsPageHeaderDescription>
+</DocsPageHeader>
+
+<DocsPageContent>
+    <DocsPreview PreviewComponent="@_sliderDefault"
+    CodePath="SliderDefault.razor" />
+
+    @if (_examples.Count > 0)
+    {
+        <DocsPageSection Title="Examples">
+            @foreach (var item in _examples)
+            {
+                <DocsPageSection Level="3" Title="@item.Title">
+                    <DocsPreview PreviewComponent="@item.Template"
+                    CodePath="@item.CodePath" />
+                </DocsPageSection>
+            }
+        </DocsPageSection>
+    }
+</DocsPageContent>
+
+@code {
+    const string Component = "Slider";
+
+    [CascadingParameter]
+    LayoutContext LayoutContext { get; set; } = default!;
+
+    BreadcrumbCollection _breadcrumbs = new ComponentsBreadcrumbCollection(Component);
+    ComponentTemplate _sliderDefault = new ComponentTemplate(typeof(SliderDefault));
+
+    List<ComponentExample> _examples = new List<ComponentExample>()
+    {
+    };
+
+    protected override void OnInitialized()
+    {
+        LayoutContext.SetLayoutOptions(
+            pageTitle: Component,
+            useSidebar: true,
+            useOutline: true,
+            useFooterLinks: true);
+    }
+}

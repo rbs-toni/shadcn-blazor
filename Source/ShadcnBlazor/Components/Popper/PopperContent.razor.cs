@@ -6,73 +6,52 @@ using System.Linq;
 namespace ShadcnBlazor;
 public partial class PopperContent : IAsyncDisposable
 {
+    const string JS_FILE = "./_content/ShadcnBlazor/Components/Popper/PopperContent.razor.js";
     readonly PopperContentContext _context;
+    DotNetObjectReference<PopperContent>? _dotNetRef;
+    IJSObjectReference? _floatingInstance;
     ElementReference _floatingRef;
+    IJSObjectReference? _jsModule;
 
-    public PopperContent(PopperContentContext context)
-    {
-        _context = context;
-    }
+    public PopperContent(PopperContentContext context) { _context = context; }
 
+    internal double ArrowX { get; private set; }
+    internal double ArrowY { get; private set; }
     [Inject]
     IJSRuntime JSRuntime { get; set; } = default!;
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("transform", "translate(0, -200%)")
+        .Build();
 
-    IJSObjectReference? JSModule { get; set; }
-    IJSObjectReference? FloatingInstance { get; set; }
-    DotNetObjectReference<PopperContent>? DotNetRef { get; set; }
-    const string JS_FILE = "./_content/ShadcnBlazor/Components/Popper/PopperContent.razor.js";
+    public async ValueTask DisposeAsync()
+    {
+        _dotNetRef?.Dispose();
+        if (_jsModule != null)
+        {
+            await _jsModule.DisposeAsync();
+        }
+        if (_floatingInstance != null)
+        {
+            await _floatingInstance.InvokeVoidAsync("cleanUp");
+            await _floatingInstance.DisposeAsync();
+        }
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", JS_FILE);
-            if (JSModule != null)
+            _jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", JS_FILE);
+            if (_jsModule != null)
             {
-                DotNetRef ??= DotNetObjectReference.Create(this);
-                FloatingInstance = await JSModule.InvokeAsync<IJSObjectReference>("create", DotNetRef, _floatingRef, Ref, _context.Side.ToString(), _context.ShouldHideArrow);
+                _dotNetRef ??= DotNetObjectReference.Create(this);
+                _floatingInstance = await _jsModule.InvokeAsync<IJSObjectReference>(
+                    "create",
+                    _dotNetRef,
+                    _floatingRef,
+                    Ref,
+                    _context.Side.ToString(),
+                    _context.ShouldHideArrow);
             }
         }
     }
-
-    public async ValueTask DisposeAsync()
-    {
-        DotNetRef?.Dispose();
-        if (JSModule!=null)
-        {
-            await JSModule.DisposeAsync();
-        }
-        if (FloatingInstance != null)
-        {
-            await FloatingInstance.InvokeVoidAsync("cleanUp");
-            await FloatingInstance.DisposeAsync();
-        }
-    }
-}
-
-public class PopperAutoUpdateOptions
-{
-    /// <summary>
-    /// Whether to update the position when an overflow ancestor is scrolled.
-    /// </summary>
-    public bool AncestorScroll { get; set; } = true;
-
-    /// <summary>
-    /// Whether to update the position when an overflow ancestor is resized. This uses the resize event.
-    /// </summary>
-    public bool AncestorResize { get; set; } = true;
-
-    /// <summary>
-    /// Whether to update the position when either the reference or floating elements resized. This uses a ResizeObserver.
-    /// </summary>
-    public bool ElementResize { get; set; } = true;
-
-    /// <summary>
-    /// Whether to update the position of the floating element if the reference element moved on the screen as the result of layout shift.
-    /// </summary>
-    public bool LayoutShift { get; set; } = true;
-
-    /// <summary>
-    /// Whether to update the position of the floating element on every animation frame if required.
-    /// </summary>
-    public bool AnimationFrame { get; set; }
 }

@@ -5,8 +5,8 @@
 <span id="@Id"
       class="@Class"
       style="@Style"
-      data-disabled="@Context?.Disabled"
-      data-orientation="@Context?.Orientation.ToAttributeValue(false)"
+      data-disabled="@RootContext?.Disabled"
+      data-orientation="@RootContext?.Orientation.ToAttributeValue(false)"
       @ref="Ref"
       @attributes="Attributes">
     @ChildContent
@@ -14,5 +14,5 @@
 
 @code {
     [CascadingParameter]
-    SliderContext<TValue>? Context { get; set; }
+    SliderRootContext<TValue>? RootContext { get; set; }
 }

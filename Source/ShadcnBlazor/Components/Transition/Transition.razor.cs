@@ -1,6 +1,7 @@
 ﻿using Microsoft.JSInterop;
 
 namespace ShadcnBlazor;
+
 public partial class Transition : ShadcnJSComponentBase
 {
     DotNetObjectReference<Transition>? _dotNetHelper;
@@ -27,15 +28,19 @@ public partial class Transition : ShadcnJSComponentBase
             await AfterLeave.InvokeAsync();
         }
     }
+
     protected async Task EnterAsync()
-    { await InvokeVoidAsync("enter", Target, Name, _dotNetHelper, nameof(OnTransitionEndAsync)); }
-    protected async Task LeaveAsync() { await InvokeVoidAsync("leave", Target); }
+    { await InvokeVoidAsync("enter", Target, OnEnterClasses, _dotNetHelper, nameof(OnTransitionEndAsync)); }
+    protected async Task LeaveAsync()
+    { await InvokeVoidAsync("leave", Target, OnEnterClasses, _dotNetHelper, nameof(OnTransitionEndAsync)); }
+
     protected override ValueTask OnAfterImportAsync()
     {
         _dotNetHelper ??= DotNetObjectReference.Create(this);
 
         return base.OnAfterImportAsync();
     }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -45,11 +50,13 @@ public partial class Transition : ShadcnJSComponentBase
             await EnterAsync();
         }
     }
+
     protected override ValueTask OnDisposingAsync()
     {
         _dotNetHelper?.Dispose();
         return base.OnDisposingAsync();
     }
+
     protected override async Task OnParametersSetAsync()
     {
         if (Show)

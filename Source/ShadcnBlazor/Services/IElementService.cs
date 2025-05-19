@@ -8,6 +8,7 @@ public interface IElementService
 {
     // DOM Measurement
     Task<DomRect> GetBoundingClientRectAsync(ElementReference element);
+    Task<ElementInfo> GetElementInfoAsync(ElementReference element);
     Task<double> GetOffsetTopAsync(ElementReference element);
     Task<double> GetOffsetLeftAsync(ElementReference element);
     Task<double> GetScrollTopAsync(ElementReference element);
@@ -79,7 +80,13 @@ public class ElementService : JSModule, IElementService
 
     // DOM Measurement
     public async Task<DomRect> GetBoundingClientRectAsync(ElementReference element)
-    { return await InvokeAsync<DomRect>("getBoundingClientRect", element); }
+    {
+        return await InvokeAsync<DomRect>("getBoundingClientRect", element);
+    }
+    public async Task<ElementInfo> GetElementInfoAsync(ElementReference element)
+    {
+        return await InvokeAsync<ElementInfo>("getElementInfo", element);
+    }
 
     public async Task<double> GetOffsetTopAsync(ElementReference element)
     { return await InvokeAsync<double>("getOffsetTop", element); }
@@ -208,4 +215,11 @@ public class ElementService : JSModule, IElementService
 
     public async Task StopPropagationAsync(ElementReference element, string eventName)
     { await InvokeVoidAsync("stopPropagation", element, eventName); }
+}
+
+
+public record ElementInfo
+{
+    public double ClientWidth { get; set; }
+    public double ClientHeight { get; set; }
 }

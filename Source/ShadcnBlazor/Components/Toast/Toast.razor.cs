@@ -8,6 +8,7 @@ public partial class Toast : IAsyncDisposable
     CountdownTimer? _countdownTimer;
     DotNetObjectReference<Toast>? _dotNetObject;
     IJSObjectReference? _jsModule;
+    bool _paused;
 
     [Inject]
     IJSRuntime JSRuntime { get; set; } = default!;
@@ -38,8 +39,6 @@ public partial class Toast : IAsyncDisposable
             }
             if (Instance != null)
                 await OnRemoveToast.InvokeAsync(Instance);
-            else
-                Console.WriteLine("Instance is null when trying to remove toast");
         }
     }
     public async ValueTask DisposeAsync()
@@ -66,24 +65,12 @@ public partial class Toast : IAsyncDisposable
     {
         if (firstRender)
         {
-            try
+            _jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/ShadcnBlazor/Components/Toast/Toast.razor.js");
+            if (_jsModule != null)
             {
-                _jsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/ShadcnBlazor/Components/Toast/Toast.razor.js");
-                if (_jsModule != null)
-                {
-                    _dotNetObject ??= DotNetObjectReference.Create(this);
-                    await _jsModule.InvokeVoidAsync("init", _dotNetObject, nameof(OnDocumentIsHidden));
-                    await UpdateFirstHeights();
-                }
-                else
-                {
-                    Console.WriteLine("_jsModule is null");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
+                _dotNetObject ??= DotNetObjectReference.Create(this);
+                await _jsModule.InvokeVoidAsync("init", _dotNetObject, nameof(OnDocumentIsHidden));
+                await UpdateFirstHeights();
             }
 
         }
@@ -116,6 +103,33 @@ public partial class Toast : IAsyncDisposable
             .OnElapsed(() => InvokeAsync(DeleteToastAsync));
 
         await _countdownTimer.StartAsync();
+    }
+    async Task ButtonActionClickHandler()
+    {
+        if (Instance?.Action?.OnClick == null)
+        {
+            return;
+        }
+        if (!Dismissible)
+        {
+            return;
+        }
+        await Instance.Action.OnClick.InvokeAsync();
+        await DeleteToastAsync();
+    }
+    async Task ButtonCancelClickHandler()
+    {
+
+        if (Instance?.Cancel?.OnClick == null)
+        {
+            return;
+        }
+        if (!Dismissible)
+        {
+            return;
+        }
+        await Instance.Cancel.OnClick.InvokeAsync();
+        await DeleteToastAsync();
     }
     async Task<bool> GetSelectionAsync()
     {
@@ -178,35 +192,5 @@ public partial class Toast : IAsyncDisposable
        ? [justNewHeight, .. Heights]
        : [justNewHeight];
         await OnUpdateHeights.InvokeAsync(Heights);
-    }
-
-    bool _paused;
-
-    async Task ButtonActionClickHandler()
-    {
-        if (Instance?.Action?.OnClick == null)
-        {
-            return;
-        }
-        if (!Dismissible)
-        {
-            return;
-        }
-        await Instance.Action.OnClick.InvokeAsync();
-        await DeleteToastAsync();
-    }
-    async Task ButtonCancelClickHandler()
-    {
-
-        if (Instance?.Cancel?.OnClick == null)
-        {
-            return;
-        }
-        if (!Dismissible)
-        {
-            return;
-        }
-        await Instance.Cancel.OnClick.InvokeAsync();
-        await DeleteToastAsync();
     }
 }

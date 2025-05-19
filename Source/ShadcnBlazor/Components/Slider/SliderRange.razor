@@ -1,0 +1,44 @@
+﻿@namespace ShadcnBlazor
+@inherits ShadcnComponentBase
+@typeparam TValue where TValue : System.Numerics.INumber<TValue>
+
+<span data-slider-range
+      id="@Id"
+      class="@Class"
+      style="@StyleValue"
+      data-disabled="@RootContext?.Disabled"
+      data-orientation="@RootContext?.Orientation.ToAttributeValue(false)">
+    @ChildContent
+</span>
+
+    @code {
+    [CascadingParameter]
+    SliderRootContext<TValue>? RootContext { get; set; }
+
+    [CascadingParameter]
+    ISliderOrientationContext? OrientationContext { get; set; }
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle(OrientationContext?.StartEdge.ToAttributeValue(false), OffsetStart.ToPercentage(), OrientationContext != null)
+        .AddStyle(OrientationContext?.EndEdge.ToAttributeValue(false), OffsetEnd.ToPercentage(), OrientationContext != null)
+        .Build();
+
+    double ValueAsDouble => RootContext == null ? 0 : double.CreateChecked(RootContext.Value);
+    double MinAsDouble => RootContext == null ? 0 : double.CreateChecked(RootContext.Min);
+    double MaxAsDouble => RootContext == null ? 0 : double.CreateChecked(RootContext.Max);
+
+    double OffsetStart => RootContext == null ? 0 : ValueAsDouble > 1 ? Math.Min(0, Percentage) : 0;
+    double OffsetEnd => 100 - Math.Max(Percentage, 0);
+
+
+    double Percentage => RootContext == null ? 0 : ScrollUtils.ConvertValueToPercentage(ValueAsDouble, MinAsDouble, MaxAsDouble);
+
+    protected override void OnInitialized()
+    {
+        if (RootContext != null)
+        {
+            RootContext.OnValueChanged += () => InvokeAsync(StateHasChanged);
+        }
+    }
+
+}
