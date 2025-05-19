@@ -14,7 +14,7 @@ public class PopperRootContext
 
     public event Action? OnAnchorChanged;
 
-    public ElementReference Anchor { get; set; }
+    public ElementReference? Anchor { get; set; }
 
     public void SetAnchor(ElementReference anchord)
     {

@@ -4,12 +4,11 @@
 @typeparam TValue
 
 
-<VisuallyHidden As="input"
-                required="@Required"
-                disabled="@Disabled"
-                name="@Name"
-                value="@CurrentValueAsString"
-                @attributes="Attributes" />
+<VisuallyHiddenInputBubble Required="@Required"
+                           Disabled="@Disabled"
+                           Name="@Name"
+                           Value="@CurrentValueAsString"
+                           @attributes="Attributes" />
 
 @code {
     [Parameter]

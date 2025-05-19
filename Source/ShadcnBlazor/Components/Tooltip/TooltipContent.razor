@@ -3,15 +3,15 @@
 @inject TwMerge TwMerge
 
 <div id="@Id"
-class="@(TwMerge.Merge(ClassValue))"
-data-state="@DataState"
-data-side="@Side.ToAttributeValue()"
-data-align="@Side"
-role="dialog"
-style="@StyleValue"
-tabindex="-1"
-@ref="Ref"
-@attributes="Attributes">
+     class="@(TwMerge.Merge(ClassValue))"
+     data-state="@DataState"
+     data-side="@Side.ToAttributeValue()"
+     data-align="@Side"
+     role="dialog"
+     style="@StyleValue"
+     tabindex="-1"
+     @ref="Ref"
+     @attributes="Attributes">
     @ChildContent
     <VisuallyHidden role="tooltip">
         @AriaLabel

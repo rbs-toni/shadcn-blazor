@@ -1,0 +1,38 @@
+﻿@namespace ShadcnBlazor
+@inherits Primitive
+
+<Primitive Id="@Id"
+           As="@As"
+           Class="@Class"
+           ForwardRef="ForwardRef"
+           Ref="@Ref"
+           RefChanged="@RefChanged"
+           Style="@StyleValue"
+           StyleType="@StyleType"
+           data-viewport
+           role="presentation"
+           @attributes="Attributes">
+    @ChildContent
+</Primitive>
+<style nonce="@Nonce">
+    [data-viewport] {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        [data-viewport]::-webkit-scrollbar {
+            display: none;
+        }
+</style>
+
+@code {
+    [Parameter]
+    public string? Nonce { get; set; } = "nonce";
+
+    string? StyleValue => new StyleBuilder(Style)
+        .AddStyle("position", "relative")
+        .AddStyle("flex", "1")
+        .AddStyle("overflow", "auto")
+        .Build();
+}

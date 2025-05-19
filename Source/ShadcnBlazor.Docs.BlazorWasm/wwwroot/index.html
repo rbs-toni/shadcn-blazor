@@ -26,10 +26,19 @@
         </div>
     </div>
 
-    <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
+    <div id="blazor-error-ui" class="hidden fixed bg-yellow-600 text-white shadow max-w-md bottom-0 end-0 m-4 mr-8 rounded-md z-50">
+        <div class="relative">
+            <div class="w-full p-4">
+                An unhandled error has occurred.
+                <a href="" class="underline">Reload!</a>
+            </div>
+            <a class="absolute top-0 start-0 bg-yellow-500 ring-2 -translate-x-1/4 -translate-y-1/4 rounded-full shadow-md p-1 cursor-pointer" onclick="document.getElementById('blazor-error-ui').style.display = 'none'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </a>
+        </div>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script type="text/javascript" src="./_content/ShadcnBlazor.Docs/js/highlightjs/highlight-extensions.js"></script>

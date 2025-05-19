@@ -5,14 +5,12 @@
   flip,
   shift,
   size,
-  hide
+  hide,
+  arrow
 } from '../../modules/floating-ui.min.js'
 
-const instances = new Map()
-let isPositioned = false
-const callback = (dotnet) => {
-  dotnet.invokeMetodAsync('UpdatePosition')
-}
+import { debounce } from '../../modules/lodash-es.min.js'
+
 function getSideAndAlignFromPlacement(placement) {
   const [side, align = 'center'] = placement.split('-')
   return [side, align]
@@ -46,34 +44,54 @@ function transformOrigin(options) {
     }
   }
 }
-
-export function init(anchor, popper, options = {}) {
+function useSize(arrow) {
+  if (arrow) {
+    return {
+      width: arrow.offsetWidth,
+      height: arrow.offsetHeight,
+    }
+  }
+  return {
+    width: 0,
+    height: 0,
+  }
+}
+export function create(anchor, popper, options = {}, autoUpdateOptions = {}) {
   if (!anchor || !popper) {
     console.error(`Floating UI Init Error: Missing elements anchor or popper`)
     return
   }
 
-  const {
-    autoUpdateOptions
-  } = options
+  const { width: arrowWidth, height: arrowHeight, showArrow } = useSize(options.arrow)
 
-  const internalOptions = {
+  const floatingOptions = {
     placement: options.placement || 'bottom',
     strategy: options.strategy || 'absolute',
     middleware: [
-      ...(options.offset ? [offset(options.offset)] : []),
+      offset({
+        mainAxis: (options.sideOffset || 0) + arrowHeight,
+        alignmentAxis: options.alignOffset
+      }),
       flip(),
-      shift(),
-      transformOrigin(options),
+      shift({
+        mainAxis: true,
+        crossAxis: true
+      }),
+      transformOrigin({
+        arrowWidth,
+        arrowHeight
+      }),
       size({
         apply: ({ elements, rects }) => {
-          elements.floating.style.setProperty('--popper-available-width', `${rects.floating.width}px`)
-          elements.floating.style.setProperty('--popper-available-height', `${rects.floating.height}px`)
-          elements.floating.style.setProperty('--popper-anchor-width', `${rects.anchor.width}px`)
-          elements.floating.style.setProperty('--popper-anchor-height', `${rects.anchor.height}px`)
+          const contentStyle = elements.floating.style
+          contentStyle.setProperty('--popper-available-width', `${rects.floating.width}px`)
+          contentStyle.setProperty('--popper-available-height', `${rects.floating.height}px`)
+          contentStyle.setProperty('--popper-anchor-width', `${rects.reference.width}px`)
+          contentStyle.setProperty('--popper-anchor-height', `${rects.reference.height}px`)
         }
       }),
       hide(),
+      ...(options.arrow instanceof Element ? [arrow({ element: options.arrow })] : [])
     ]
   }
 
@@ -85,7 +103,7 @@ export function init(anchor, popper, options = {}) {
       return
     }
     updateInProgress = true
-    computePosition(anchorEl, floatingEl, internalOptions)
+    computePosition(anchor, popper, floatingOptions)
       .then(({ x, y, placement, strategy, middlewareData }) => {
         const hasChanged =
           !lastPosition ||
@@ -95,22 +113,25 @@ export function init(anchor, popper, options = {}) {
           strategy !== lastPosition.strategy
 
         if (middlewareData.hide) {
-          Object.assign(floatingEl.style, {
-            visibility: middlewareData.hide.anchorHidden
-              ? 'hidden'
-              : 'visible',
-          })
-        }
-
-        if (!lastPosition) {
-          floatingEl.style.visibility = 'visible';
+          popper.style.visibility = middlewareData.hide.anchorHidden ? 'hidden' : 'visible'
         }
 
         if (hasChanged) {
-          floatingEl.style.left = `${x}px`
-          floatingEl.style.top = `${y}px`
-          floatingEl.style.setProperty('--popper-transform-origin',
-            `${middlewareData.transformOrigin?.x}, ${middlewareData.transformOrigin?.y}`)
+          popper.style.left = `${x}px`
+          popper.style.top = `${y}px`
+
+          const originX = middlewareData.transformOrigin?.x || '50%'
+          const originY = middlewareData.transformOrigin?.y || '50%'
+
+          popper.style.setProperty('--popper-transform-origin', `${originX}, ${originY}`)
+
+          if (middlewareData.arrow) {
+            const { x, y } = middlewareData.arrow
+            Object.assign(options.arrow.style, {
+              left: x != null ? `${x}px` : '',
+              top: y != null ? `${y}px` : '',
+            })
+          }
 
           lastPosition = { x, y, placement, strategy }
         }
@@ -122,22 +143,10 @@ export function init(anchor, popper, options = {}) {
         updateInProgress = false
       })
   }
+  const debounceUpdatePosition = debounce(updatePosition, 10)
+  const cleanup = autoUpdate(anchor, popper, debounceUpdatePosition, autoUpdateOptions)
 
-  const cleanup = autoUpdate(anchorEl, floatingEl, updatePosition, autoUpdateOptions)
-
-  return cleanup
-}
-
-export function changeOptions(floatingId, options) {
-  const instance = instances.get(floatingId)
-  if (!instance) {
-    console.error(`Floating UI Error: No instance found for ID ${floatingId}`)
-    return
+  return {
+    cleanup
   }
-  instance.updatePosition()
-}
-
-export function dispose(floatingId) {
-  const instance = instances.get(floatingId)
-  if (instance) instance.cleanup()
 }

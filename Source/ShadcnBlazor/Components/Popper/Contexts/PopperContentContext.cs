@@ -16,8 +16,6 @@ public class PopperContentContext
     public event Action? OnArrowChange;
 
     public ElementReference Arrow => _arrow;
-    public double ArrowX => _popperContent.ArrowX;
-    public double ArrowY => _popperContent.ArrowY;
     public bool ShouldHideArrow { get; set; }
     public PopperSide Side { get; set; }
 

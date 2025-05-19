@@ -1,6 +1,5 @@
 ﻿namespace ShadcnBlazor;
-
-public class PopperAutoUpdateOptions
+public record PopperAutoUpdateOptions
 {
     /// <summary>
     /// Whether to update the position when an overflow ancestor is scrolled.

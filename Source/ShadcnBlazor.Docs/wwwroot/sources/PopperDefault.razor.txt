@@ -1,0 +1,10 @@
+﻿@namespace ShadcnBlazor.Docs.Pages.Examples
+
+<Popper>
+    <PopperAnchor As="button">
+        Memek
+    </PopperAnchor>
+    <PopperContent>
+        As Memek as it is
+    </PopperContent>
+</Popper>

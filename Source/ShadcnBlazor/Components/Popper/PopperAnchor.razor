@@ -1,0 +1,29 @@
+﻿@namespace ShadcnBlazor
+@inherits Primitive
+
+<Primitive Id="@Id"
+           Class="@Class"
+           Style="@Style"
+           StyleType="@StyleType"
+           ForwardRef="@ForwardRef"
+           RefChanged="OnRefChanged"
+           PreventDefault="PreventDefault"
+           StopPropagation="StopPropagation"
+           As="@As"
+           Ref="@Ref"
+           @attributes="Attributes">
+    @ChildContent
+</Primitive>
+
+@code {
+    [CascadingParameter]
+    PopperRootContext? RootContext { get; set; }
+
+    void OnRefChanged(ElementReference elementReference)
+    {
+        if (RootContext != null)
+        {
+            RootContext.SetAnchor(elementReference);
+        }
+    }
+}
